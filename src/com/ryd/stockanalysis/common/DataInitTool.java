@@ -22,12 +22,33 @@ public class DataInitTool {
 
     private static Logger logger = Logger.getLogger(DataInitTool.class);
 
-    public static boolean dataCheck(){
+    public static boolean dataCheck(String disinfo){
 
+        double totalUseMoney = 0d;
+        double totalAllMoney = 0d;
+        Map<String,Object> stmap = new HashMap<String,Object>();
         //用户信息
         for(String key: Constant.stAccounts.keySet()){
             StAccount uu = Constant.stAccounts.get(key);
-            DataInitTool.printAccountInfo(uu,"结算后");
+            totalUseMoney = totalUseMoney + uu.getUseMoney();
+            totalAllMoney = totalAllMoney + uu.getTotalMoney();
+            for(StPosition sstp:uu.getStPositionList()) {
+                Integer amount = (Integer)stmap.get(sstp.getStockId());
+                if(amount==null){
+                    stmap.put(sstp.getStockId(), sstp.getAmount());
+                }else{
+                    stmap.put(sstp.getStockId(), sstp.getAmount()+amount);
+                }
+            }
+        }
+
+        logger.info(disinfo+"--所有资产总金额->"+totalAllMoney+"--所有资产总可用金额->"+totalUseMoney);
+        for(String skey: stmap.keySet()) {
+            StStock st = Constant.stockTable.get(skey);
+            int amount = (int) stmap.get(skey);
+            if (st != null) {
+                logger.info(disinfo + "--股票->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--总数量->" + amount);
+            }
         }
         return false;
     }
