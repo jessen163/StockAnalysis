@@ -23,41 +23,41 @@ package org.jopenexchg.pool;
 
 import java.lang.reflect.Array;
 
-public final class AllocOnlyPool<T> 
+public final class AllocOnlyPool<T>
 {
 	private static int MIN_POOL_SIZE = 100;
-	
+
 	// The following 2 fields will be valid when init() once
 	private T slotArray[] = null;
 	private int usedCnt = 0;
 	private int poolSize = 0;
-	
+
 	@SuppressWarnings("unchecked")
 	public AllocOnlyPool(Class<T> elemType, int size)
-		throws InstantiationException, IllegalAccessException
+			throws InstantiationException, IllegalAccessException
 	{
 		if(size <= MIN_POOL_SIZE)
 		{
 			size = MIN_POOL_SIZE;
 		}
-		
+
 		//
 		// Another way to create T[] in Generic Class
 		//	 	T[] array = (T[])(new ArrayList<T>(size).toArray());
 		//
 		slotArray = (T[])(Array.newInstance(elemType, size));
-	
+
 		for(int i = 0; i < size; i++)
 		{
 			T item = elemType.newInstance();
 			slotArray[i] = item;
-		} 
-		
+		}
+
 		poolSize = size;
 	}
 
 	/**
-	 * ×î´óÈİÁ¿
+	 * æœ€å¤§å®¹é‡
 	 * @return
 	 */
 	public final int capacity()
@@ -65,7 +65,7 @@ public final class AllocOnlyPool<T>
 		return poolSize;
 	}
 
-	// ´Ó³Ø×ÓÀïÃæÇëÇóÒ»¸ö¶ÔÏó¡£Èç¹ûÃ»ÓĞ¶ÔÏó¿ÉÒÔÄÃ£¬·µ»Ø null
+	// ä»æ± å­é‡Œé¢è¯·æ±‚ä¸€ä¸ªå¯¹è±¡ã€‚å¦‚æœæ²¡æœ‰å¯¹è±¡å¯ä»¥æ‹¿ï¼Œè¿”å› null
 	public final T getObj()
 	{
 		if(usedCnt >= poolSize)
@@ -77,10 +77,10 @@ public final class AllocOnlyPool<T>
 			usedCnt = usedCnt + 1;
 			return slotArray[usedCnt];
 		}
-	}	
-	
+	}
+
 	/**
-	 * ÒÑ·ÖÅä³öÈ¥µÄÊıÁ¿
+	 * å·²åˆ†é…å‡ºå»çš„æ•°é‡
 	 * @return
 	 */
 	public final int size()

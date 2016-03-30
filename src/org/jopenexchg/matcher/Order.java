@@ -24,18 +24,18 @@ package org.jopenexchg.matcher;
 import org.jopenexchg.hldg.*;
 
 /**
-*   �������ڲ���ͨ��Order �� ��������ɵġ�������ʱ������ٶ���O(1)
-*   	������ʱ��ֻ�ڶ�������һ����ǲ��Ƽ���ӦPrcLdr���ۻ��������������ϴӶ�����ɾ��
-*   	������ΪĿǰ����������һ��˫����������JAVA���õ����ݽṹ�����ܸ��ݶ���ֱ�Ӻܿ���
-*   	˫�������ж�λ��λ�á������������DELAY��δ���Ե�λ��ʱ������ɡ�
-*   	
-*   	����һ���ӿ��ٶȵķ�ʽ��PrcLdr�ϵ��ۻ���������0��ʱ��Ϳ��Լ�ɾ������۸�λ
-**/
+ *   撤单在内部是通过Order 的 引用来完成的。撤单的时候查找速度是O(1)
+ *   	撤单的时候只在订单上做一个标记并计减对应PrcLdr的累积总量，并不马上从队列中删除
+ *   	这是因为目前订单队列是一个双向链表，但JAVA内置的数据结构并不能根据对象直接很快在
+ *   	双向链表中定位到位置。这个工作可以DELAY到未来吃档位的时候来完成。
+ *
+ *   	另外一个加快速度的方式是PrcLdr上的累积总量到达0的时候就可以简单删除这个价格档位
+ **/
 
 public final class Order
 {
 	/**
-	 * ���������ǺͶ������յ���ʱ����ȫһ��
+	 * 以下内容是和订单刚收到的时候完全一样
 	 */
 	public short pbu = 0;
 	public int reff = 0;
@@ -45,49 +45,49 @@ public final class Order
 	public boolean isbuy = true;
 	public int stockid = 0;
 	public long ordQty = 0;
-	public long ordPrc = 0;		// �����ʾ�ļ۸����ο����ֵ
-	
+	public long ordPrc = 0;		// 行情揭示的价格必须参考这个值
+
 	/**
-	 * ���µ����ݲ������ύʱ�Ķ���������ȫһ�����ɱ�
+	 * 以下的内容并不和提交时的订单内容完全一样，可变
 	 */
-	public long price = 0;			// �ڲ���֯���кʹ���õļ۸�. ������Щ�����ծȯ��Ʒ�����ۿ����������ʵ�
+	public long price = 0;			// 内部组织队列和撮合用的价格. 对于有些怪异的债券产品，报价可能用收益率的
 	public long remQty = 0;
 	public boolean delflg = false;
 
 	/**
-	 * CONTEXT ���򣬲��� Lazy Loading ��ʽ
-	 * 
-	 * lazy loading, ��֤һ���������ֻ��ѯһ�γֲ�
-	 * 		
-	 * 		�ֲֿ�Ĳ�ѯ�͸����ٶ��Ǻܿ��: ���ݻ�׼���ԣ�������335W/s, ��ѯ��709W/s
-	 * 
-	 * 		����֤ȯ����������Ӧ����ǰ�˼���ʱ��ͼ�����ͬʱ���ô��ֶ�
-	 * 		����֤ȯ�����뷽�������ڷ������ƥ���ʱ�����Ҫ��ѯ��ͬʱ���ô��ֶ�
-	 * 
+	 * CONTEXT 区域，采用 Lazy Loading 方式
+	 *
+	 * lazy loading, 保证一个订单最多只查询一次持仓
+	 *
+	 * 		持仓库的查询和更新速度是很快的: 根据基准测试，更新是335W/s, 查询是709W/s
+	 *
+	 * 		对于证券的卖出方，应该在前端检查的时候就检查余额同时设置此字段
+	 * 		对于证券的买入方，则是在发生撮合匹配的时候才需要查询并同时设置此字段
+	 *
 	 */
 	public TradedInst stock = null;
-	public Hldg hldg = null;	
-	
+	public Hldg hldg = null;
+
 	public String toString()
 	{
 		StringBuffer temp = new StringBuffer(256);
-		
+
 		temp.append("isBuy = ");
-		temp.append(isbuy);	
-		
+		temp.append(isbuy);
+
 		temp.append("; stockid = ");
 		temp.append(stockid);
-		
+
 		temp.append("; ordPrice = ");
 		temp.append(ordPrc);
-		
+
 		temp.append("; ordQty = ");
 		temp.append(ordQty);
-		
+
 		temp.append("; remQty = ");
 		temp.append(remQty);
-		
+
 		return temp.toString();
 	}
-	
+
 }

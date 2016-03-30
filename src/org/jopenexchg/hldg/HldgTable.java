@@ -26,33 +26,33 @@ import java.util.*;
 import org.jopenexchg.pool.*;
 
 /**
- * 
- * ³Ö²Ö±í½¨Á¢ºó¾Í²»Çå±íÏî.
+ *
+ * æŒä»“è¡¨å»ºç«‹åå°±ä¸æ¸…è¡¨é¡¹.
  *
  */
 public final class HldgTable
 {
 	static final int DEF_HLDG_TABLE_SIZE = 1000;
-	
+
 	private AllocOnlyPool<Hldg> hldgPool = null;
 	private HashMap<HldgKey, Hldg> hldgTbl = null;
-	
-	public HldgTable(int maxSize) 
-		throws InstantiationException, IllegalAccessException
+
+	public HldgTable(int maxSize)
+			throws InstantiationException, IllegalAccessException
 	{
 		if(maxSize <= 0)
 		{
 			maxSize = DEF_HLDG_TABLE_SIZE;
 		}
-	
+
 		hldgPool = new AllocOnlyPool<Hldg>(Hldg.class, maxSize);
 		hldgTbl = new HashMap<HldgKey, Hldg>(maxSize);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param key
-	 * @return Èç¹û±íÀïÃæÃ»ÓĞ¶ÔÓ¦¼ÇÂ¼£¬»á·µ»Ø null£¬²»»á´´½¨¼ÇÂ¼
+	 * @return å¦‚æœè¡¨é‡Œé¢æ²¡æœ‰å¯¹åº”è®°å½•ï¼Œä¼šè¿”å› nullï¼Œä¸ä¼šåˆ›å»ºè®°å½•
 	 */
 	public final Hldg findHldg(HldgKey key)
 	{
@@ -60,10 +60,10 @@ public final class HldgTable
 		{
 			return null;
 		}
-		
+
 		return hldgTbl.get(key);
 	}
-	
+
 	public final void putHldg(Hldg hldg)
 	{
 		if(hldg != null && hldg.key != null)
@@ -71,11 +71,11 @@ public final class HldgTable
 			hldgTbl.put(hldg.key, hldg);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param key
-	 * @return ×ÜÊÇ»á·µ»ØÒ»Ìõ¼ÇÂ¼¡£Èç¹ûÃ»ÓĞ¾Í»áĞÂÔöÒ»Ìõ¶ÔÓ¦KeyµÄ¿Õ¼ÇÂ¼
+	 * @return æ€»æ˜¯ä¼šè¿”å›ä¸€æ¡è®°å½•ã€‚å¦‚æœæ²¡æœ‰å°±ä¼šæ–°å¢ä¸€æ¡å¯¹åº”Keyçš„ç©ºè®°å½•
 	 */
 	public final Hldg getHldg(HldgKey key)
 	{
@@ -83,7 +83,7 @@ public final class HldgTable
 		{
 			return null;
 		}
-		
+
 		Hldg hldg = hldgTbl.get(key);
 		if(hldg == null)
 		{
@@ -100,5 +100,5 @@ public final class HldgTable
 			return hldg;
 		}
 	}
-	
+
 }

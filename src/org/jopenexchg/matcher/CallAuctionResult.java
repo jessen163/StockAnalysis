@@ -21,9 +21,9 @@
  */
 package org.jopenexchg.matcher;
 
-public final class CallAuctionResult 
+public final class CallAuctionResult
 {
-	public long ordPrc = 0;	// ¶ÔÍâµÄ¹«¿ª¼Û
-	public long price = 0;		// ÄÚ²¿ÅÅ¶Ó¼Û
-	public long volume = 0;	// ³É½»Á¿
+	public long ordPrc = 0;	// å¯¹å¤–çš„å…¬å¼€ä»·
+	public long price = 0;		// å†…éƒ¨æ’é˜Ÿä»·
+	public long volume = 0;	// æˆäº¤é‡
 }

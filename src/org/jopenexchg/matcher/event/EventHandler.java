@@ -26,16 +26,16 @@ import org.jopenexchg.matcher.*;
 public interface EventHandler
 {
 	public void incomingOrder(Order order);
-	
+
 	public void enterOrderBook(Order order);
-	
+
 	public void match(Order newOrder, Order oldOrder, long matchQty, long matchPrice);
-	
+
 	public void callAuctionMatch(Order buyOrder, Order sellOrder, long matchQty, long matchPrice);
-	
+
 	public void noMoreCallAuction(Order order);
-	
+
 	public void leaveOrderBook(Order order);
-	
+
 	public void noMoreMatch(Order order);
 }

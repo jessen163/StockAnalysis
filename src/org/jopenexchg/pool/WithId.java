@@ -24,6 +24,6 @@ package org.jopenexchg.pool;
 public interface WithId
 {
 	int getId();
-	
+
 	void setId(int id);
 }

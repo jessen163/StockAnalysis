@@ -28,11 +28,11 @@ public final class BondBizAdaptorImpl implements BizAdaptor
 {
 	final static long MAX_PRIOR_ADJUST = 0;
 	final static long PRIOR_SHIFT = 0;
-	
+
 	private final long calcBasePrior(boolean isbuy, long price)
 	{
 		long basePrior = 0;
-		
+
 		if(isbuy)
 		{
 			basePrior = -price;
@@ -41,10 +41,10 @@ public final class BondBizAdaptorImpl implements BizAdaptor
 		{
 			basePrior = price;
 		}
-		
-		return basePrior;		
+
+		return basePrior;
 	}
-	
+
 	@Override
 	public final long calcPrior(Order order)
 	{
@@ -52,7 +52,7 @@ public final class BondBizAdaptorImpl implements BizAdaptor
 	}
 
 	/**
-	 * 这里的实现并无出奇之处，但如果有特别的需求，则可以在移位的基础上加上调节量
+	 * 杩欓噷鐨勫疄鐜板苟鏃犲嚭濂囦箣澶勶紝浣嗗鏋滄湁鐗瑰埆鐨勯渶姹傦紝鍒欏彲浠ュ湪绉讳綅鐨勫熀纭�涓婂姞涓婅皟鑺傞噺
 	 */
 	@Override
 	public final long calcMaxPrior(boolean isbuy, long price)

@@ -60,33 +60,33 @@ public final class EventHandlerDebugImpl implements EventHandler
 		System.out.println(" + " + order);
 	}
 
-	
+
 	@Override
 	public void incomingOrder(final Order order)
 	{
 		System.out.println("------------------------");
 		System.out.println("[incomingOrder]");
-		System.out.println(" + " + order);		
+		System.out.println(" + " + order);
 	}
 
-	
+
 	@Override
 	public void callAuctionMatch(final Order buyOrder, final Order sellOrder, long matchQty,
-			long matchPrice)
+								 long matchPrice)
 	{
 		System.out.println("");
 		System.out.println("[ocall match]: matchPrice = " + matchPrice + " matchQty = " + matchQty);
 		System.out.println("     buy " + buyOrder);
 		System.out.println("     sell " + sellOrder);
-		
+
 	}
 
-	
+
 	@Override
 	public void noMoreCallAuction(Order order)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

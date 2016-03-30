@@ -28,35 +28,35 @@ public final class HldgKey
 	 */
 	public byte accType;
 	public int accNo;
-	
+
 	public int stockid;
-	
+
 	public short pbu;
 	public short hldgType;
-	
+
 	/**
-	 *  ÔÚ²âÊÔ´úÂëÖĞ£º
-	 *  Ëæ»ú²úÉú³Ö²Ö£º
-	 *  	Ô­ÉúÀàĞÍ  1000 * 1000 ´ÎËæ»ú²úÉú³Ö²ÖÊ¹ÓÃ 110ms
-	 *  	·ÇÔ­ÉúÀàĞÍ 1000 * 1000 ´ÎËæ»ú²úÉú³Ö²ÖÊ¹ÓÃ 140ms
-	 *  hashCode ¹¹½¨µÄËÙ¶È£º
-	 *		·ÇÔ­ÉúÀàĞÍhashCodeÏà¼Ó: 142ms - 140ms = 2ms, ¿É¼û¿ªÏúÖ÷ÒªÔÚËæ»ú²úÉúÊı¾İÉÏ
-	 *		Èç¹ûÊ¹ÓÃÔ­ÉúÀàĞÍ²¢ÀûÓÃÒÆÎ»µÈ²úÉúlongĞÍÔÙ·µ»ØhashCode, »áÊ¹ÓÃ142ms - 110ms = 42ms
-	 *		Èç¹ûÊ¹ÓÃÔ­ÉúÀàĞÍ²¢Ö±½ÓÏà¼Ó×Ö¶ÎÖµºó·µ»Øint£¬×ÜºÄÊ±ÊÇ (110ms - 110ms), ¼¸ºõ²»ºÄÊ±
-	 *  ×ÜµÄhash±í ·ÃÎÊËÙ¶È(ÀïÃæ°üº¬ÁËhashCode¹¹½¨ËÙ¶È)£»
-	 *  	Ô­ÉúÀàĞÍÀàĞÍ£¬ÒÆÎ»·¨²úÉúlongºó·µ»ØÆähashCode: 267ms - 110ms = 157ms
-	 *      Ô­ÉúÀàĞÍ£¬Ö±½Ó×Ö¶ÎÏà¼Ó·µ»Ø·¨: 235ms - 110ms = 125 ms
-	 *  ½áÂÛ£º
-	 *  	HldgKey½¨ÒéÊ¹ÓÃÔ­ÉúÀàĞÍ, hashÖµ¿ÉÒÔ²ÉÓÃ×î¼òµ¥µÄ·½Ê½À´²úÉú, ×ÜÌåĞÔÄÜÒ²²»²î             
-	 */	
+	 *  åœ¨æµ‹è¯•ä»£ç ä¸­ï¼š
+	 *  éšæœºäº§ç”ŸæŒä»“ï¼š
+	 *  	åŸç”Ÿç±»å‹  1000 * 1000 æ¬¡éšæœºäº§ç”ŸæŒä»“ä½¿ç”¨ 110ms
+	 *  	éåŸç”Ÿç±»å‹ 1000 * 1000 æ¬¡éšæœºäº§ç”ŸæŒä»“ä½¿ç”¨ 140ms
+	 *  hashCode æ„å»ºçš„é€Ÿåº¦ï¼š
+	 *		éåŸç”Ÿç±»å‹hashCodeç›¸åŠ : 142ms - 140ms = 2ms, å¯è§å¼€é”€ä¸»è¦åœ¨éšæœºäº§ç”Ÿæ•°æ®ä¸Š
+	 *		å¦‚æœä½¿ç”¨åŸç”Ÿç±»å‹å¹¶åˆ©ç”¨ç§»ä½ç­‰äº§ç”Ÿlongå‹å†è¿”å›hashCode, ä¼šä½¿ç”¨142ms - 110ms = 42ms
+	 *		å¦‚æœä½¿ç”¨åŸç”Ÿç±»å‹å¹¶ç›´æ¥ç›¸åŠ å­—æ®µå€¼åè¿”å›intï¼Œæ€»è€—æ—¶æ˜¯ (110ms - 110ms), å‡ ä¹ä¸è€—æ—¶
+	 *  æ€»çš„hashè¡¨ è®¿é—®é€Ÿåº¦(é‡Œé¢åŒ…å«äº†hashCodeæ„å»ºé€Ÿåº¦)ï¼›
+	 *  	åŸç”Ÿç±»å‹ç±»å‹ï¼Œç§»ä½æ³•äº§ç”Ÿlongåè¿”å›å…¶hashCode: 267ms - 110ms = 157ms
+	 *      åŸç”Ÿç±»å‹ï¼Œç›´æ¥å­—æ®µç›¸åŠ è¿”å›æ³•: 235ms - 110ms = 125 ms
+	 *  ç»“è®ºï¼š
+	 *  	HldgKeyå»ºè®®ä½¿ç”¨åŸç”Ÿç±»å‹, hashå€¼å¯ä»¥é‡‡ç”¨æœ€ç®€å•çš„æ–¹å¼æ¥äº§ç”Ÿ, æ€»ä½“æ€§èƒ½ä¹Ÿä¸å·®             
+	 */
 	public final int hashCode()
 	{
 		return accType + accNo + stockid + pbu + hldgType;
 	}
-	
+
 	/**
-	 * ĞèÒª×Ô¼º×«Ğ´ equals() ÒÔ¸²¸ÇÈ±Ê¡ÊµÏÖ£º this == obj 
-	 * 
+	 * éœ€è¦è‡ªå·±æ’°å†™ equals() ä»¥è¦†ç›–ç¼ºçœå®ç°ï¼š this == obj 
+	 *
 	 * @param obj
 	 * @return
 	 */
@@ -66,38 +66,38 @@ public final class HldgKey
 		{
 			return false;
 		}
-		
+
 		if (this == obj)
 		{
 			return true;
 		}
-		
+
 		if(this.accType != obj.accType)
 		{
 			return false;
 		}
-		
+
 		if(this.accNo != obj.accNo)
 		{
 			return false;
 		}
-		
+
 		if(this.stockid != obj.stockid)
 		{
 			return false;
 		}
-		
+
 		if(this.pbu != obj.pbu)
 		{
 			return false;
 		}
-		
+
 		if(this.hldgType != obj.hldgType)
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 }

@@ -26,31 +26,31 @@ import java.util.LinkedList;
 
 
 /**
- * 
- * Õâ¸öÀà²¢²»ÊÇÏß³Ì°²È«µÄ
- * 
- * int µÄ×î´óÖµÊÇ 2,147,483,648 = 21ÒÚ¡£¶ÔÓÚ½»Ò×ÏµÍ³µÄPOOLÓ¦¸Ã¹»ÁË
- * 
+ *
+ * è¿™ä¸ªç±»å¹¶ä¸æ˜¯çº¿ç¨‹å®‰å…¨çš„
+ *
+ * int çš„æœ€å¤§å€¼æ˜¯ 2,147,483,648 = 21äº¿ã€‚å¯¹äºäº¤æ˜“ç³»ç»Ÿçš„POOLåº”è¯¥å¤Ÿäº†
+ *
  */
-public final class RecyclablePool<T extends WithId> 
+public final class RecyclablePool<T extends WithId>
 {
 	private static int MIN_POOL_SIZE = 100;
-	
+
 	// The following 2 fields will be valid when init() once
 	private T slotArray[] = null;
 	private boolean useflagArray[] = null;
 	private LinkedList<T> freeList = null;
 	private long poolSize = 0;
-	
+
 	@SuppressWarnings("unchecked")
 	public RecyclablePool(Class<T> elemType, int size)
-		throws InstantiationException, IllegalAccessException
+			throws InstantiationException, IllegalAccessException
 	{
 		if(size <= MIN_POOL_SIZE)
 		{
 			size = MIN_POOL_SIZE;
 		}
-		
+
 		//
 		// Another way to create T[] in Generic Class
 		//	 	T[] array = (T[])(new ArrayList<T>(size).toArray());
@@ -58,22 +58,22 @@ public final class RecyclablePool<T extends WithId>
 		slotArray = (T[])(Array.newInstance(elemType, size));
 		useflagArray = new boolean[size];
 		freeList = new LinkedList<T>();
-	
+
 		for(int i = 0; i < size; i++)
 		{
 			T item = elemType.newInstance();
-			item.setId(i);			
-			
+			item.setId(i);
+
 			slotArray[i] = item;
 			useflagArray[i] = false;
-			freeList.add(item);				
-		} 
-		
+			freeList.add(item);
+		}
+
 		poolSize = size;
 	}
 
 	/**
-	 * ×î´óÈİÁ¿
+	 * æœ€å¤§å®¹é‡
 	 * @return
 	 */
 	public final int capacity()
@@ -81,7 +81,7 @@ public final class RecyclablePool<T extends WithId>
 		return slotArray.length;
 	}
 
-	// ´Ó³Ø×ÓÀïÃæÇëÇóÒ»¸ö¶ÔÏó¡£Èç¹ûÃ»ÓĞ¶ÔÏó¿ÉÒÔÄÃ£¬·µ»Ø null
+	// ä»æ± å­é‡Œé¢è¯·æ±‚ä¸€ä¸ªå¯¹è±¡ã€‚å¦‚æœæ²¡æœ‰å¯¹è±¡å¯ä»¥æ‹¿ï¼Œè¿”å› null
 	public final T getObj()
 	{
 		if(freeList.size() > 0)
@@ -99,15 +99,15 @@ public final class RecyclablePool<T extends WithId>
 		{
 			return null;
 		}
-	}	
-	
-	// Ïò³ØÖĞ·µ»¹Ò»¸ö¶ÔÏó¡£¿ÉÒÔÖØ¸´·µ»¹
+	}
+
+	// å‘æ± ä¸­è¿”è¿˜ä¸€ä¸ªå¯¹è±¡ã€‚å¯ä»¥é‡å¤è¿”è¿˜
 	public final void putObj(T obj)
 	{
 		if(obj != null)
 		{
 			int id = obj.getId();
-			
+
 			if((0 <= id) && (id < poolSize))
 			{
 				if( useflagArray[id] == true)
@@ -121,9 +121,9 @@ public final class RecyclablePool<T extends WithId>
 	}
 
 	/**
-	 * ¸ù¾İ id À´²éÕÒÒ»¸öÒÑ·ÖÅäµÄ¶ÔÏó
-	 * 
-	 * @param id: slotId£¬Ò²¾ÍÊÇÊı×éÏÂ±ê
+	 * æ ¹æ® id æ¥æŸ¥æ‰¾ä¸€ä¸ªå·²åˆ†é…çš„å¯¹è±¡
+	 *
+	 * @param id: slotIdï¼Œä¹Ÿå°±æ˜¯æ•°ç»„ä¸‹æ ‡
 	 * @return: T when such id is really used. Otherwise null
 	 */
 	public final T findUsedObj(int id)
@@ -133,14 +133,14 @@ public final class RecyclablePool<T extends WithId>
 			if( useflagArray[id] == true)
 			{
 				return slotArray[id];
-			}			
-		}		
+			}
+		}
 
 		return null;
 	}
-	
+
 	/**
-	 * ÒÑ·ÖÅä³öÈ¥µÄÊıÁ¿
+	 * å·²åˆ†é…å‡ºå»çš„æ•°é‡
 	 * @return
 	 */
 	public final int size()

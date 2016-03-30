@@ -31,7 +31,7 @@ import org.jopenexchg.pool.*;
 public final class Matcher implements BizAdaptor
 {
 	private static int MAX_CALLAUCTION_PRICE_CNT = 2;
-	
+
 	private TradedInstList stockList = null;
 	private RecyclablePool<PriceLeader> prcLdrPool = null;
 	private AllocOnlyPool<Order> ordrPool = null;
@@ -39,13 +39,13 @@ public final class Matcher implements BizAdaptor
 	private BizAdaptor bizAdpt = null;
 	private LinkedList<Long> delPrcLdrList = null;
 	private LinkedList<Long> delPrcLdrList2 = null;
-	
-	// ¼¯ºÏ¾º¼ÛÓÃµÄÁ½¸ö³£Á¿
+
+	// é›†åˆç«ä»·ç”¨çš„ä¸¤ä¸ªå¸¸é‡
 	private PriceLeader lowestSellLdr = null;
 	private PriceLeader highestBuyLdr = null;
-	
-	public Matcher(int prcLdrCnt, int orderCnt) 
-		throws InstantiationException, IllegalAccessException
+
+	public Matcher(int prcLdrCnt, int orderCnt)
+			throws InstantiationException, IllegalAccessException
 	{
 		bizAdpt = this;
 		stockList = new TradedInstList();
@@ -53,13 +53,13 @@ public final class Matcher implements BizAdaptor
 		ordrPool = new AllocOnlyPool<Order>(Order.class, orderCnt);
 		delPrcLdrList = new LinkedList<Long>();
 		delPrcLdrList2 = new LinkedList<Long>();
-		
+
 		lowestSellLdr = prcLdrPool.getObj();
 		lowestSellLdr.price = TradedInst.LL_PRICE;
 		lowestSellLdr.accumQty = 0;
 		lowestSellLdr.ocQtySum = 0;
 		lowestSellLdr.prior = Long.MIN_VALUE;
-		
+
 		highestBuyLdr = prcLdrPool.getObj();
 		highestBuyLdr.price = TradedInst.UL_PRICE;
 		highestBuyLdr.accumQty = 0;
@@ -67,36 +67,36 @@ public final class Matcher implements BizAdaptor
 		highestBuyLdr.prior = Long.MIN_VALUE;
 	}
 
-	public final void setBizAdpt(BizAdaptor bizAdpt) 
+	public final void setBizAdpt(BizAdaptor bizAdpt)
 	{
 		if(bizAdpt != null)
 		{
 			this.bizAdpt = bizAdpt;
 		}
-	}	
-	
+	}
+
 	public final void setEvtCbs(EventHandler evtCbs)
 	{
 		this.evtCbs = evtCbs;
 	}
-	
+
 	public final TradedInst addStock(int stockId, String stockName)
 	{
 		TradedInst stock = new TradedInst(stockId, stockName);
-		
+
 		stockList.addStock(stock);
-		
+
 		return stock;
 	}
-	
+
 	public final Order allocOrder()
 	{
 		return ordrPool.getObj();
 	}
 
 	/**
-	 *  ÓÃÀ´¸ù¾İslotIdÀ´³·µ¥
-	 *  
+	 *  ç”¨æ¥æ ¹æ®slotIdæ¥æ’¤å•
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -106,7 +106,7 @@ public final class Matcher implements BizAdaptor
 		{
 			return false;
 		}
-		
+
 		if(order.stock == null)
 		{
 			order.stock = stockList.getStock(order.stockid);
@@ -115,7 +115,7 @@ public final class Matcher implements BizAdaptor
 				return false;
 			}
 		}
-		
+
 		order.delflg = true;
 		long prior = bizAdpt.calcPrior(order);
 
@@ -125,7 +125,7 @@ public final class Matcher implements BizAdaptor
 		{
 			return false;
 		}
-		
+
 		prcLdr.accumQty -= order.remQty;
 		if(prcLdr.accumQty <= 0)
 		{
@@ -136,32 +136,32 @@ public final class Matcher implements BizAdaptor
 		if(this.evtCbs != null)
 		{
 			evtCbs.leaveOrderBook(order);
-		}	
-		
+		}
+
 		return true;
 	}
-	
-	// ¼òµ¥²åÈë¶©µ¥²¾. ¿ÉÄÜÔö¼Ó¼Û¸ñµµÎ»£¬Ôö¼ÓÒÑ´æÔÚµÄ¼Û¸ñµµÎ»µÄÀÛ»ıÊıÁ¿£¬¶©µ¥²¾Ôö¼Ó¶©µ¥
+
+	// ç®€å•æ’å…¥è®¢å•ç°¿. å¯èƒ½å¢åŠ ä»·æ ¼æ¡£ä½ï¼Œå¢åŠ å·²å­˜åœ¨çš„ä»·æ ¼æ¡£ä½çš„ç´¯ç§¯æ•°é‡ï¼Œè®¢å•ç°¿å¢åŠ è®¢å•
 	private final boolean insertOrder(Order order)
 	{
 		if(order.remQty <= 0)
 		{
 			return false;
 		}
-		
+
 		if(order.stock == null)
 		{
 			order.stock = stockList.getStock(order.stockid);
 			if(order.stock == null)
 			{
 				return false;
-			}			
+			}
 		}
-		
+
 		long prior = bizAdpt.calcPrior(order);
-		
+
 		PriceLeader prcLdr = order.stock.getPrcList(order.isbuy).get(prior);
-		
+
 		if(prcLdr == null)
 		{
 			prcLdr = prcLdrPool.getObj();
@@ -169,33 +169,33 @@ public final class Matcher implements BizAdaptor
 			{
 				return false;
 			}
-			
+
 			prcLdr.prior = prior;
 			prcLdr.price = order.price;
 			prcLdr.ordPrc = order.ordPrc;
-			
+
 			order.stock.addtoPrcList(order.isbuy, prcLdr);
 		}
-		
+
 		prcLdr.orderList.add(order);
-		
-		// Ö»ÓĞÔÚ¼ÓÈëµ¥×ÓµÄÊ±ºòÕâ¸öÁ¿²ÅÉÏÉı
+
+		// åªæœ‰åœ¨åŠ å…¥å•å­çš„æ—¶å€™è¿™ä¸ªé‡æ‰ä¸Šå‡
 		prcLdr.accumQty += order.remQty;
-		
+
 		if(this.evtCbs != null)
 		{
 			evtCbs.enterOrderBook(order);
-		}		
-		
+		}
+
 		return true;
 	}
-	
-	// ÔÚÕâ¸öÀïÃæ»á¼õÉÙ¶ÔÊÖ·½  prcLdr.accumQty
+
+	// åœ¨è¿™ä¸ªé‡Œé¢ä¼šå‡å°‘å¯¹æ‰‹æ–¹  prcLdr.accumQty
 	private final boolean matchOnePrcLvl(Order newOrd, PriceLeader prcLdr, TreeMap<Long, PriceLeader> peerPrcLdrTree, TradedInst stock)
 	{
 		Order oldOrd = null;
 		long matchQty = 0;
-		
+
 		while(newOrd.remQty > 0)
 		{
 			oldOrd = prcLdr.orderList.peek();
@@ -203,11 +203,11 @@ public final class Matcher implements BizAdaptor
 			{
 				return true;
 			}
-			
+
 			if(oldOrd.delflg == true)
 			{
 				// delayed deleting of deleted orders from list
-				prcLdr.orderList.remove();	
+				prcLdr.orderList.remove();
 			}
 			else
 			{
@@ -216,38 +216,38 @@ public final class Matcher implements BizAdaptor
 					matchQty = oldOrd.remQty;
 					newOrd.remQty -= matchQty;
 					oldOrd.remQty = 0;
-					
+
 					prcLdr.accumQty -= matchQty;
 					prcLdr.orderList.remove();
-					
+
 					if(this.evtCbs != null)
 					{
 						evtCbs.match(newOrd, oldOrd, matchQty, prcLdr.price);
-						
+
 						evtCbs.leaveOrderBook(oldOrd);
-					}						
+					}
 				}
 				else
 				{
 					matchQty = newOrd.remQty;
 					oldOrd.remQty -= matchQty;
 					newOrd.remQty = 0;
-					
+
 					prcLdr.accumQty -= matchQty;
-					
+
 					if(this.evtCbs != null)
 					{
 						evtCbs.match(newOrd, oldOrd, matchQty, prcLdr.price);
-					}						
+					}
 				}
 			}
 
 		}
-		
+
 		return true;
 	}
-	
-	// ¼¯ºÏ¾º¼ÛÆÚ¼ä²åÈë¶©µ¥²¾£¬²»×öMATCH
+
+	// é›†åˆç«ä»·æœŸé—´æ’å…¥è®¢å•ç°¿ï¼Œä¸åšMATCH
 	public final boolean ocallInsOrder(Order order)
 	{
 		if(order.stock == null)
@@ -258,19 +258,19 @@ public final class Matcher implements BizAdaptor
 				System.out.println("getStock() failed");
 				return false;
 			}
-		}	
+		}
 		order.remQty = order.ordQty;
 		order.price = bizAdpt.ordPrc2Price(order.ordPrc);
-		
+
 		if(evtCbs != null)
 		{
 			evtCbs.incomingOrder(order);
-		}		
+		}
 		return insertOrder(order);
 	}
-	
-	
-	// Õâ¸öÊÇÁ¬Ğø¾º¼ÛÊ±ºòÊ¹ÓÃµÄ·½Ê½£¬ÏÈ³¢ÊÔÆ¥ÅäÔÙ²åÈë¶©µ¥²¾
+
+
+	// è¿™ä¸ªæ˜¯è¿ç»­ç«ä»·æ—¶å€™ä½¿ç”¨çš„æ–¹å¼ï¼Œå…ˆå°è¯•åŒ¹é…å†æ’å…¥è®¢å•ç°¿
 	public final boolean matchInsOrder(Order order)
 	{
 		order.remQty = order.ordQty;
@@ -285,52 +285,52 @@ public final class Matcher implements BizAdaptor
 				return false;
 			}
 		}
-		
+
 		if(evtCbs != null)
 		{
 			evtCbs.incomingOrder(order);
 		}
-		
+
 		long maxPeerPrior = bizAdpt.calcMaxPrior(!(order.isbuy), order.price);
 
 		TreeMap<Long, PriceLeader> peerPrcLdrTree = order.stock.getPeerPrcTree(order.isbuy);
 		Set<Map.Entry<Long, PriceLeader> > peerPrcLdrSet = peerPrcLdrTree.entrySet();
-		
+
 		long priceLevelCnt = 0;
 		long prevPrice = TradedInst.NO_PRICE;
-		
+
 		Map.Entry<Long, PriceLeader> peerEntry = null;
 		PriceLeader prcLdr = null;
-		
+
 		delPrcLdrList.clear();
-		
+
 		Iterator<Map.Entry<Long, PriceLeader>> its =  peerPrcLdrSet.iterator();
 		while(its.hasNext() && (order.remQty > 0))
 		{
 			peerEntry = its.next();
 			prcLdr = peerEntry.getValue();
-			
+
 			if(prcLdr.prior <= maxPeerPrior)
 			{
 				if(prevPrice != prcLdr.price)
 				{
 					priceLevelCnt++;
 					prevPrice = prcLdr.price;
-					
-					// ÔÚÕâÀïÒÔºó¿ÉÒÔÀûÓÃpriceLevelCntÀ´¿ØÖÆÊĞ¼Û¶©µ¥³Ô¶àÉÙµµÎ»
+
+					// åœ¨è¿™é‡Œä»¥åå¯ä»¥åˆ©ç”¨priceLevelCntæ¥æ§åˆ¶å¸‚ä»·è®¢å•åƒå¤šå°‘æ¡£ä½
 					if(priceLevelCnt >= 5)
 					{
 					}
 				}
-				
-				// Õë¶Ô´ËµµÎ»ÉÏµÄ¶©µ¥ÁĞ±í½øĞĞÆ¥Åä
+
+				// é’ˆå¯¹æ­¤æ¡£ä½ä¸Šçš„è®¢å•åˆ—è¡¨è¿›è¡ŒåŒ¹é…
 				if(false == matchOnePrcLvl(order, prcLdr, peerPrcLdrTree, order.stock))
 				{
 					System.out.println("matchOnePrcLvl() failed");
 					return false;
 				}
-				
-				// ·ÅÈë´ı»ØÊÕ¼Û¸ñµµÎ»ÁĞ±í
+
+				// æ”¾å…¥å¾…å›æ”¶ä»·æ ¼æ¡£ä½åˆ—è¡¨
 				if(prcLdr.accumQty <= 0 )
 				{
 					delPrcLdrList.add(prcLdr.prior);
@@ -342,19 +342,19 @@ public final class Matcher implements BizAdaptor
 			}
 		}
 
-		// É¾³ıÓÃÍêµÄ¶ÔÊÖ·½¼Û¸ñµµÎ»²¢»ØÊÕµ½³ØÖĞ
+		// åˆ é™¤ç”¨å®Œçš„å¯¹æ‰‹æ–¹ä»·æ ¼æ¡£ä½å¹¶å›æ”¶åˆ°æ± ä¸­
 		Iterator<Long> myIter = delPrcLdrList.iterator();
 		while(myIter.hasNext())
 		{
 			PriceLeader rmvLdr = peerPrcLdrTree.remove(myIter.next());
 			prcLdrPool.putObj(rmvLdr);
 		}
-		
+
 		if(this.evtCbs != null)
 		{
 			evtCbs.noMoreMatch(order);
-		}			
-		
+		}
+
 		if(order.remQty > 0)
 		{
 			if(insertOrder(order))
@@ -374,13 +374,13 @@ public final class Matcher implements BizAdaptor
 
 
 	/**
-	 *  ÕâÀïÊÇÈ±Ê¡µÄÒµÎñ´¦ÀíÊµÏÖ
+	 *  è¿™é‡Œæ˜¯ç¼ºçœçš„ä¸šåŠ¡å¤„ç†å®ç°
 	 */
-	
+
 	protected final long calcBasePrior(boolean isbuy, long price)
 	{
 		long basePrior = 0;
-		
+
 		if(isbuy)
 		{
 			basePrior = -price;
@@ -389,54 +389,54 @@ public final class Matcher implements BizAdaptor
 		{
 			basePrior = price;
 		}
-		
-		return basePrior;		
+
+		return basePrior;
 	}
-	
+
 	@Override
-	public final long calcPrior(Order order) 
+	public final long calcPrior(Order order)
 	{
 		return calcBasePrior(order.isbuy, order.price);
 	}
 
 	@Override
-	public final long calcMaxPrior(boolean isbuy, long price) 
+	public final long calcMaxPrior(boolean isbuy, long price)
 	{
 		return calcBasePrior(isbuy, price);
 	}
 
 	@Override
-	public final long ordPrc2Price(long ordPrc) 
+	public final long ordPrc2Price(long ordPrc)
 	{
 		return ordPrc;
 	}
 
 	@Override
-	public final long price2OrdPrc(long price) 
+	public final long price2OrdPrc(long price)
 	{
 		return price;
 	}
-	
+
 	private final void sumPrcLdrQtyFromHead(NavigableMap<Long, PriceLeader> prcLdrMap)
 	{
 		Long key = null;
 		PriceLeader prcLdr = null;
 		Map.Entry<Long, PriceLeader> entry = null;
-			
+
 		long qtySum = 0;
 		entry = prcLdrMap.firstEntry();
 		while(entry != null)
 		{
 			key = entry.getKey();
 			prcLdr = entry.getValue();
-			
+
 			qtySum += prcLdr.accumQty;
 			prcLdr.ocQtySum = qtySum;
-			
+
 			entry = prcLdrMap.higherEntry(key);
-		}		
+		}
 	}
-	
+
 	private final long min(long a, long b)
 	{
 		if(a < b)
@@ -448,7 +448,7 @@ public final class Matcher implements BizAdaptor
 			return b;
 		}
 	}
-	
+
 	public final boolean calcCallAuction(TradedInst stock, CallAuctionResult result)
 	{
 		long maxBuyPrior = 0;
@@ -459,82 +459,82 @@ public final class Matcher implements BizAdaptor
 		PriceLeader sellLdr = null;
 		Map.Entry<Long, PriceLeader> buyEntry = null;
 		Map.Entry<Long, PriceLeader> sellEntry = null;
-		
+
 		if(stock == null || result == null)
 		{
 			return false;
 		}
-		
+
 		sellEntry = stock.sellPrcList.firstEntry();
 		if(sellEntry == null)
 		{
 			return false;
 		}
 		sellLdr = sellEntry.getValue();
-		
+
 		buyEntry = stock.buyPrcList.firstEntry();
 		if(buyEntry == null)
 		{
 			return false;
-		}		
+		}
 		buyLdr = buyEntry.getValue();
-		
+
 		if(sellLdr.price > buyLdr.price)
 		{
-			// ¶©µ¥²¾ÍêÈ«Ã»ÓĞ½»²æ
+			// è®¢å•ç°¿å®Œå…¨æ²¡æœ‰äº¤å‰
 			return false;
 		}
 
 		maxBuyPrior = bizAdpt.calcMaxPrior(true, sellLdr.price);
 		maxSellPrior = bizAdpt.calcMaxPrior(false, buyLdr.price);
-		
+
 		NavigableMap<Long, PriceLeader> sellLdrSet = stock.sellPrcList.headMap(maxSellPrior, true);
 		NavigableMap<Long, PriceLeader> buyLdrSet = stock.buyPrcList.headMap(maxBuyPrior, true);
-		
-		// ÀÛ»ıÂò¼¯ºÏ¾º¼ÛµÄÁ¿. Âô¼¯ºÏ¾º¼ÛµÄÁ¿µÄÀÛ»ı·ÅÔÚÏÂÃæË³±ã×ö£¬¼õÉÙÒ»´Î±éÀú
+
+		// ç´¯ç§¯ä¹°é›†åˆç«ä»·çš„é‡. å–é›†åˆç«ä»·çš„é‡çš„ç´¯ç§¯æ”¾åœ¨ä¸‹é¢é¡ºä¾¿åšï¼Œå‡å°‘ä¸€æ¬¡éå†
 		sumPrcLdrQtyFromHead(buyLdrSet);
-		
-		// ¿ªÊ¼¼ÆËã¼¯ºÏ¾º¼Û³öÇå¼Û
+
+		// å¼€å§‹è®¡ç®—é›†åˆç«ä»·å‡ºæ¸…ä»·
 		buyEntry = buyLdrSet.lastEntry();
 
-		// ÖĞ¼ä½á¹û
-		long qtyHigh = 0;	
+		// ä¸­é—´ç»“æœ
+		long qtyHigh = 0;
 		PriceLeader bestPrcLdr0 = null;
 		PriceLeader bestPrcLdr1 = null;
 		long bestPrcCnt = 0;
 
-		// ±È½ÏÓÃµÄ´°¿Ú
+		// æ¯”è¾ƒç”¨çš„çª—å£
 		PriceLeader currSellLdr = null;
 		PriceLeader lastSellLdr = null;
-		
+
 		PriceLeader nextBuyLdr = null;
 		PriceLeader currBuyLdr = null;
-		
-		// Õâ¸öÊÇÂäÔÚ×îµÍÂô¼ÛÏÂÃæµÄÒ»¸öKEY¡£Ä£ÄâÔ¤¶Á
+
+		// è¿™ä¸ªæ˜¯è½åœ¨æœ€ä½å–ä»·ä¸‹é¢çš„ä¸€ä¸ªKEYã€‚æ¨¡æ‹Ÿé¢„è¯»
 		currSellLdr = lowestSellLdr;
 		sellKey = lowestSellLdr.prior;
-		
-		// Âò·½ÕæÕıÔ¤ÏÈ¶ÁÈ¡¼Û¸ñ×îµÍµÄÄÇÒ»µµ. Õâ¸öÒ»¶¨´æÔÚ
+
+		// ä¹°æ–¹çœŸæ­£é¢„å…ˆè¯»å–ä»·æ ¼æœ€ä½çš„é‚£ä¸€æ¡£. è¿™ä¸ªä¸€å®šå­˜åœ¨
 		buyKey = buyEntry.getKey();
 		buyLdr = buyEntry.getValue();
 		nextBuyLdr = buyLdr;
-		
+
 		boolean sellPrcUp = true;
 		boolean buyPrcUp = true;
-		
+
 		while(true)
 		{
-			// SELL Ò»·½°´Ğè¶ÁÈ¡µ±Ç°µµÎ»
+			// SELL ä¸€æ–¹æŒ‰éœ€è¯»å–å½“å‰æ¡£ä½
 			if(sellKey != null &&  sellPrcUp == true)
 			{
 				sellEntry = sellLdrSet.higherEntry(sellKey);
 				if(sellEntry != null)
 				{
 					lastSellLdr = currSellLdr;
-					
-					sellKey = sellEntry.getKey();				
+
+					sellKey = sellEntry.getKey();
 					sellLdr = sellEntry.getValue();
-					
+
 					currSellLdr = sellLdr;
 					currSellLdr.ocQtySum = lastSellLdr.ocQtySum + currSellLdr.accumQty;
 				}
@@ -543,8 +543,8 @@ public final class Matcher implements BizAdaptor
 					sellKey = null;
 				}
 			}
-			
-			// ÂòÈë·½°´ĞèÔ¤¶ÁÏÂÒ»µµ 
+
+			// ä¹°å…¥æ–¹æŒ‰éœ€é¢„è¯»ä¸‹ä¸€æ¡£ 
 			if(buyKey != null && buyPrcUp == true)
 			{
 				buyEntry = buyLdrSet.lowerEntry(buyKey);
@@ -552,29 +552,29 @@ public final class Matcher implements BizAdaptor
 				{
 					currBuyLdr = nextBuyLdr;
 
-					buyKey = buyEntry.getKey();				
+					buyKey = buyEntry.getKey();
 					buyLdr = buyEntry.getValue();
-					
+
 					nextBuyLdr = buyLdr;
 				}
 				else
 				{
-					currBuyLdr = nextBuyLdr;					
+					currBuyLdr = nextBuyLdr;
 					nextBuyLdr = highestBuyLdr;
-					
+
 					buyKey = null;
 				}
-			}			
-			
+			}
+
 			long minQty = 0;
-			
-			// ´ËÊ±¿ÉÒÔ×öÅĞ¶Ï
+
+			// æ­¤æ—¶å¯ä»¥åšåˆ¤æ–­
 			if(currSellLdr.price <= currBuyLdr.price)
 			{
 				minQty = min(currSellLdr.ocQtySum, currBuyLdr.ocQtySum);
 				if(minQty > qtyHigh)
 				{
-					// ¿ÉÒÔ³öÇå½ÏµÍµÄÂôÅÌ ºÍ ½Ï¸ßµÄÂòÅÌ
+					// å¯ä»¥å‡ºæ¸…è¾ƒä½çš„å–ç›˜ å’Œ è¾ƒé«˜çš„ä¹°ç›˜
 					if(minQty >= lastSellLdr.ocQtySum && minQty >= nextBuyLdr.ocQtySum)
 					{
 						bestPrcCnt = 1;
@@ -584,7 +584,7 @@ public final class Matcher implements BizAdaptor
 				}
 				else if(minQty == qtyHigh)
 				{
-					// ¿ÉÒÔ³öÇå½ÏµÍµÄÂôÅÌ ºÍ ½Ï¸ßµÄÂòÅÌ
+					// å¯ä»¥å‡ºæ¸…è¾ƒä½çš„å–ç›˜ å’Œ è¾ƒé«˜çš„ä¹°ç›˜
 					if(minQty >= lastSellLdr.ocQtySum && minQty >= nextBuyLdr.ocQtySum)
 					{
 						bestPrcCnt++;
@@ -593,13 +593,13 @@ public final class Matcher implements BizAdaptor
 							System.out.println("Strange error in ocall");
 						}
 						bestPrcLdr1 = currSellLdr;
-					}					
+					}
 				}
 				else if(minQty < qtyHigh)
 				{
 					break;
 				}
-				
+
 				sellPrcUp = true;
 				if(currSellLdr.price == currBuyLdr.price)
 				{
@@ -615,13 +615,13 @@ public final class Matcher implements BizAdaptor
 				sellPrcUp = false;
 				buyPrcUp = true;
 			}
-					
+
 			if( (sellKey == null) && (buyKey == null))
 			{
 				break;
 			}
 		}
-		
+
 		// now fill the result
 		if(bestPrcCnt == MAX_CALLAUCTION_PRICE_CNT)
 		{
@@ -633,18 +633,18 @@ public final class Matcher implements BizAdaptor
 		}
 		result.price = bizAdpt.ordPrc2Price(result.ordPrc);
 		result.volume = qtyHigh;
-		
+
 		return true;
 	}
 
-	
+
 	public final boolean doCallAuction(TradedInst stock, CallAuctionResult result)
 	{
 		PriceLeader buyLdr = null;
 		PriceLeader sellLdr = null;
 		Order buyOrd = null;
 		Order sellOrd = null;
-		
+
 		if(stock == null || result == null)
 		{
 			return false;
@@ -652,15 +652,15 @@ public final class Matcher implements BizAdaptor
 
 		if(result.volume <= 0)
 		{
-			// ¶©µ¥²¾ÍêÈ«Ã»ÓĞ½»²æ
+			// è®¢å•ç°¿å®Œå…¨æ²¡æœ‰äº¤å‰
 			return true;
 		}
-		
+
 		long remainQty = result.volume;
-		
+
 		Iterator<Map.Entry<Long, PriceLeader>> itsB =  stock.buyPrcList.entrySet().iterator();
 		Iterator<Map.Entry<Long, PriceLeader>> itsS =  stock.sellPrcList.entrySet().iterator();
-		
+
 		if(!itsB.hasNext())
 		{
 			return false;
@@ -668,24 +668,24 @@ public final class Matcher implements BizAdaptor
 		else
 		{
 			buyLdr = itsB.next().getValue();
-		}		
+		}
 
 		if(!itsS.hasNext())
 		{
 			return false;
-		}		
+		}
 		else
 		{
 			sellLdr = itsS.next().getValue();
 		}
-		
+
 		delPrcLdrList.clear();
 		delPrcLdrList2.clear();
-		
+
 		boolean nextBuyOrd = true;
 		boolean nextSellOrd = true;
 		long qty = 0;
-		
+
 		while(remainQty > 0)
 		{
 			// Get an buy order when needed
@@ -716,7 +716,7 @@ public final class Matcher implements BizAdaptor
 					}
 				}
 			}
-			
+
 			// Get a sell order when needed
 			while(nextSellOrd == true)
 			{
@@ -729,7 +729,7 @@ public final class Matcher implements BizAdaptor
 					}
 					else
 					{
-						sellLdr = itsS.next().getValue();	
+						sellLdr = itsS.next().getValue();
 						continue;
 					}
 				}
@@ -745,56 +745,56 @@ public final class Matcher implements BizAdaptor
 					}
 				}
 			}
-			
+
 			// match their quantity
 			qty = min(buyOrd.remQty, sellOrd.remQty);
 			qty = min(qty, remainQty);
-			
+
 			buyOrd.remQty -= qty;
 			buyLdr.accumQty -= qty;
-			
+
 			if(buyLdr.accumQty <= 0)
 			{
 				delPrcLdrList.add(buyLdr.prior);
 			}
-			
+
 			sellOrd.remQty -= qty;
 			sellLdr.accumQty -= qty;
 
 			if(sellLdr.accumQty <= 0)
 			{
 				delPrcLdrList2.add(sellLdr.prior);
-			}			
-			
+			}
+
 			remainQty -= qty;
-			
+
 			if(this.evtCbs != null)
 			{
 				evtCbs.callAuctionMatch(buyOrd, sellOrd, qty, result.price);
-				
+
 			}
-			
+
 			if(buyOrd.remQty <= 0)
 			{
 				if(this.evtCbs != null)
 				{
 					evtCbs.leaveOrderBook(buyOrd);
-				}	
-				
+				}
+
 				nextBuyOrd = true;
 			}
 			else
 			{
 				nextBuyOrd = false;
 			}
-			
+
 			if(sellOrd.remQty <= 0)
 			{
 				if(this.evtCbs != null)
 				{
 					evtCbs.leaveOrderBook(sellOrd);
-				}	
-				
+				}
+
 				nextSellOrd = true;
 			}
 			else
@@ -802,24 +802,24 @@ public final class Matcher implements BizAdaptor
 				nextSellOrd = false;
 			}
 		}
-		
+
 		// Delete and recycle PRICE LEADERS
 		Iterator<Long> myIter = delPrcLdrList.iterator();
 		while(myIter.hasNext())
 		{
 			PriceLeader rmvLdr = stock.buyPrcList.remove(myIter.next());
 			prcLdrPool.putObj(rmvLdr);
-		}		
-		
+		}
+
 		myIter = delPrcLdrList2.iterator();
 		while(myIter.hasNext())
 		{
 			PriceLeader rmvLdr = stock.sellPrcList.remove(myIter.next());
 			prcLdrPool.putObj(rmvLdr);
-		}		
-		
+		}
+
 		return true;
 	}
-	
-	
+
+
 }

@@ -30,26 +30,26 @@ public final class PriceLeader implements WithId
 {
 	// 
 	private int id = 0;
-	
-	// ÓÅÏÈ¼¶ÊÇÊı×ÖÔ½´óÔ½ÅÅÔÚºóÃæ. Âôµ¥Ó¦¸Ã¼Û¸ñÔ½µÍÓÅÏÈ¼¶Ô½¸ß; Âòµ¥Ó¦¸Ã¼Û¸ñÔ½¸ßÓÅÏÈ¼¶Ô½¸ß
+
+	// ä¼˜å…ˆçº§æ˜¯æ•°å­—è¶Šå¤§è¶Šæ’åœ¨åé¢. å–å•åº”è¯¥ä»·æ ¼è¶Šä½ä¼˜å…ˆçº§è¶Šé«˜; ä¹°å•åº”è¯¥ä»·æ ¼è¶Šé«˜ä¼˜å…ˆçº§è¶Šé«˜
 	public long prior = 0;
-	
-	public long ordPrc = 0;		// ºÍ¶©µ¥ÊäÈëµÄÖµ¶ÔÓ¦
-	public long price = 0;		// ºÍÅÅ¶ÓÁĞÊ±ºòµÄÖµ¶ÔÓ¦
+
+	public long ordPrc = 0;		// å’Œè®¢å•è¾“å…¥çš„å€¼å¯¹åº”
+	public long price = 0;		// å’Œæ’é˜Ÿåˆ—æ—¶å€™çš„å€¼å¯¹åº”
 	public long accumQty = 0;
-	
-	public long ocQtySum = 0;	// ¼¯ºÏ¾º¼Û¼ÆËã³öÇå¼ÛÊ±ºòÊ¹ÓÃ
-	
+
+	public long ocQtySum = 0;	// é›†åˆç«ä»·è®¡ç®—å‡ºæ¸…ä»·æ—¶å€™ä½¿ç”¨
+
 	public LinkedList<Order> orderList = new LinkedList<Order>();
 
 	@Override
-	public final int getId() 
+	public final int getId()
 	{
 		return id;
 	}
 
 	@Override
-	public final void setId(int id) 
+	public final void setId(int id)
 	{
 		this.id = id;
 	}

@@ -35,7 +35,7 @@ public final class EventHandlerHldgImpl implements EventHandler
 		this.hldgTbl = hldgTbl;
 		this.key = new HldgKey();
 	}
-	
+
 	private final Hldg getRelatedHldg(Order order)
 	{
 		key.accNo = order.accNo;
@@ -43,10 +43,10 @@ public final class EventHandlerHldgImpl implements EventHandler
 		key.hldgType = 0;
 		key.pbu = order.pbu;
 		key.stockid = order.stockid;
-		
-		return hldgTbl.getHldg(key);		
+
+		return hldgTbl.getHldg(key);
 	}
-	
+
 	@Override
 	public final void enterOrderBook(Order order)
 	{
@@ -58,25 +58,25 @@ public final class EventHandlerHldgImpl implements EventHandler
 	}
 
 	/**
-	 *  ±¾º¯ÊıÖ»ÊÇÓÃÀ´²âÊÔÒòÎªÒıÈë³Ö²ÖºóË³´ø´øÀ´µÄHASH±í²éÕÒºÍ²åÈëµÄËÙ¶ÈÓ°Ïì
-	 *  ÈôÎ¨³öÓÚĞÔÄÜ²âÊÔÄ¿µÄ£¬Ôò²»ĞèÒªÔ¤ÏÈ×¼±¸³Ö²Ö
+	 *  æœ¬å‡½æ•°åªæ˜¯ç”¨æ¥æµ‹è¯•å› ä¸ºå¼•å…¥æŒä»“åé¡ºå¸¦å¸¦æ¥çš„HASHè¡¨æŸ¥æ‰¾å’Œæ’å…¥çš„é€Ÿåº¦å½±å“
+	 *  è‹¥å”¯å‡ºäºæ€§èƒ½æµ‹è¯•ç›®çš„ï¼Œåˆ™ä¸éœ€è¦é¢„å…ˆå‡†å¤‡æŒä»“
 	 */
 	@Override
 	public final void match(Order newOrder, Order oldOrder, long matchQty,
-			long matchPrice)
+							long matchPrice)
 	{
 		long value;
-		
+
 		if(oldOrder.hldg == null)
 		{
 			oldOrder.hldg = getRelatedHldg(oldOrder);
 		}
-		
+
 		if(newOrder.hldg == null)
 		{
 			newOrder.hldg = getRelatedHldg(newOrder);
-		}		
-		
+		}
+
 		if(oldOrder.isbuy)
 		{
 			oldOrder.hldg.A += matchQty;
@@ -85,11 +85,11 @@ public final class EventHandlerHldgImpl implements EventHandler
 		else
 		{
 			oldOrder.hldg.A -= matchQty;
-			newOrder.hldg.A += matchQty;			
+			newOrder.hldg.A += matchQty;
 		}
-		
+
 		value = matchPrice * matchQty;
-		
+
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public final class EventHandlerHldgImpl implements EventHandler
 	{
 	}
 
-	
+
 	@Override
 	public final void incomingOrder(Order order)
 	{
@@ -105,18 +105,18 @@ public final class EventHandlerHldgImpl implements EventHandler
 
 	@Override
 	public final void callAuctionMatch(Order buyOrder, Order sellOrder, long matchQty,
-			long matchPrice)
+									   long matchPrice)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
+
 	@Override
 	public final void noMoreCallAuction(Order order)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

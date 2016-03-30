@@ -26,8 +26,8 @@ import java.util.*;
 public final class TradedInstList
 {
 	static final int INIT_CAPACITY = 2000;
-	
-	// stockid --> stock. IntegerÊÇÖ¤È¯´úÂë
+
+	// stockid --> stock. Integeræ˜¯è¯åˆ¸ä»£ç 
 	private HashMap<Integer, TradedInst> list = new HashMap<Integer, TradedInst>(INIT_CAPACITY);
 
 	public final void addStock(TradedInst stock)
@@ -37,10 +37,10 @@ public final class TradedInstList
 			list.put(stock.stockid, stock);
 		}
 	}
-	
+
 	public final TradedInst getStock(int stockid)
 	{
 		return list.get(stockid);
 	}
-	
+
 }

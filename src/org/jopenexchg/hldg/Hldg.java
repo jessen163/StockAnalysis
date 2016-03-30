@@ -24,13 +24,13 @@ package org.jopenexchg.hldg;
 public final class Hldg
 {
 	public HldgKey key = new HldgKey();
-	
+
 	public long A = 0;
 	public long B = 0;
 	public long C = 0;
 	public long D = 0;
 	public long E = 0;
-	
+
 	public final void resetVal()
 	{
 		A = 0;

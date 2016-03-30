@@ -28,39 +28,39 @@ public final class TradedInst
 	static final int UL_PRICE = Integer.MAX_VALUE;
 	static final int LL_PRICE = 0;
 	static final int NO_PRICE = 0;
-	
-	// Ö¤È¯´úÂë
+
+	// è¯åˆ¸ä»£ç 
 	public int stockid = -1;
-	
-	// Ö¤È¯¼ò³Æ
+
+	// è¯åˆ¸ç®€ç§°
 	public byte stockname[] = null;
-	
-	// ÂòÈëµÄ¼Û¸ñ¶ÓÁĞ. Long ÊÇÓÅÏÈ¼¶
+
+	// ä¹°å…¥çš„ä»·æ ¼é˜Ÿåˆ—. Long æ˜¯ä¼˜å…ˆçº§
 	public TreeMap<Long, PriceLeader> buyPrcList = null;
-	
-	// Âô³öµÄ¼Û¸ñ¶ÓÁĞ
+
+	// å–å‡ºçš„ä»·æ ¼é˜Ÿåˆ—
 	public TreeMap<Long, PriceLeader> sellPrcList = null;
-	
-	// ×îĞÂĞĞÇéÇé¿ö. ¶¼ÊÇ¸ù¾İ¶©µ¥µÄ ordPrice ×Ö¶Î¶ø·Ç price ×Ö¶ÎÀ´µÄ
+
+	// æœ€æ–°è¡Œæƒ…æƒ…å†µ. éƒ½æ˜¯æ ¹æ®è®¢å•çš„ ordPrice å­—æ®µè€Œé price å­—æ®µæ¥çš„
 	public long prevClsPrc = NO_PRICE;
 	public long openPrc = NO_PRICE;
 	public long highPrc = LL_PRICE;
 	public long lowPrc = UL_PRICE;
-	
-	// ×Ü³É½»Á¿ºÍ³É½»½ğ¶î
+
+	// æ€»æˆäº¤é‡å’Œæˆäº¤é‡‘é¢
 	public long totalValue = 0;
 	public long totalAmount = 0;
-	
+
 	public TradedInst(int stockId, String stockName)
 	{
 		this.stockid = stockId;
 		this.stockname = stockName.getBytes();
-		
+
 		buyPrcList = new TreeMap<Long, PriceLeader>();
 		sellPrcList = new TreeMap<Long, PriceLeader>();
 	}
-	
-	
+
+
 	public final TreeMap<Long, PriceLeader> getPrcList(boolean isBuy)
 	{
 		if(isBuy)
@@ -72,7 +72,7 @@ public final class TradedInst
 			return sellPrcList;
 		}
 	}
-	
+
 	public final TreeMap<Long, PriceLeader> getPeerPrcTree(boolean iAmBuy)
 	{
 		if(!iAmBuy)
@@ -83,9 +83,9 @@ public final class TradedInst
 		{
 			return sellPrcList;
 		}
-	}	
-	
-	
+	}
+
+
 	public final void addtoPrcList(boolean isBuy, PriceLeader prcLdr)
 	{
 		if(isBuy)
@@ -97,21 +97,21 @@ public final class TradedInst
 			sellPrcList.put(prcLdr.prior, prcLdr);
 		}
 	}
-	
+
 
 	/**
-	 * 
-	 * @param iAmBuy: ±¾·½ÊÇ²»ÊÇÂò
+	 *
+	 * @param iAmBuy: æœ¬æ–¹æ˜¯ä¸æ˜¯ä¹°
 	 * @return null when does not exist such a peer prcldr
 	 */
 	public final Map.Entry<Long, PriceLeader> getBestPeerPrcLdr(boolean iAmBuy)
 	{
 		Map.Entry<Long, PriceLeader> bestPrcLdr = null;
 		TreeMap<Long, PriceLeader> prcList = getPeerPrcTree(iAmBuy);
-		
+
 		bestPrcLdr = prcList.firstEntry();
-		
+
 		return bestPrcLdr;
 	}
-	
+
 }
