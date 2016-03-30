@@ -79,7 +79,7 @@ public class StockAnalysis {
 
 
         for(StTradeRecord stt:Constant.recordList){
-            logger.info("记录分析--交易买方->"+stt.getBuyerAccountId()+"--卖方->"+stt.getSellerAccountId()+"--交易价格->"+stt.getQuotePrice()+"--交易数量->"+stt.getAmount());
+            logger.info("记录分析--交易买方->"+stt.getBuyerAccountId()+"--卖方->"+stt.getSellerAccountId()+"--交易价格->"+stt.getQuotePrice()+"--交易数量->"+stt.getAmount()+"--交易总额->"+stt.getDealMoney());
         }
 
         //数据监测

@@ -72,6 +72,9 @@ public class StTradeThread implements Runnable {
 						str.setAmount(sellQuote.getAmount());
 						str.setStockId(sellQuote.getStockId());
 						str.setQuotePrice(buyQuote.getQuotePrice());
+						str.setDealMoney(buyQuote.getQuotePrice()*sellQuote.getAmount());
+						str.setDateTime(System.currentTimeMillis());
+
 						//股票列表，设置股票编码
 						StStock sts = Constant.stockTable.get(sellQuote.getStockId());
 
@@ -82,7 +85,7 @@ public class StTradeThread implements Runnable {
 						//交易记录列表
 						stTradeRecordServiceI.addStTradeRecord(str);
 
-						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "-交易成功-交易价格:" + buyQuote.getQuotePrice()+ "-交易数量:" + buyQuote.getAmount()+ "-交易总额:" + buyQuote.getQuotePrice()*buyQuote.getAmount());
+						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "-交易成功-交易价格:" + buyQuote.getQuotePrice()+ "-交易数量:" + buyQuote.getAmount()+ "-交易总额:" + buyQuote.getQuotePrice()*sellQuote.getAmount());
 
 						//移除记录
 						Constant.sellList.removeElement(sellQuote);
@@ -90,7 +93,7 @@ public class StTradeThread implements Runnable {
 					}
         			Thread.sleep(1000);
         		} else {
-        			Thread.sleep(5000);
+        			Thread.sleep(1000);
         		}
     		} catch (Exception e) {
 				e.printStackTrace();

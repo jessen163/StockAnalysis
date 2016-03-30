@@ -21,6 +21,7 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private Double quotePrice;//报价
     private Integer type; //1、买，2、卖
     private Integer status; //1、托管 2、成交 -1、过期
+    private Long dateTime;//报价时间
 
     public String getQuoteId() {
         return quoteId;
@@ -76,6 +77,14 @@ public class StQuote implements Serializable, Comparable<StQuote> {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Long dateTime) {
+        this.dateTime = dateTime;
     }
 
     @Override

@@ -23,6 +23,9 @@ public class StTradeRecord implements Serializable{
     private String stockCode;
     private Integer amount; //数量
     private Double quotePrice;//交易价格
+    private Double dealMoney;//交易总额
+    private Long dateTime;//交易时间
+
 
     public String getId() {
         return id;
@@ -94,5 +97,21 @@ public class StTradeRecord implements Serializable{
 
     public void setQuotePrice(Double quotePrice) {
         this.quotePrice = quotePrice;
+    }
+
+    public Double getDealMoney() {
+        return dealMoney;
+    }
+
+    public void setDealMoney(Double dealMoney) {
+        this.dealMoney = dealMoney;
+    }
+
+    public Long getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Long dateTime) {
+        this.dateTime = dateTime;
     }
 }
