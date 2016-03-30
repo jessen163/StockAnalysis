@@ -85,7 +85,7 @@ public class StTradeThread implements Runnable {
 						//交易记录列表
 						stTradeRecordServiceI.addStTradeRecord(str);
 
-						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "-交易成功-交易价格:" + buyQuote.getQuotePrice()+ "-交易数量:" + buyQuote.getAmount()+ "-交易总额:" + buyQuote.getQuotePrice()*sellQuote.getAmount());
+						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--"+"--交易股票->"+sts.getStockName() + "--股票编码->"+sts.getStockCode()+"--交易价格->" + buyQuote.getQuotePrice()+ "-交易数量->" + buyQuote.getAmount()+ "-交易总额->" + buyQuote.getQuotePrice()*sellQuote.getAmount());
 
 						//移除记录
 						Constant.sellList.removeElement(sellQuote);

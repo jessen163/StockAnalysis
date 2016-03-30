@@ -60,10 +60,10 @@ public class Constant {
 
     //A、B、C、D、E买卖报价
     public static Double STQUOTE_A_QUOTEPRICE = 10d;
-    public static Double STQUOTE_B_QUOTEPRICE = 150d;
-    public static Double STQUOTE_C_QUOTEPRICE = 100d;
-    public static Double STQUOTE_D_QUOTEPRICE = 50d;
-    public static Double STQUOTE_E_QUOTEPRICE = 100d;
+    public static Double STQUOTE_B_QUOTEPRICE = 15d;
+    public static Double STQUOTE_C_QUOTEPRICE = 10d;
+    public static Double STQUOTE_D_QUOTEPRICE = 20d;
+    public static Double STQUOTE_E_QUOTEPRICE = 10d;
 
     //A、B、C、D、E买卖购买数量
     public static Integer STQUOTE_A_AMOUNT = 100;
@@ -75,8 +75,9 @@ public class Constant {
 
     //交易股票
     public static String TRADEING_STOCK_ID = "1";
+    public static String TRADEING_STOCK_ID2 = "2";
 
-    //结算延迟时间
+    //结算延迟时间,单位秒
     public static Integer TRADE_LATER_TIME = 50;
 
 
