@@ -73,7 +73,7 @@ public class DataInitTool {
         //中国平安-股票
         StStock stStock = new StStock("1","中国平安","633256");
         StStock stStock2 = new StStock("2","广发证券","000776");
-        StStock stStock3 = new StStock("3","创业板","150153");
+        StStock stStock3 = new StStock("3","创业板A","150153");
         Constant.stockTable.put(stStock.getStockId(),stStock);
         Constant.stockTable.put(stStock2.getStockId(),stStock2);
         Constant.stockTable.put(stStock3.getStockId(),stStock3);
@@ -200,7 +200,7 @@ public class DataInitTool {
             rtn.put("amount",Constant.STQUOTE_A_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_BUY);
 
-            rtn.put("info","委托价格--报价次数-->"+i+"--买家->" + aSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" + Constant.STQUOTE_A_QUOTEPRICE+ "--委托数量->" + Constant.STQUOTE_A_AMOUNT);
+            rtn.put("info","当前报价----报价状态->买入---买方->" + aSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" + Constant.STQUOTE_A_QUOTEPRICE+ "--委托数量->" + Constant.STQUOTE_A_AMOUNT+"--报价次数第-->"+i+"次");
 
             Constant.allQuoteTable.put("A"+i,rtn);
         }
@@ -214,7 +214,7 @@ public class DataInitTool {
             rtn.put("amount",Constant.STQUOTE_B_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_BUY);
 
-            rtn.put("info","委托价格--报价次数-->"+bi+"--买家->" + bSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" + Constant.STQUOTE_B_QUOTEPRICE+ "--委托数量->" + Constant.STQUOTE_B_AMOUNT);
+            rtn.put("info","当前报价----报价状态->买入---买方->" + bSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" + Constant.STQUOTE_B_QUOTEPRICE+ "--委托数量->" + Constant.STQUOTE_B_AMOUNT+"--报价次数第-->"+bi+"次");
 
             Constant.allQuoteTable.put("B"+bi,rtn);
         }
@@ -229,7 +229,7 @@ public class DataInitTool {
             rtn.put("amount",Constant.STQUOTE_C_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_SELL);
 
-            rtn.put("info","委托价格--报价次数-->"+ci+"--" + cSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_C_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_C_AMOUNT);
+            rtn.put("info","当前报价----报价状态->卖出---卖方->" + cSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_C_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_C_AMOUNT+"--报价次数第-->"+ci+"次");
 
             Constant.allQuoteTable.put("C"+ci,rtn);
         }
@@ -244,7 +244,7 @@ public class DataInitTool {
             rtn.put("amount",Constant.STQUOTE_D_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_SELL);
 
-            rtn.put("info","委托价格--报价次数-->"+di+"--" + dSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_D_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_D_AMOUNT);
+            rtn.put("info","当前报价----报价状态->卖出---卖方->" + dSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_D_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_D_AMOUNT+"--报价次数第-->"+di+"次");
 
             Constant.allQuoteTable.put("D"+di,rtn);
         }
@@ -259,7 +259,7 @@ public class DataInitTool {
             rtn.put("amount",Constant.STQUOTE_E_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_SELL);
 
-            rtn.put("info","委托价格--报价次数-->"+ei+"--" + eSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_E_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_E_AMOUNT);
+            rtn.put("info","当前报价----报价状态->卖出---卖方->" + eSt.getAccountName() + "--股票名称->" + st.getStockName()+"--股票编码->" + st.getStockCode() + "--委托价格->" +  Constant.STQUOTE_E_QUOTEPRICE+"--委托数量->" + Constant.STQUOTE_E_AMOUNT+"--报价次数第-->"+ei+"次");
 
             Constant.allQuoteTable.put("E"+ei,rtn);
         }

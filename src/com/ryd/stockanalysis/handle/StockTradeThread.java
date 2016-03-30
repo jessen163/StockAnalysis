@@ -36,7 +36,7 @@ public class StockTradeThread implements Runnable {
 					for (String key : Constant.allQuoteTable.keySet()) {
 						Map uu = Constant.allQuoteTable.get(key);
 						if (uu == null) {
-							Thread.sleep(1000);
+							Thread.sleep(10);
 							continue;
 						}
 						StQuote stQuote = stockAnalysisServiceI.quotePrice(uu.get("accountId").toString(), uu.get("stockId").toString(), (double) uu.get("quotePrice"), (int) uu.get("amount"), (int) uu.get("type"));
@@ -45,10 +45,10 @@ public class StockTradeThread implements Runnable {
 							logger.info(uu.get("info").toString());
 						}
 
-						Thread.sleep(1000);
+						Thread.sleep(10);
 					}
 				}else{
-					Thread.sleep(2000);
+					Thread.sleep(10);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

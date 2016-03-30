@@ -46,7 +46,7 @@ public class StTradeThread implements Runnable {
         			StQuote buyQuote = Constant.buyList.getFrist();
 
 					if (sellQuote==null||buyQuote==null) {
-        				Thread.sleep(5000);
+        				Thread.sleep(10);
         				continue;
         			}
 
@@ -91,9 +91,9 @@ public class StTradeThread implements Runnable {
 						Constant.sellList.removeElement(sellQuote);
 						Constant.buyList.removeElement(buyQuote);
 					}
-        			Thread.sleep(1000);
+        			Thread.sleep(10);
         		} else {
-        			Thread.sleep(1000);
+        			Thread.sleep(10);
         		}
     		} catch (Exception e) {
 				e.printStackTrace();
