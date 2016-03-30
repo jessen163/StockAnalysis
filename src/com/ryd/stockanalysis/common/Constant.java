@@ -52,11 +52,11 @@ public class Constant {
     public static Integer STOCK_STPOSITION_STATUS_OUTDATE=3;
 
     //A、B、C、D、E买卖次数
-    public static Integer STQUOTE_A_NUM = 6;
-    public static Integer STQUOTE_B_NUM = 2;
-    public static Integer STQUOTE_C_NUM = 4;
-    public static Integer STQUOTE_D_NUM = 4;
-    public static Integer STQUOTE_E_NUM = 4;
+    public static Integer STQUOTE_A_NUM = 60;
+    public static Integer STQUOTE_B_NUM = 20;
+    public static Integer STQUOTE_C_NUM = 40;
+    public static Integer STQUOTE_D_NUM = 40;
+    public static Integer STQUOTE_E_NUM = 40;
 
     //A、B、C、D、E买卖报价
     public static Double STQUOTE_A_QUOTEPRICE = 10d;
@@ -66,11 +66,11 @@ public class Constant {
     public static Double STQUOTE_E_QUOTEPRICE = 10d;
 
     //A、B、C、D、E买卖购买数量
-    public static Integer STQUOTE_A_AMOUNT = 100;
-    public static Integer STQUOTE_B_AMOUNT = 100;
-    public static Integer STQUOTE_C_AMOUNT = 100;
-    public static Integer STQUOTE_D_AMOUNT = 100;
-    public static Integer STQUOTE_E_AMOUNT = 100;
+    public static Integer STQUOTE_A_AMOUNT = 10;
+    public static Integer STQUOTE_B_AMOUNT = 10;
+    public static Integer STQUOTE_C_AMOUNT = 10;
+    public static Integer STQUOTE_D_AMOUNT = 10;
+    public static Integer STQUOTE_E_AMOUNT = 10;
 
 
     //交易股票
