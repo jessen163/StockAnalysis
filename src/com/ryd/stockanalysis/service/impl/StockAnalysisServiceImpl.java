@@ -98,6 +98,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             stQuote.setQuotePrice(quotePrice);
             stQuote.setAmount(amount);
             stQuote.setType(type);
+            stQuote.setDateTime(System.currentTimeMillis());
             stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
             if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
             	Constant.buyList.add(stQuote);
