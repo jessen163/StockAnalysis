@@ -6,6 +6,7 @@ import com.ryd.stockanalysis.util.SortedLinkedList;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.TreeMap;
 
 /**
@@ -23,6 +24,41 @@ public class StTradeQueue implements Serializable {
     private Integer type;
 
 //    //买卖家报价
-    public Map<Long, StQuote> sellList = new TreeMap<Long, StQuote>();
-    public Map<Long, StQuote> buyList = new TreeMap<Long, StQuote>();
+    public TreeMap<Long, StQuote> sellList = new TreeMap<Long, StQuote>();
+    public TreeMap<Long, StQuote> buyList = new TreeMap<Long, StQuote>();
+
+    private Map.Entry<Long, StQuote> sellMap = null;
+
+    public void addSellStQuote(StQuote stQuote) {
+        synchronized (this.sellList) {
+            sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+        }
+    }
+
+    public void addBuyStQuote(StQuote stQuote) {
+        synchronized (this.buyList) {
+            buyList.put(stQuote.getQuotePriceForSort(), stQuote);
+        }
+    }
+
+    public void removeSellStQuote(StQuote stQuote) {
+        synchronized (this.sellList) {
+            sellList.remove(stQuote.getQuotePriceForSort());
+        }
+    }
+
+    public synchronized void removeBuyStQuote(StQuote stQuote) {
+        synchronized (this.buyList) {
+            buyList.remove(stQuote.getQuotePriceForSort());
+        }
+    }
+
+    public StQuote getStQuote(Long key, int type) {
+        if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
+            sellMap = buyList.higherEntry(key);
+        } else {
+            sellMap = sellList.higherEntry(key);
+        }
+        return sellMap==null?null:sellMap.getValue();
+    }
 }

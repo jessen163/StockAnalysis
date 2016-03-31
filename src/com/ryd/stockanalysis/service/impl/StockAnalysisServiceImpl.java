@@ -195,14 +195,18 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             if (stTradeQueue==null) {
                 stTradeQueue = new StTradeQueue();
             }
-            if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
-            	Constant.buyList.add(stQuote);
-                stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
-            } else {
-            	Constant.sellList.add(stQuote);
-                stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+            synchronized (Constant.stTradeQueueMap) {
+                if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
+//            	Constant.buyList.add(stQuote);
+                    stTradeQueue.addBuyStQuote(stQuote);
+                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
+                } else {
+//            	Constant.sellList.add(stQuote);
+                    stTradeQueue.addSellStQuote(stQuote);
+                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+                }
+                Constant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
             }
-            Constant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
         }
 
         return stQuote;
