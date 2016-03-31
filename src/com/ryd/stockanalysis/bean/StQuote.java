@@ -22,6 +22,15 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private Integer type; //1、买，2、卖
     private Integer status; //1、托管 2、成交 -1、过期
     private Long dateTime;//报价时间
+    private Long quotePriceForSort; // 用于排序
+
+    public Long getQuotePriceForSort() {
+        return quotePriceForSort;
+    }
+
+    public void setQuotePriceForSort(Long quotePriceForSort) {
+        this.quotePriceForSort = quotePriceForSort;
+    }
 
     public String getQuoteId() {
         return quoteId;
