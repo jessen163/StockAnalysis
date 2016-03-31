@@ -8,6 +8,7 @@ import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 
@@ -39,7 +40,18 @@ public class StockTradeThread implements Runnable {
 							Thread.sleep(10);
 							continue;
 						}
-						StQuote stQuote = stockAnalysisServiceI.quotePrice(uu.get("accountId").toString(), uu.get("stockId").toString(), (double) uu.get("quotePrice"), (int) uu.get("amount"), (int) uu.get("type"));
+
+						StQuote stQuote = new StQuote();
+
+						stQuote.setStockId(uu.get("stockId").toString());
+						stQuote.setAccountId(uu.get("accountId").toString());
+						stQuote.setQuotePrice((double) uu.get("quotePrice"));
+						stQuote.setAmount( (int) uu.get("amount"));
+						stQuote.setType( (int) uu.get("type"));
+						stQuote.setDateTime(System.currentTimeMillis());
+						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
+
+						stockAnalysisServiceI.quotePrice(stQuote);
 
 						if (stQuote != null) {
 							logger.info(uu.get("info").toString());

@@ -209,7 +209,12 @@ public class DataInitTool {
         for(int bi=1; bi<= Constant.STQUOTE_B_NUM;bi++){
             Map<String,Object> rtn = new HashMap<String,Object>();
             rtn.put("accountId",bSt.getAccountId());
-            rtn.put("stockId",Constant.TRADEING_STOCK_ID);
+            //买两支股票，奇数买广发银行，偶数买中国平安
+//            if(bi%2==0) {
+                rtn.put("stockId", Constant.TRADEING_STOCK_ID);
+//            }else{
+//                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
+//            }
             rtn.put("quotePrice",Constant.STQUOTE_B_QUOTEPRICE);
             rtn.put("amount",Constant.STQUOTE_B_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_BUY);
@@ -224,7 +229,12 @@ public class DataInitTool {
         for(int ci=1; ci<= Constant.STQUOTE_C_NUM;ci++){
             Map<String,Object> rtn = new HashMap<String,Object>();
             rtn.put("accountId",cSt.getAccountId());
-            rtn.put("stockId",Constant.TRADEING_STOCK_ID);
+            //卖两支股票，奇数卖广发银行，偶数卖中国平安
+//            if(ci%2==0) {
+                rtn.put("stockId", Constant.TRADEING_STOCK_ID);
+//            }else{
+//                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
+//            }
             rtn.put("quotePrice",Constant.STQUOTE_C_QUOTEPRICE);
             rtn.put("amount",Constant.STQUOTE_C_AMOUNT);
             rtn.put("type",Constant.STOCK_STQUOTE_TYPE_SELL);

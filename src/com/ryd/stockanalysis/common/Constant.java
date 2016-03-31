@@ -7,6 +7,7 @@ import com.ryd.stockanalysis.bean.StStock;
 import com.ryd.stockanalysis.bean.StTradeRecord;
 import com.ryd.stockanalysis.util.SortedLinkedList;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -76,9 +77,15 @@ public class Constant {
     //交易股票
     public static String TRADEING_STOCK_ID = "1";
     public static String TRADEING_STOCK_ID2 = "2";
+    public static String TRADEING_STOCK_ID3 = "2";
 
     //结算延迟时间,单位秒
-    public static Integer TRADE_LATER_TIME = 50;
+    public static Integer TRADE_LATER_TIME = 30;
 
+    //佣金比例
+    public static double STOCK_COMMINSSION_MONEY = 0.0003;
+
+    //印花税比例
+    public static double STOCK_STAMP_TAX = 0.001;
 
 }
