@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * 单只股票的报价信息
@@ -19,40 +20,28 @@ public class StTradeQueue implements Serializable {
 
     static final int INIT_CAPACITY = 2000;
 
-    private String stockId;
-
-    private StQuote StQuote;
-
-    private Integer type;
-
 //    //买卖家报价
-    public TreeMap<Long, StQuote> sellList = new TreeMap<Long, StQuote>();
-    public TreeMap<Long, StQuote> buyList = new TreeMap<Long, StQuote>();
+    public ConcurrentSkipListMap<Long, StQuote> sellList = new ConcurrentSkipListMap<Long, StQuote>();
+    public ConcurrentSkipListMap<Long, StQuote> buyList = new ConcurrentSkipListMap<Long, StQuote>();
 
     private Map.Entry<Long, StQuote> sellMap = null;
 
     public void addSellStQuote(StQuote stQuote) {
-        synchronized (this.sellList) {
             sellList.put(stQuote.getQuotePriceForSort(), stQuote);
-        }
+//            this.stockId=stQuote.getStockId();
+//            this.stQuote=stQuote;
     }
 
     public void addBuyStQuote(StQuote stQuote) {
-        synchronized (this.buyList) {
-            buyList.put(Long.MAX_VALUE - stQuote.getQuotePriceForSort(), stQuote);
-        }
+            buyList.put(-1 * stQuote.getQuotePriceForSort(), stQuote);
     }
 
     public void removeSellStQuote(StQuote stQuote) {
-        synchronized (this.sellList) {
-            sellList.remove(stQuote.getQuotePriceForSort());
-        }
+        sellList.remove(stQuote.getQuotePriceForSort());
     }
 
-    public synchronized void removeBuyStQuote(StQuote stQuote) {
-        synchronized (this.buyList) {
-            buyList.remove(stQuote.getQuotePriceForSort());
-        }
+    public void removeBuyStQuote(StQuote stQuote) {
+        buyList.remove(-1 * stQuote.getQuotePriceForSort());
     }
 
     public StQuote getStQuote(Long key, int type) {
@@ -67,9 +56,9 @@ public class StTradeQueue implements Serializable {
     @Override
     public String toString() {
         return "StTradeQueue{" +
-                "stockId='" + stockId + '\'' +
-                ", StQuote=" + StQuote +
-                ", type=" + type +
+//                "stockId='" + stockId + '\'' +
+//                ", StQuote=" + stQuote +
+//                ", type=" + type +
                 ", sellList=" + sellList.size() +
                 ", buyList=" + buyList.size() +
                 ", sellMap=" + sellMap +
