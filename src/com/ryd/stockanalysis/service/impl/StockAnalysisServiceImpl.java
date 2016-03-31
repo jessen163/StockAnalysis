@@ -3,10 +3,7 @@ package com.ryd.stockanalysis.service.impl;
 import java.math.BigDecimal;
 import java.util.*;
 
-import com.ryd.stockanalysis.bean.StAccount;
-import com.ryd.stockanalysis.bean.StPosition;
-import com.ryd.stockanalysis.bean.StQuote;
-import com.ryd.stockanalysis.bean.StStock;
+import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.common.Constant;
 import com.ryd.stockanalysis.service.StAccountServiceI;
 import com.ryd.stockanalysis.service.StPositionServiceI;
@@ -118,13 +115,21 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         if(rs) {
             stQuote.setQuoteId(UUID.randomUUID().toString());
+            // 用于排序的字段
+            long quotePriceSort = Long.parseLong("100000000") * (int)(stQuote.getQuotePrice()*100)+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
+            stQuote.setQuotePriceForSort(quotePriceSort);
 
             if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             	Constant.buyList.add(stQuote);
+                StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
+                stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
             } else {
             	Constant.sellList.add(stQuote);
+                StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
+                stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
             }
         }
+
         return stQuote;
     }
 }

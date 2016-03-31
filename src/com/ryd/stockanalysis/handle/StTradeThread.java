@@ -91,6 +91,27 @@ public class StTradeThread implements Runnable {
 						Constant.sellList.removeElement(sellQuote);
 						Constant.buyList.removeElement(buyQuote);
 					}
+
+					if (!Constant.stTradeQueueMap.isEmpty()) {
+						for (String s : Constant.stTradeQueueMap.keySet()) {
+							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
+							stTradeQueueMap.buyList.entrySet();
+							if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
+							Set<Map.Entry<Long, StQuote>> buyListSet = stTradeQueueMap.buyList.entrySet();
+							Set<Map.Entry<Long, StQuote>> sellListSet = stTradeQueueMap.sellList.entrySet();
+//							Iterator<Map.Entry<Long, org.jopenexchg.matcher.PriceLeader>> its =  peerPrcLdrSet.iterator();
+							Iterator<Map.Entry<Long, StQuote>> buyIts = buyListSet.iterator();
+							Iterator<Map.Entry<Long, StQuote>> sellIts = sellListSet.iterator();
+							while (buyIts.hasNext() && sellIts.hasNext()) {
+								Map.Entry<Long, StQuote> buyQuoteEntry = buyIts.next();
+								Map.Entry<Long, StQuote> sellQuoteEntry = sellIts.next();
+								if (sellQuote.getAmount() == buyQuote.getAmount() && Double.doubleToLongBits(sellQuote.getQuotePrice()) <= Double.doubleToLongBits(buyQuote.getQuotePrice())) {
+									stTradeQueueMap.buyList.remove(buyQuoteEntry.getKey());
+									stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
+								}
+							}
+						}
+					}
         			Thread.sleep(10);
         		} else {
         			Thread.sleep(10);

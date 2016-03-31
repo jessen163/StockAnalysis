@@ -1,10 +1,7 @@
 package com.ryd.stockanalysis.common;
 
+import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.util.ConcurrentSortedLinkedList;
-import com.ryd.stockanalysis.bean.StAccount;
-import com.ryd.stockanalysis.bean.StQuote;
-import com.ryd.stockanalysis.bean.StStock;
-import com.ryd.stockanalysis.bean.StTradeRecord;
 import com.ryd.stockanalysis.util.SortedLinkedList;
 
 import java.math.BigDecimal;
@@ -21,6 +18,8 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Constant {
 
+    //队列-多只股票
+    public static ConcurrentHashMap<String,StTradeQueue> stTradeQueueMap = new ConcurrentHashMap<String,StTradeQueue>();
     //帐户
     public static ConcurrentMap<String,StAccount> stAccounts = new ConcurrentHashMap<String,StAccount>();
     //股票列表
