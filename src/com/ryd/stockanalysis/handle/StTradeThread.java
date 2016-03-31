@@ -131,8 +131,8 @@ public class StTradeThread implements Runnable {
 				} else {
 					Thread.sleep(10);
 				}
+				logger.info("股票交易引擎---------------开始--------------------");
 				if (!Constant.stTradeQueueMap.isEmpty()) {
-					logger.info("股票交易引擎---------------开始--------------------");
 //					synchronized (Constant.stTradeQueueMap) {
 						for (String s : Constant.stTradeQueueMap.keySet()) {
 							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
@@ -141,6 +141,7 @@ public class StTradeThread implements Runnable {
 							boolean flag = true;
 							Long buyerKey = 0L;
 							Long sellerKey = Long.MAX_VALUE;
+							logger.info("stTradeQueueMap："+stTradeQueueMap);
 							while (flag) {
 								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, 1);
 								StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, 2);
@@ -148,8 +149,7 @@ public class StTradeThread implements Runnable {
 									flag = false;
 									break;
 								}
-								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
-								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
+//								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
 								if (sellQuote.getQuotePrice().equals(buyQuote.getQuotePrice())) {
 									stTradeQueueMap.removeBuyStQuote(buyQuote);
 									stTradeQueueMap.removeSellStQuote(sellQuote);
@@ -157,12 +157,13 @@ public class StTradeThread implements Runnable {
 								buyerKey = buyQuote.getQuotePriceForSort();
 								sellerKey = sellQuote.getQuotePriceForSort();
 							}
+							logger.info("stTradeQueueMap："+stTradeQueueMap);
 
 							Constant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
 //					}
-					logger.info("股票交易引擎---------------结束--------------------");
 				}
+				logger.info("股票交易引擎---------------结束--------------------");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
