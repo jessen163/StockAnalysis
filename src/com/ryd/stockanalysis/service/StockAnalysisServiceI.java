@@ -16,10 +16,15 @@ public interface StockAnalysisServiceI {
      * @return
      */
     public boolean settleResult();
+
+
+    public double buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
     /**
      * 报价
      * @param stQuote
      * @return
      */
     public StQuote quotePrice(StQuote stQuote);
+
+
 }
