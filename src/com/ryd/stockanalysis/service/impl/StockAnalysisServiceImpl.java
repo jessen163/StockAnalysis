@@ -119,15 +119,16 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             long quotePriceSort = Long.parseLong("100000000") * (int)(stQuote.getQuotePrice()*100)+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
             stQuote.setQuotePriceForSort(quotePriceSort);
 
+            StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
+            stTradeQueue = new StTradeQueue();
             if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             	Constant.buyList.add(stQuote);
-                StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
                 stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
             } else {
             	Constant.sellList.add(stQuote);
-                StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
                 stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
             }
+            Constant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
         }
 
         return stQuote;
