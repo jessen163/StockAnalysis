@@ -70,8 +70,8 @@ public class StTradeQueue implements Serializable {
                 "stockId='" + stockId + '\'' +
                 ", StQuote=" + StQuote +
                 ", type=" + type +
-                ", sellList=" + sellList +
-                ", buyList=" + buyList +
+                ", sellList=" + sellList.size() +
+                ", buyList=" + buyList.size() +
                 ", sellMap=" + sellMap +
                 '}';
     }
