@@ -138,26 +138,40 @@ public class StTradeThread implements Runnable {
 							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
 							if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
 							logger.info("stTradeQueueMap: 股票ID"+s+"-------------------其他信息："+stTradeQueueMap);
-							boolean flag = true;
+							boolean sellFlag = true;
 							Long buyerKey = 0L;
-							Long sellerKey = Long.MAX_VALUE;
+							Long sellerKey = 0L;
 							logger.info("stTradeQueueMap："+stTradeQueueMap);
-							while (flag) {
-								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, 1);
-								StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, 2);
-								if (sellQuote==null||buyQuote==null) {
-									flag = false;
+							while (sellFlag) {
+								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, 2);
+								if (sellQuote==null) {
+									sellFlag = false;
 									break;
 								}
+
 //								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
-								if (sellQuote.getQuotePrice().equals(buyQuote.getQuotePrice())) {
-									stTradeQueueMap.removeBuyStQuote(buyQuote);
-									stTradeQueueMap.removeSellStQuote(sellQuote);
+								boolean buyFlag = true;
+								while (buyFlag) {
+									StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, 1);
+									if (buyQuote==null) {
+										buyFlag = false;
+										break;
+									}
+									if (sellQuote.getQuotePrice().equals(buyQuote.getQuotePrice())) {
+//										stTradeQueueMap.buyList.remove(buyQuote.getQuotePriceForSort());
+										stTradeQueueMap.removeBuyStQuote(buyQuote);
+										stTradeQueueMap.removeSellStQuote(sellQuote);
+//										stTradeQueueMap.sellList.remove(-1*sellQuote.getQuotePriceForSort());
+										logger.info("buyQuote: 股票ID" + buyQuote.getStockId() + "-------------------其他信息：" + buyQuote);
+										logger.info("buyQuote: 股票ID"+sellQuote.getStockId()+"-------------------其他信息："+sellQuote);
+										logger.info("buyQuote: 股票ID"+stTradeQueueMap.sellList.size() +"-------------------："+stTradeQueueMap.buyList.size());
+										buyFlag=false;
+									}
+									buyerKey = buyQuote.getQuotePriceForSort();
+									sellerKey = sellQuote.getQuotePriceForSort();
 								}
-								buyerKey = buyQuote.getQuotePriceForSort();
-								sellerKey = sellQuote.getQuotePriceForSort();
 							}
-							logger.info("stTradeQueueMap："+stTradeQueueMap);
+							logger.info("stTradeQueueMap："+stTradeQueueMap.buyList.size()+"---------------"+stTradeQueueMap.sellList.size());
 
 							Constant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
