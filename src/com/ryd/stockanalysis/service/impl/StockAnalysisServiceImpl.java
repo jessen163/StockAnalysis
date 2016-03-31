@@ -1,5 +1,6 @@
 package com.ryd.stockanalysis.service.impl;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.ryd.stockanalysis.bean.StAccount;
@@ -77,30 +78,48 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
 
     @Override
-    public synchronized StQuote quotePrice(String accountId,String stockId, double quotePrice, int amount, int type) {
+    public synchronized StQuote quotePrice(StQuote stQuote) {
 
-        StQuote stQuote = null;
+        if(stQuote == null){
+            return null;
+        }
+
         boolean rs = false;
+
+        //报价金额
+        BigDecimal volMoney = null;
+
+        BigDecimal qutoPrice = new BigDecimal(stQuote.getQuotePrice()==null?0:0d);
+        BigDecimal amount = new BigDecimal(stQuote.getAmount()==null?0:0d);
+
+        volMoney = qutoPrice.multiply(amount);
+
         //买股票
-        if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
+        if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             //委托买股票，减少资产
-            rs = stAccountServiceI.opearteUseMoney(accountId, quotePrice*amount, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
-        }else if (type == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
+
+            //交易费用
+            BigDecimal agentFee = null;
+            //冻结资金
+            double frozenMoney = 0d;
+            //佣金比例
+            BigDecimal ratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+
+            agentFee = volMoney.multiply(ratio);
+
+            frozenMoney = volMoney.doubleValue()+agentFee.doubleValue();
+
+            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),frozenMoney, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+
+        }else if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
             //委托卖股票，减少股票持仓数量
-            rs = stPositionServiceI.operateStPosition(accountId,stockId,amount,Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+            rs = stPositionServiceI.operateStPosition(stQuote.getAccountId(),stQuote.getStockId(),stQuote.getAmount(),Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
         }else{}
 
         if(rs) {
-            stQuote = new StQuote();
             stQuote.setQuoteId(UUID.randomUUID().toString());
-            stQuote.setStockId(stockId);
-            stQuote.setAccountId(accountId);
-            stQuote.setQuotePrice(quotePrice);
-            stQuote.setAmount(amount);
-            stQuote.setType(type);
-            stQuote.setDateTime(System.currentTimeMillis());
-            stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
-            if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
+
+            if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             	Constant.buyList.add(stQuote);
             } else {
             	Constant.sellList.add(stQuote);

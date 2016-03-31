@@ -18,10 +18,8 @@ public interface StockAnalysisServiceI {
     public boolean settleResult();
     /**
      * 报价
-     * @param stockId
-     * @param amount
-     * @param type
+     * @param stQuote
      * @return
      */
-    public StQuote quotePrice(String accountId,String stockId, double quotePrice, int amount, int type);
+    public StQuote quotePrice(StQuote stQuote);
 }
