@@ -31,10 +31,15 @@ public class StockAnalysis {
         logger.info("股票分析---------------开始--------------------");
 
         StockAnalysisServiceI serviceI = new StockAnalysisServiceImpl();
+        // 创建一个可重用固定线程数的线程池
+        ExecutorService pool = Executors.newFixedThreadPool(50);
+
+        // 往线程池中放入用户报价（买入/卖出）信息------------StockTradeThread
+        pool.execute(new StTradeThread());
 
         //创建基础数据
         DataInitTool.createBaseData();
-        DataInitTool.initQuotePriceMap();
+        DataInitTool.initQuotePriceMap(pool,serviceI);
 
         //数据监测
         DataInitTool.dataCheck("open开盘前");
@@ -45,14 +50,8 @@ public class StockAnalysis {
             DataInitTool.printAccountInfo(uu,"初始");
         }
 
-        // 创建一个可重用固定线程数的线程池
-        ExecutorService pool = Executors.newFixedThreadPool(5);
-
-        // 往线程池中放入用户报价（买入/卖出）信息------------StockTradeThread
-        pool.execute(new StTradeThread());
-
-        //买卖家报价
-        pool.execute(new StockTradeThread(serviceI));
+//        //买卖家报价
+//        pool.execute(new StockTradeThread(serviceI));
 
 
         try {
