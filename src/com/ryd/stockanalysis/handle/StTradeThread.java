@@ -102,10 +102,11 @@ public class StTradeThread implements Runnable {
 //							Iterator<Map.Entry<Long, org.jopenexchg.matcher.PriceLeader>> its =  peerPrcLdrSet.iterator();
 							Iterator<Map.Entry<Long, StQuote>> buyIts = buyListSet.iterator();
 							Iterator<Map.Entry<Long, StQuote>> sellIts = sellListSet.iterator();
-							while (buyIts.hasNext()) {
-								if (sellIts.hasNext()) {
-									Map.Entry<Long, StQuote> buyQuoteEntry = buyIts.next();
-									Map.Entry<Long, StQuote> sellQuoteEntry = sellIts.next();
+							for (Map.Entry<Long, StQuote> buyQuoteEntry: buyListSet) {
+								for (Map.Entry<Long, StQuote> sellQuoteEntry: sellListSet) {
+									buyQuote = buyQuoteEntry.getValue();
+									sellQuote = sellQuoteEntry.getValue();
+
 									if (sellQuote.getAmount() == buyQuote.getAmount() && Double.doubleToLongBits(sellQuote.getQuotePrice()) <= Double.doubleToLongBits(buyQuote.getQuotePrice())) {
 										stTradeQueueMap.buyList.remove(buyQuoteEntry.getKey());
 										stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());

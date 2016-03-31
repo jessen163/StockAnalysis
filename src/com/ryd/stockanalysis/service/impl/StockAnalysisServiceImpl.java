@@ -120,7 +120,9 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             stQuote.setQuotePriceForSort(quotePriceSort);
 
             StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
-            stTradeQueue = new StTradeQueue();
+            if (stTradeQueue==null) {
+                stTradeQueue = new StTradeQueue();
+            }
             if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             	Constant.buyList.add(stQuote);
                 stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
