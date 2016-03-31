@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * 
@@ -25,37 +26,38 @@ public class StockTradeThread implements Runnable {
 
 	StockAnalysisServiceI stockAnalysisServiceI;
 
-	public StockTradeThread(StockAnalysisServiceI stockAnalysisServiceI) {
+	ConcurrentMap<String,Map> quoteTable;
+
+	public StockTradeThread(StockAnalysisServiceI stockAnalysisServiceI,ConcurrentMap<String,Map> quoteTable) {
 		this.stockAnalysisServiceI = stockAnalysisServiceI;
+		this.quoteTable = quoteTable;
 	}
 
 	@Override
 	public void run() {
 			try {
-				if(!Constant.allQuoteTable.isEmpty()) {
+				if(!quoteTable.isEmpty()) {
 					//处理报价
-					for (String key : Constant.allQuoteTable.keySet()) {
-						Map uu = Constant.allQuoteTable.get(key);
-						if (uu == null) {
+					for (String key : quoteTable.keySet()) {
+						Map paramMap = quoteTable.get(key);
+						if (paramMap == null) {
 							Thread.sleep(10);
 							continue;
 						}
 
 						StQuote stQuote = new StQuote();
 
-						stQuote.setStockId(uu.get("stockId").toString());
-						stQuote.setAccountId(uu.get("accountId").toString());
-						stQuote.setQuotePrice((double) uu.get("quotePrice"));
-						stQuote.setAmount( (int) uu.get("amount"));
-						stQuote.setType( (int) uu.get("type"));
+						stQuote.setStockId(paramMap.get("stockId").toString());
+						stQuote.setAccountId(paramMap.get("accountId").toString());
+						stQuote.setQuotePrice((double) paramMap.get("quotePrice"));
+						stQuote.setAmount((int) paramMap.get("amount"));
+						stQuote.setType((int) paramMap.get("type"));
 						stQuote.setDateTime(System.currentTimeMillis());
 						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
 						stockAnalysisServiceI.quotePrice(stQuote);
 
-						if (stQuote != null) {
-							logger.info(uu.get("info").toString());
-						}
+						logger.info(paramMap.get("info").toString());
 
 						Thread.sleep(10);
 					}
