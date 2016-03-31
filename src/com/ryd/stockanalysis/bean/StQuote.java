@@ -21,6 +21,7 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private Double quotePrice;//报价
     private Integer type; //1、买，2、卖
     private Integer status; //1、托管 2、成交 -1、过期
+    private Double frozeMoney;//买股票时冻结资金
     private Long dateTime;//报价时间
     private Long quotePriceForSort; // 用于排序
 
@@ -78,6 +79,14 @@ public class StQuote implements Serializable, Comparable<StQuote> {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Double getFrozeMoney() {
+        return frozeMoney;
+    }
+
+    public void setFrozeMoney(Double frozeMoney) {
+        this.frozeMoney = frozeMoney;
     }
 
     public Integer getStatus() {

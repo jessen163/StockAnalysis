@@ -4,13 +4,16 @@ import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.service.StAccountServiceI;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 import com.ryd.stockanalysis.service.StTradeRecordServiceI;
+import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import com.ryd.stockanalysis.service.impl.StAccountServiceImpl;
 import com.ryd.stockanalysis.service.impl.StPositionServiceImpl;
 import com.ryd.stockanalysis.service.impl.StTradeRecordServiceImpl;
+import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import org.apache.log4j.Logger;
 
 import com.ryd.stockanalysis.common.Constant;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -22,7 +25,7 @@ import java.util.*;
  */
 public class StTradeThread implements Runnable {
 
-    private static Logger logger = Logger.getLogger(StTradeThread.class);
+	private static Logger logger = Logger.getLogger(StTradeThread.class);
 
 	private StAccountServiceI stAccountServiceI;
 
@@ -30,36 +33,39 @@ public class StTradeThread implements Runnable {
 
 	private StTradeRecordServiceI stTradeRecordServiceI;
 
+	private StockAnalysisServiceI stockAnalysisServiceI;
+
 	public StTradeThread() {
 		stAccountServiceI = new StAccountServiceImpl();
 		stPositionServiceI = new StPositionServiceImpl();
 		stTradeRecordServiceI = new StTradeRecordServiceImpl();
+		stockAnalysisServiceI = new StockAnalysisServiceImpl();
 	}
 
 	@Override
-    public void run(){
-    	while (true) {
-    		try {
-    			if (!Constant.sellList.isEmpty()&&!Constant.sellList.isEmpty()) {
+	public void run(){
+		while (true) {
+			try {
+				if (!Constant.sellList.isEmpty()&&!Constant.sellList.isEmpty()) {
 
-        			StQuote sellQuote = Constant.sellList.getLast();
-        			StQuote buyQuote = Constant.buyList.getFrist();
+					StQuote sellQuote = Constant.sellList.getLast();
+					StQuote buyQuote = Constant.buyList.getFrist();
 
 					if (sellQuote==null||buyQuote==null) {
-        				Thread.sleep(10);
-        				continue;
-        			}
+						Thread.sleep(10);
+						continue;
+					}
 
 					if (sellQuote.getStockId().equals(buyQuote.getStockId()) && sellQuote.getAmount()==buyQuote.getAmount()&&Double.doubleToLongBits(sellQuote.getQuotePrice())<=Double.doubleToLongBits(buyQuote.getQuotePrice())) {
 
-        				//添加买入/卖出交易成功后的逻辑
+						//添加买入/卖出交易成功后的逻辑
 						//撮合成功，买家增加股票持仓数量，卖家减钱
 
 						//交易成功，交易买家持仓增加
 						stPositionServiceI.operateStPosition(buyQuote.getAccountId(), buyQuote.getStockId(),buyQuote.getAmount(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
 						//卖家新增费用
-						double oinmoney = buyQuote.getQuotePrice() * sellQuote.getAmount();
+						double oinmoney = stockAnalysisServiceI.buyOrSellStockMoney(buyQuote.getQuotePrice(),sellQuote.getAmount(),sellQuote.getType());
 
 						//交易成功，交易卖家资产增加
 						stAccountServiceI.opearteUseMoney(sellQuote.getAccountId(),oinmoney,Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
@@ -72,7 +78,9 @@ public class StTradeThread implements Runnable {
 						str.setAmount(sellQuote.getAmount());
 						str.setStockId(sellQuote.getStockId());
 						str.setQuotePrice(buyQuote.getQuotePrice());
-						str.setDealMoney(buyQuote.getQuotePrice()*sellQuote.getAmount());
+						BigDecimal quotePriceb = new BigDecimal(buyQuote.getQuotePrice());
+						BigDecimal amonutb = new BigDecimal(sellQuote.getAmount());
+						str.setDealMoney(quotePriceb.multiply(amonutb).doubleValue());
 						str.setDateTime(System.currentTimeMillis());
 
 						//股票列表，设置股票编码
@@ -85,7 +93,7 @@ public class StTradeThread implements Runnable {
 						//交易记录列表
 						stTradeRecordServiceI.addStTradeRecord(str);
 
-						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--"+"--交易股票->"+sts.getStockName() + "--股票编码->"+sts.getStockCode()+"--交易价格->" + buyQuote.getQuotePrice()+ "-交易数量->" + buyQuote.getAmount()+ "-交易总额->" + buyQuote.getQuotePrice()*sellQuote.getAmount());
+						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--"+"--交易股票->"+sts.getStockName() + "--股票编码->"+sts.getStockCode()+"--交易价格->" + buyQuote.getQuotePrice()+ "-交易数量->" + buyQuote.getAmount()+ "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue());
 
 						//移除记录
 						Constant.sellList.removeElement(sellQuote);
@@ -110,18 +118,17 @@ public class StTradeThread implements Runnable {
 									stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
 								}
 							}
-							Constant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
 					}
-        			Thread.sleep(10);
-        		} else {
-        			Thread.sleep(10);
-        		}
-    		} catch (Exception e) {
+					Thread.sleep(10);
+				} else {
+					Thread.sleep(10);
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	}
+		}
 
-    }
+	}
 
 }

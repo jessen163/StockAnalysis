@@ -57,8 +57,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         {
             StQuote stqb = (StQuote)iteratorb.next();
 
-            //卖家报价开销
-            double oinmoney = stqb.getQuotePrice()*stqb.getAmount();
+            //买家报价开销
+            double oinmoney = stqb.getFrozeMoney();
 
             //撤回托管买股票费用,帐户增加资产
             stAccountServiceI.opearteUseMoney(stqb.getAccountId(), oinmoney, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
@@ -73,6 +73,50 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return true;
     }
 
+    @Override
+    public double buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type) {
+
+        double dealMoney = 0d;
+        //金额
+        BigDecimal volMoney = null;
+
+        BigDecimal qutoPriceb = new BigDecimal(qutoPrice==null ? 0 : 0d);
+        BigDecimal amountb = new BigDecimal(amount == null ? 0 : 0);
+
+        volMoney = qutoPriceb.multiply(amountb);
+
+        //买股票
+        if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
+
+            //佣金
+            double commissionFee = 0d;
+            //佣金比例
+            BigDecimal cratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+            //计算佣金
+            commissionFee = volMoney.multiply(cratio).doubleValue();
+
+            dealMoney = volMoney.doubleValue() + commissionFee;
+
+        }else if (type == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
+            //佣金
+            double bcommissionFee = 0d;
+            //印花税
+            double bstampFax = 0d;
+            //佣金比例
+            BigDecimal bcratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+            //印花税比例
+            BigDecimal bsratio = new BigDecimal(Constant.STOCK_STAMP_TAX);
+            //计算佣金和印花税
+            bcommissionFee = volMoney.multiply(bcratio).doubleValue();
+            bstampFax = volMoney.multiply(bsratio).doubleValue();
+
+            dealMoney = volMoney.doubleValue() - (bcommissionFee+bstampFax);
+
+        }else{}
+
+        return dealMoney;
+    }
+
 
     @Override
     public synchronized StQuote quotePrice(StQuote stQuote) {
@@ -83,28 +127,13 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         boolean rs = false;
 
-        //报价金额
-        BigDecimal volMoney = null;
-
-        BigDecimal qutoPrice = new BigDecimal(stQuote.getQuotePrice()==null?0:0d);
-        BigDecimal amount = new BigDecimal(stQuote.getAmount()==null?0:0d);
-
-        volMoney = qutoPrice.multiply(amount);
-
         //买股票
         if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             //委托买股票，减少资产
 
-            //交易费用
-            BigDecimal agentFee = null;
             //冻结资金
-            double frozenMoney = 0d;
-            //佣金比例
-            BigDecimal ratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
-
-            agentFee = volMoney.multiply(ratio);
-
-            frozenMoney = volMoney.doubleValue()+agentFee.doubleValue();
+            double frozenMoney = buyOrSellStockMoney(stQuote.getQuotePrice(),stQuote.getAmount(),stQuote.getType());
+            stQuote.setFrozeMoney(frozenMoney);
 
             rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),frozenMoney, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
 
