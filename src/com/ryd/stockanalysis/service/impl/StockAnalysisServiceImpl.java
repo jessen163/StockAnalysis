@@ -46,8 +46,9 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //交易成功，交易卖家资产增加
         stAccountServiceI.opearteUseMoney(sellQuote.getAccountId(), (double) sellmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
+        double fee = new BigDecimal((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
         //收取买家卖家佣金和卖家印花税
-        Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY + (double) sellmap.get("commissionFee")*2 + (double) sellmap.get("bstampFax");
+        Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY + fee + (double) sellmap.get("bstampFax");
 
         //添加交易记录
         StTradeRecord str = new StTradeRecord();
@@ -60,7 +61,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         BigDecimal quotePriceb = new BigDecimal(buyQuote.getQuotePrice());
         BigDecimal amonutb = new BigDecimal(tradeStockAmount);
         str.setDealMoney(quotePriceb.multiply(amonutb).doubleValue());
-        str.setDealFee((double) sellmap.get("commissionFee")*2);
+        str.setDealFee(fee);
         str.setDealTax((double) sellmap.get("bstampFax"));
         str.setDateTime(System.currentTimeMillis());
         str.setStockCode(sts.getStockCode());
@@ -68,7 +69,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //交易记录列表
         stTradeRecordServiceI.addStTradeRecord(str);
 
-        logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--" + "--交易股票->" + sts.getStockName() + "--股票编码->" + sts.getStockCode() + "--交易价格->" + buyQuote.getQuotePrice() + "-交易数量->" + buyQuote.getAmount() + "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue() + "-买家卖家佣金->" + (double) sellmap.get("commissionFee")*2 + "-印花税->" + +(double) sellmap.get("bstampFax"));
+        logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--" + "--交易股票->" + sts.getStockName() + "--股票编码->" + sts.getStockCode() + "--交易价格->" + buyQuote.getQuotePrice() + "-交易数量->" + buyQuote.getAmount() + "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue() + "-买家卖家佣金->" + fee + "-印花税->" + +(double) sellmap.get("bstampFax"));
     }
 
 
@@ -98,15 +99,12 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         {
             StQuote stqb = (StQuote)iteratorb.next();
 
-            //买家报价开销
-            double oinmoney = stqb.getFrozeMoney();
-
             //撤回托管买股票费用,帐户增加资产
-            stAccountServiceI.opearteUseMoney(stqb.getAccountId(), oinmoney, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
+            stAccountServiceI.opearteUseMoney(stqb.getAccountId(), stqb.getFrozeMoney(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
             StStock sto = Constant.stockTable.get(stqb.getStockId());
 
-            logger.info("买家结算--买家->"+stqb.getAccountId()+"--交易股票->"+sto.getStockName()+"--股票编码->"+sto.getStockCode()+"--退还金额->"+oinmoney);
+            logger.info("买家结算--买家->"+stqb.getAccountId()+"--交易股票->"+sto.getStockName()+"--股票编码->"+sto.getStockCode()+"--退还金额->"+stqb.getFrozeMoney());
         }
         //清除买家队列
         Constant.buyList.clear();
@@ -179,8 +177,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             Map<String, Object> rsmap = buyOrSellStockMoney(stQuote.getQuotePrice(), stQuote.getAmount(), stQuote.getType());
             //冻结资金
             stQuote.setFrozeMoney((double)rsmap.get("rsMoney"));
-            stQuote.setCommissionFee((double)rsmap.get("commissionFee"));
-
+            stQuote.setCommissionFee((double) rsmap.get("commissionFee"));
             rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),(double)rsmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
 
         }else if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票

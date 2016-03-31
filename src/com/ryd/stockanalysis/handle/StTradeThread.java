@@ -72,7 +72,7 @@ public class StTradeThread implements Runnable {
 							stockAnalysisServiceI.trading(buyQuote, sellQuote, tradeStockAmount, sts);
 
 							//交易成功，交易卖家持仓减少
-							buyQuote.setAmount(buyQuote.getAmount() - tradeStockAmount);
+							sellQuote.setAmount(sellQuote.getAmount() - tradeStockAmount);
 
 							//买家移出队列
 							Constant.buyList.removeElement(buyQuote);
@@ -94,9 +94,10 @@ public class StTradeThread implements Runnable {
 							stockAnalysisServiceI.trading(buyQuote,sellQuote,tradeStockAmount,sts);
 
 							//交易成功，交易买家报价金额减少
-							Map<String, Object> sellmap = stockAnalysisServiceI.buyOrSellStockMoney(buyQuote.getQuotePrice(), tradeStockAmount, sellQuote.getType());
-							buyQuote.setFrozeMoney(buyQuote.getFrozeMoney() - (double) sellmap.get("rsMoney"));
-							buyQuote.setCommissionFee(buyQuote.getCommissionFee() - (double) sellmap.get("rsMoney"));
+							Map<String, Object> buymap = stockAnalysisServiceI.buyOrSellStockMoney(buyQuote.getQuotePrice(), tradeStockAmount, buyQuote.getType());
+							buyQuote.setFrozeMoney((buyQuote.getFrozeMoney() - (double) buymap.get("rsMoney")));
+							buyQuote.setCommissionFee(buyQuote.getCommissionFee() - (double) buymap.get("rsMoney"));
+
 							//卖家移出队列
 							Constant.sellList.removeElement(sellQuote);
 						}
