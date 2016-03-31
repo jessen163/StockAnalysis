@@ -25,7 +25,24 @@ public class StTradeRecord implements Serializable{
     private Double quotePrice;//交易价格
     private Double dealMoney;//交易总额
     private Long dateTime;//交易时间
+    private Double dealFee;//交易费用（佣金）
+    private Double dealTax;//交易税(印花税)
 
+    public Double getDealTax() {
+        return dealTax;
+    }
+
+    public void setDealTax(Double dealTax) {
+        this.dealTax = dealTax;
+    }
+
+    public Double getDealFee() {
+        return dealFee;
+    }
+
+    public void setDealFee(Double dealFee) {
+        this.dealFee = dealFee;
+    }
 
     public String getId() {
         return id;
