@@ -31,16 +31,14 @@ public class StTradeThread implements Runnable {
 
 	private StPositionServiceI stPositionServiceI;
 
-	private StTradeRecordServiceI stTradeRecordServiceI;
-
 	private StockAnalysisServiceI stockAnalysisServiceI;
 
 	public StTradeThread() {
 		stAccountServiceI = new StAccountServiceImpl();
 		stPositionServiceI = new StPositionServiceImpl();
-		stTradeRecordServiceI = new StTradeRecordServiceImpl();
 		stockAnalysisServiceI = new StockAnalysisServiceImpl();
 	}
+
 
 	@Override
 	public void run(){
@@ -50,61 +48,56 @@ public class StTradeThread implements Runnable {
 
 					StQuote sellQuote = Constant.sellList.getLast();
 					StQuote buyQuote = Constant.buyList.getFrist();
-
 					if (sellQuote==null||buyQuote==null) {
 						Thread.sleep(10);
 						continue;
 					}
 
-					if (sellQuote.getStockId().equals(buyQuote.getStockId()) && sellQuote.getAmount()==buyQuote.getAmount()&&Double.doubleToLongBits(sellQuote.getQuotePrice())<=Double.doubleToLongBits(buyQuote.getQuotePrice())) {
+					if (sellQuote.getStockId().equals(buyQuote.getStockId()) && Double.doubleToLongBits(sellQuote.getQuotePrice())<=Double.doubleToLongBits(buyQuote.getQuotePrice())) {
 
 						//添加买入/卖出交易成功后的逻辑
-						//撮合成功，买家增加股票持仓数量，卖家减钱
+                        //交易股票
+						StStock sts = Constant.stockTable.get(buyQuote.getStockId());
+						//股票交易数量
+						int tradeStockAmount = 0;
 
-						//交易成功，交易买家持仓增加
-						stPositionServiceI.operateStPosition(buyQuote.getAccountId(), buyQuote.getStockId(),buyQuote.getAmount(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
+						//买少卖多
+						if (buyQuote.getAmount() < sellQuote.getAmount()) {
 
-						//卖家新增费用计算
-						Map<String, Object> sellmap = stockAnalysisServiceI.buyOrSellStockMoney(buyQuote.getQuotePrice(),sellQuote.getAmount(),sellQuote.getType());
-						double oinmoney = (double)sellmap.get("rsMoney");
+							//股票交易数量为买家购买数量
+							tradeStockAmount = buyQuote.getAmount();
 
-						//交易成功，交易卖家资产增加
-						stAccountServiceI.opearteUseMoney(sellQuote.getAccountId(),oinmoney,Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
+							stockAnalysisServiceI.trading(buyQuote, sellQuote, tradeStockAmount, sts);
 
-						//收取买家卖家佣金和卖家印花税
-						Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY + buyQuote.getCommissionFee() + (double)sellmap.get("commissionFee") + (double)sellmap.get("bstampFax");
+							//交易成功，交易卖家持仓减少
+							buyQuote.setAmount(buyQuote.getAmount() - tradeStockAmount);
 
-						//添加交易记录
-						StTradeRecord str = new StTradeRecord();
-						str.setId(UUID.randomUUID().toString());
-						str.setBuyerAccountId(buyQuote.getAccountId());
-						str.setSellerAccountId(sellQuote.getAccountId());
-						str.setAmount(sellQuote.getAmount());
-						str.setStockId(sellQuote.getStockId());
-						str.setQuotePrice(buyQuote.getQuotePrice());
-						BigDecimal quotePriceb = new BigDecimal(buyQuote.getQuotePrice());
-						BigDecimal amonutb = new BigDecimal(sellQuote.getAmount());
-						str.setDealMoney(quotePriceb.multiply(amonutb).doubleValue());
-						str.setDealFee((buyQuote.getCommissionFee()+(double)sellmap.get("commissionFee")));
-						str.setDealTax((double)sellmap.get("bstampFax"));
-						str.setDateTime(System.currentTimeMillis());
+							//买家移出队列
+							Constant.buyList.removeElement(buyQuote);
 
-						//股票列表，设置股票编码
-						StStock sts = Constant.stockTable.get(sellQuote.getStockId());
+						} else if (buyQuote.getAmount() == sellQuote.getAmount()) {//买卖相等
 
-						if (sts != null) {
-							str.setStockCode(sts.getStockCode());
-						}
+							tradeStockAmount = buyQuote.getAmount();
 
-						//交易记录列表
-						stTradeRecordServiceI.addStTradeRecord(str);
+							stockAnalysisServiceI.trading(buyQuote,sellQuote,tradeStockAmount,sts);
 
-						logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--"+"--交易股票->"+sts.getStockName() + "--股票编码->"+sts.getStockCode()+"--交易价格->" + buyQuote.getQuotePrice()+ "-交易数量->" + buyQuote.getAmount()+ "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue()+ "-买家佣金->" + buyQuote.getCommissionFee() + "-卖家佣金->" +  (double)sellmap.get("commissionFee") + "-印花税->" + + (double)sellmap.get("bstampFax"));
+							//买家卖家移出队列
+							Constant.sellList.removeElement(sellQuote);
+							Constant.buyList.removeElement(buyQuote);
+						}else if(buyQuote.getAmount()>sellQuote.getAmount()){//买多卖少
 
-						//移除记录
-						Constant.sellList.removeElement(sellQuote);
-						Constant.buyList.removeElement(buyQuote);
-					}
+							//股票交易数量为卖家卖掉数量
+							tradeStockAmount = sellQuote.getAmount();
+
+							stockAnalysisServiceI.trading(buyQuote,sellQuote,tradeStockAmount,sts);
+
+							//交易成功，交易买家报价金额减少
+							Map<String, Object> sellmap = stockAnalysisServiceI.buyOrSellStockMoney(buyQuote.getQuotePrice(), tradeStockAmount, sellQuote.getType());
+							buyQuote.setFrozeMoney(buyQuote.getFrozeMoney() - (double) sellmap.get("rsMoney"));
+							buyQuote.setCommissionFee(buyQuote.getCommissionFee() - (double) sellmap.get("rsMoney"));
+							//卖家移出队列
+							Constant.sellList.removeElement(sellQuote);
+					    }
 
 //					if (!Constant.stTradeQueueMap.isEmpty()) {
 //						for (String s : Constant.stTradeQueueMap.keySet()) {
@@ -128,7 +121,7 @@ public class StTradeThread implements Runnable {
 //								}
 //							}
 //						}
-//					}
+					}
 					Thread.sleep(10);
 				} else {
 					Thread.sleep(10);

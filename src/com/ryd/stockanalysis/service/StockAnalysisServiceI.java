@@ -1,6 +1,7 @@
 package com.ryd.stockanalysis.service;
 
 import com.ryd.stockanalysis.bean.StQuote;
+import com.ryd.stockanalysis.bean.StStock;
 
 import java.util.Map;
 
@@ -14,12 +15,27 @@ import java.util.Map;
 public interface StockAnalysisServiceI {
 
     /**
+     * 交易
+     * @param buyQuote
+     * @param sellQuote
+     * @param tradeStockAmount 股票实际交易量
+     * @param sts
+     */
+    public void trading(StQuote buyQuote, StQuote sellQuote, int tradeStockAmount,StStock sts);
+    /**
      * 结算结果
      * @return
      */
     public boolean settleResult();
 
 
+    /**
+     * 买卖钱数
+     * @param qutoPrice
+     * @param amount
+     * @param type
+     * @return
+     */
     public Map<String, Object> buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
     /**
      * 报价
