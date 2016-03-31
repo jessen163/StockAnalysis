@@ -10,7 +10,9 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 /**
- * Created by THINK on 2016/3/30.
+ * 单只股票的报价信息
+ * 用于存储单只股票的买的报价队列信息和卖的报价信息
+ * 2016-3-31
  */
 public class StTradeQueue implements Serializable {
     private static final long serialVersionUID = 1531524722654988278L;
@@ -37,7 +39,7 @@ public class StTradeQueue implements Serializable {
 
     public void addBuyStQuote(StQuote stQuote) {
         synchronized (this.buyList) {
-            buyList.put(stQuote.getQuotePriceForSort(), stQuote);
+            buyList.put(Long.MAX_VALUE - stQuote.getQuotePriceForSort(), stQuote);
         }
     }
 
@@ -55,10 +57,22 @@ public class StTradeQueue implements Serializable {
 
     public StQuote getStQuote(Long key, int type) {
         if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
-            sellMap = buyList.higherEntry(key);
+            sellMap = buyList.lowerEntry(key);
         } else {
             sellMap = sellList.higherEntry(key);
         }
         return sellMap==null?null:sellMap.getValue();
+    }
+
+    @Override
+    public String toString() {
+        return "StTradeQueue{" +
+                "stockId='" + stockId + '\'' +
+                ", StQuote=" + StQuote +
+                ", type=" + type +
+                ", sellList=" + sellList +
+                ", buyList=" + buyList +
+                ", sellMap=" + sellMap +
+                '}';
     }
 }

@@ -131,51 +131,36 @@ public class StTradeThread implements Runnable {
 					Thread.sleep(10);
 				}
 				if (!Constant.stTradeQueueMap.isEmpty()) {
-					synchronized (Constant.stTradeQueueMap) {
+					logger.info("股票交易引擎---------------开始--------------------");
+//					synchronized (Constant.stTradeQueueMap) {
 						for (String s : Constant.stTradeQueueMap.keySet()) {
 							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
-//							stTradeQueueMap.buyList.entrySet();
 							if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
-//							Set<Map.Entry<Long, StQuote>> buyListSet = stTradeQueueMap.buyList.entrySet();
-//							Set<Map.Entry<Long, StQuote>> sellListSet = stTradeQueueMap.sellList.entrySet();
-//							Iterator<Map.Entry<Long, org.jopenexchg.matcher.PriceLeader>> its =  peerPrcLdrSet.iterator();
-//							Iterator<Map.Entry<Long, StQuote>> buyIts = buyListSet.iterator();
-//							Iterator<Map.Entry<Long, StQuote>> sellIts = sellListSet.iterator();
-//							stTradeQueueMap.sellList.headMap(maxSellPrior, true);
-//						stTradeQueueMap.sellList.
-//							for (Map.Entry<Long, StQuote> buyQuoteEntry: buyListSet) {
-//								for (Map.Entry<Long, StQuote> sellQuoteEntry: sellListSet) {
-//									StQuote buyQuote = buyQuoteEntry.getValue();
-//									StQuote sellQuote = sellQuoteEntry.getValue();
-//
-//									if (sellQuote.getAmount() == buyQuote.getAmount() && Double.doubleToLongBits(sellQuote.getQuotePrice()) <= Double.doubleToLongBits(buyQuote.getQuotePrice())) {
-//										stTradeQueueMap.buyList.remove(buyQuoteEntry.getKey());
-//										stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
-//									}
-//								}
-//							}
-//							while ()
+							logger.info("stTradeQueueMap: 股票ID"+s+"-------------------其他信息："+stTradeQueueMap);
 							boolean flag = true;
-							Long key = 0L;
+							Long buyerKey = 0L;
+							Long sellerKey = Long.MAX_VALUE;
 							while (flag) {
-								StQuote sellQuote = stTradeQueueMap.getStQuote(key, 1);
-								if (sellQuote==null) {
+								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, 1);
+								StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, 2);
+								if (sellQuote==null||buyQuote==null) {
 									flag = false;
 									break;
 								}
-								StQuote buyQuote = stTradeQueueMap.getStQuote(key, 2);
-								if (buyQuote==null) {
-									flag = false;
-									break;
-								}
+								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
+								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
 								if (sellQuote.getQuotePrice().equals(buyQuote.getQuotePrice())) {
 									stTradeQueueMap.removeBuyStQuote(buyQuote);
-									stTradeQueueMap.removeBuyStQuote(buyQuote);
+									stTradeQueueMap.removeSellStQuote(sellQuote);
 								}
-								key = sellQuote.getQuotePriceForSort();
+								buyerKey = buyQuote.getQuotePriceForSort();
+								sellerKey = sellQuote.getQuotePriceForSort();
 							}
+
+							Constant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
-					}
+//					}
+					logger.info("股票交易引擎---------------结束--------------------");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
