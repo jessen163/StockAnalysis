@@ -2,6 +2,8 @@ package com.ryd.stockanalysis.service;
 
 import com.ryd.stockanalysis.bean.StQuote;
 
+import java.util.Map;
+
 /**
  * <p>标题:</p>
  * <p>描述:</p>
@@ -18,7 +20,7 @@ public interface StockAnalysisServiceI {
     public boolean settleResult();
 
 
-    public double buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
+    public Map<String, Object> buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
     /**
      * 报价
      * @param stQuote

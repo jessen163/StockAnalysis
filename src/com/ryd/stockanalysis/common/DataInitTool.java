@@ -43,6 +43,11 @@ public class DataInitTool {
         }
 
         logger.info(disinfo+"--所有资产总金额->"+totalAllMoney+"--所有资产总可用金额->"+totalUseMoney);
+
+        if("settle结算后".equals(disinfo)){
+            logger.info(disinfo+"--交易费用总金额->"+Constant.STOCK_TRADE_AGENT_MONEY);
+        }
+
         for(String skey: Constant.stockTable.keySet()) {
             StStock st = Constant.stockTable.get(skey);
             Integer amount = (Integer) stmap.get(skey);
@@ -53,6 +58,7 @@ public class DataInitTool {
                 logger.info(disinfo + "--股票->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--总数量->" + amount);
             }
         }
+
         return false;
     }
 

@@ -33,6 +33,9 @@ public class Constant {
     //交易记录列表
     public static List<StTradeRecord> recordList = new ArrayList<StTradeRecord>();
 
+    //交易费用
+    public static Double STOCK_TRADE_AGENT_MONEY = 0d;
+
     //1、买，2、卖
     public static Integer STOCK_STQUOTE_TYPE_BUY=1;
     public static Integer STOCK_STQUOTE_TYPE_SELL=2;
@@ -56,7 +59,7 @@ public class Constant {
     public static Integer STQUOTE_B_NUM = 20;
     public static Integer STQUOTE_C_NUM = 40;
     public static Integer STQUOTE_D_NUM = 40;
-    public static Integer STQUOTE_E_NUM = 40;
+    public static Integer STQUOTE_E_NUM = 50;
 
     //A、B、C、D、E买卖报价
     public static Double STQUOTE_A_QUOTEPRICE = 10d;

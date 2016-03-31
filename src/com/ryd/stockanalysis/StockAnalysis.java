@@ -80,7 +80,7 @@ public class StockAnalysis {
 
         for(StTradeRecord stt:Constant.recordList){
             StStock stock = Constant.stockTable.get(stt.getStockId());
-            logger.info("记录分析--交易买方->"+stt.getBuyerAccountId()+"--卖方->"+stt.getSellerAccountId()+"--交易股票->"+stock.getStockName()+"--股票编码->"+stock.getStockCode()+"--交易价格->"+stt.getQuotePrice()+"--交易数量->"+stt.getAmount()+"--交易总额->"+stt.getDealMoney());
+            logger.info("记录分析--交易买方->"+stt.getBuyerAccountId()+"--卖方->"+stt.getSellerAccountId()+"--交易股票->"+stock.getStockName()+"--股票编码->"+stock.getStockCode()+"--交易价格->"+stt.getQuotePrice()+"--交易数量->"+stt.getAmount()+"--交易总额->"+stt.getDealMoney()+"--买卖家佣金总合->"+stt.getDealFee()+"--印花税->"+stt.getDealTax());
         }
 
         //数据监测

@@ -74,47 +74,50 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     }
 
     @Override
-    public double buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type) {
+    public synchronized Map<String, Object> buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type) {
 
-        double dealMoney = 0d;
+        Map<String, Object> rs = new HashMap<String, Object>();
+
+        double rsMoney = 0d;
         //金额
         BigDecimal volMoney = null;
 
-        BigDecimal qutoPriceb = new BigDecimal(qutoPrice==null ? 0 : 0d);
-        BigDecimal amountb = new BigDecimal(amount == null ? 0 : 0);
+        BigDecimal qutoPriceb = new BigDecimal(qutoPrice==null ? 0 : qutoPrice);
+        BigDecimal amountb = new BigDecimal(amount == null ? 0 : amount);
 
         volMoney = qutoPriceb.multiply(amountb);
+
+        //佣金
+        double commissionFee = 0d;
+        //印花税
+        double bstampFax = 0d;
+        //佣金比例
+        BigDecimal cratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+        //计算佣金
+        commissionFee = volMoney.multiply(cratio).doubleValue();
 
         //买股票
         if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
 
-            //佣金
-            double commissionFee = 0d;
-            //佣金比例
-            BigDecimal cratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
-            //计算佣金
-            commissionFee = volMoney.multiply(cratio).doubleValue();
-
-            dealMoney = volMoney.doubleValue() + commissionFee;
+            rsMoney = volMoney.doubleValue() + commissionFee;
 
         }else if (type == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
-            //佣金
-            double bcommissionFee = 0d;
-            //印花税
-            double bstampFax = 0d;
-            //佣金比例
-            BigDecimal bcratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+
             //印花税比例
             BigDecimal bsratio = new BigDecimal(Constant.STOCK_STAMP_TAX);
-            //计算佣金和印花税
-            bcommissionFee = volMoney.multiply(bcratio).doubleValue();
+            //计算印花税
             bstampFax = volMoney.multiply(bsratio).doubleValue();
 
-            dealMoney = volMoney.doubleValue() - (bcommissionFee+bstampFax);
+            rsMoney = volMoney.doubleValue() - (commissionFee+bstampFax);
 
         }else{}
 
-        return dealMoney;
+        rs.put("rsMoney",rsMoney);
+        rs.put("volMoney",volMoney);
+        rs.put("commissionFee",commissionFee);
+        rs.put("bstampFax",bstampFax);
+
+        return rs;
     }
 
 
@@ -131,11 +134,13 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
             //委托买股票，减少资产
 
+            //金额计算
+            Map<String, Object> rsmap = buyOrSellStockMoney(stQuote.getQuotePrice(), stQuote.getAmount(), stQuote.getType());
             //冻结资金
-            double frozenMoney = buyOrSellStockMoney(stQuote.getQuotePrice(),stQuote.getAmount(),stQuote.getType());
-            stQuote.setFrozeMoney(frozenMoney);
+            stQuote.setFrozeMoney((double)rsmap.get("rsMoney"));
+            stQuote.setCommissionFee((double)rsmap.get("commissionFee"));
 
-            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),frozenMoney, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),(double)rsmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
 
         }else if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
             //委托卖股票，减少股票持仓数量
