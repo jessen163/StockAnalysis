@@ -9,12 +9,22 @@ package com.ryd.stockanalysis.service;
  */
 public interface StAccountServiceI {
 
+
     /**
-     * 增加/减少资产
+     * 增加/减少可用资产
      * @param accountId
      * @param oinmoney
      * @param type 增加/减少
      * @return
      */
     public boolean opearteUseMoney(String accountId, double oinmoney, int type);
+
+    /**
+     * 增加/减少总资产
+     * @param accountId
+     * @param oinmoney
+     * @param type 增加/减少
+     * @return
+     */
+    public boolean opearteTotalMoney(String accountId, double oinmoney, int type);
 }
