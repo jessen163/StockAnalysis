@@ -100,32 +100,57 @@ public class StTradeThread implements Runnable {
 						Constant.buyList.removeElement(buyQuote);
 					}
 
-					if (!Constant.stTradeQueueMap.isEmpty()) {
-						for (String s : Constant.stTradeQueueMap.keySet()) {
-							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
-							stTradeQueueMap.buyList.entrySet();
-							if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
-							Set<Map.Entry<Long, StQuote>> buyListSet = stTradeQueueMap.buyList.entrySet();
-							Set<Map.Entry<Long, StQuote>> sellListSet = stTradeQueueMap.sellList.entrySet();
-//							Iterator<Map.Entry<Long, org.jopenexchg.matcher.PriceLeader>> its =  peerPrcLdrSet.iterator();
-							Iterator<Map.Entry<Long, StQuote>> buyIts = buyListSet.iterator();
-							Iterator<Map.Entry<Long, StQuote>> sellIts = sellListSet.iterator();
-							for (Map.Entry<Long, StQuote> buyQuoteEntry: buyListSet) {
-								for (Map.Entry<Long, StQuote> sellQuoteEntry: sellListSet) {
-									buyQuote = buyQuoteEntry.getValue();
-									sellQuote = sellQuoteEntry.getValue();
 
-									if (sellQuote.getAmount() == buyQuote.getAmount() && Double.doubleToLongBits(sellQuote.getQuotePrice()) <= Double.doubleToLongBits(buyQuote.getQuotePrice())) {
-										stTradeQueueMap.buyList.remove(buyQuoteEntry.getKey());
-										stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
-									}
-								}
-							}
-						}
-					}
 					Thread.sleep(10);
 				} else {
 					Thread.sleep(10);
+				}
+				if (!Constant.stTradeQueueMap.isEmpty()) {
+					synchronized (Constant.stTradeQueueMap) {
+						for (String s : Constant.stTradeQueueMap.keySet()) {
+							StTradeQueue stTradeQueueMap = Constant.stTradeQueueMap.get(s);
+//							stTradeQueueMap.buyList.entrySet();
+							if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
+//							Set<Map.Entry<Long, StQuote>> buyListSet = stTradeQueueMap.buyList.entrySet();
+//							Set<Map.Entry<Long, StQuote>> sellListSet = stTradeQueueMap.sellList.entrySet();
+//							Iterator<Map.Entry<Long, org.jopenexchg.matcher.PriceLeader>> its =  peerPrcLdrSet.iterator();
+//							Iterator<Map.Entry<Long, StQuote>> buyIts = buyListSet.iterator();
+//							Iterator<Map.Entry<Long, StQuote>> sellIts = sellListSet.iterator();
+//							stTradeQueueMap.sellList.headMap(maxSellPrior, true);
+//						stTradeQueueMap.sellList.
+//							for (Map.Entry<Long, StQuote> buyQuoteEntry: buyListSet) {
+//								for (Map.Entry<Long, StQuote> sellQuoteEntry: sellListSet) {
+//									StQuote buyQuote = buyQuoteEntry.getValue();
+//									StQuote sellQuote = sellQuoteEntry.getValue();
+//
+//									if (sellQuote.getAmount() == buyQuote.getAmount() && Double.doubleToLongBits(sellQuote.getQuotePrice()) <= Double.doubleToLongBits(buyQuote.getQuotePrice())) {
+//										stTradeQueueMap.buyList.remove(buyQuoteEntry.getKey());
+//										stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
+//									}
+//								}
+//							}
+//							while ()
+							boolean flag = true;
+							Long key = 0L;
+							while (flag) {
+								StQuote sellQuote = stTradeQueueMap.getStQuote(key, 1);
+								if (sellQuote==null) {
+									flag = false;
+									break;
+								}
+								StQuote buyQuote = stTradeQueueMap.getStQuote(key, 2);
+								if (buyQuote==null) {
+									flag = false;
+									break;
+								}
+								if (sellQuote.getQuotePrice().equals(buyQuote.getQuotePrice())) {
+									stTradeQueueMap.removeBuyStQuote(buyQuote);
+									stTradeQueueMap.removeBuyStQuote(buyQuote);
+								}
+								key = sellQuote.getQuotePriceForSort();
+							}
+						}
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
