@@ -110,6 +110,7 @@ public class StTradeThread implements Runnable {
 									stTradeQueueMap.sellList.remove(sellQuoteEntry.getKey());
 								}
 							}
+							Constant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
 					}
         			Thread.sleep(10);
