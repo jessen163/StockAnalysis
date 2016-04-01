@@ -14,14 +14,14 @@ import java.util.Map;
  */
 public interface StockAnalysisServiceI {
 
+
     /**
      * 交易
      * @param buyQuote
      * @param sellQuote
-     * @param tradeStockAmount 股票实际交易量
      * @param sts
      */
-    public void trading(StQuote buyQuote, StQuote sellQuote, int tradeStockAmount,StStock sts);
+    public void dealTrading(StQuote buyQuote, StQuote sellQuote, StStock sts);
     /**
      * 结算结果
      * @return

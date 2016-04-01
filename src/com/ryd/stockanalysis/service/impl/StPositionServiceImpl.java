@@ -39,7 +39,7 @@ public class StPositionServiceImpl implements StPositionServiceI {
         }
 
         //如果状态为增加，则是增加仓位
-        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD) {
+        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD.intValue()) {
 
             //如果对应仓位为空，新建对应这支股票的仓位
             if (stp == null) {
@@ -63,7 +63,7 @@ public class StPositionServiceImpl implements StPositionServiceI {
             }
 
             return true;
-        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE) { //如果状态为减少，则是减少仓位
+        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE.intValue()) { //如果状态为减少，则是减少仓位
             //没有对应股票持仓
             if (stp == null) {
                 return false;

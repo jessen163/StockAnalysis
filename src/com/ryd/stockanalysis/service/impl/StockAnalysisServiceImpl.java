@@ -35,6 +35,54 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     }
 
     @Override
+    public void dealTrading(StQuote buyQuote, StQuote sellQuote, StStock sts){
+        //添加买入/卖出交易成功后的逻辑
+
+        //股票交易数量
+        int tradeStockAmount = 0;
+
+        //买少卖多
+        if (buyQuote.getAmount().intValue() < sellQuote.getAmount().intValue()) {
+
+            //股票交易数量为买家购买数量
+            tradeStockAmount = buyQuote.getAmount();
+
+            trading(buyQuote, sellQuote, tradeStockAmount, sts);
+
+            //交易成功，交易卖家持仓减少
+            sellQuote.setAmount(sellQuote.getAmount() - tradeStockAmount);
+
+            //买家移出队列
+            Constant.buyList.removeElement(buyQuote);
+
+        } else if (buyQuote.getAmount().intValue() == sellQuote.getAmount().intValue()) {//买卖相等
+
+            tradeStockAmount = buyQuote.getAmount();
+
+            trading(buyQuote, sellQuote, tradeStockAmount, sts);
+
+            //买家卖家移出队列
+            Constant.sellList.removeElement(sellQuote);
+            Constant.buyList.removeElement(buyQuote);
+
+        }else if(buyQuote.getAmount().intValue() > sellQuote.getAmount().intValue()){//买多卖少
+
+            //股票交易数量为卖家卖掉数量
+            tradeStockAmount = sellQuote.getAmount();
+
+            trading(buyQuote, sellQuote, tradeStockAmount, sts);
+
+            //交易成功，交易买家报价金额减少
+            Map<String, Object> buymap = buyOrSellStockMoney(buyQuote.getQuotePrice(), tradeStockAmount, buyQuote.getType());
+            buyQuote.setFrozeMoney((buyQuote.getFrozeMoney() - (double) buymap.get("rsMoney")));
+            buyQuote.setCommissionFee(buyQuote.getCommissionFee() - (double) buymap.get("rsMoney"));
+
+            //卖家移出队列
+            Constant.sellList.removeElement(sellQuote);
+        }
+    }
+
+
     public void trading(StQuote buyQuote, StQuote sellQuote, int tradeStockAmount,StStock sts){
 
         //交易成功，交易买家持仓增加
@@ -48,7 +96,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         double fee = new BigDecimal((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
         //收取买家卖家佣金和卖家印花税
-        Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY + fee + (double) sellmap.get("bstampFax");
+        Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY.intValue() + fee + (double) sellmap.get("bstampFax");
 
         //添加交易记录
         StTradeRecord str = new StTradeRecord();
@@ -72,7 +120,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--" + "--交易股票->" + sts.getStockName() + "--股票编码->" + sts.getStockCode() + "--交易价格->" + buyQuote.getQuotePrice() + "-交易数量->" + buyQuote.getAmount() + "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue() + "-买家卖家佣金->" + fee + "-印花税->" + +(double) sellmap.get("bstampFax"));
     }
 
-
+    @Override
     public boolean settleResult(){
         //卖家结算
         LinkedList<StQuote> sellLinkList = Constant.sellList.getList();
@@ -136,11 +184,11 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         commissionFee = volMoney.multiply(cratio).doubleValue();
 
         //买股票
-        if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
+        if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
 
             rsMoney = volMoney.doubleValue() + commissionFee;
 
-        }else if (type == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
+        }else if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
 
             //印花税比例
             BigDecimal bsratio = new BigDecimal(Constant.STOCK_STAMP_TAX);
@@ -170,7 +218,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         boolean rs = false;
 
         //买股票
-        if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
+        if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
             //委托买股票，减少资产
 
             //金额计算
@@ -178,9 +226,9 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             //冻结资金
             stQuote.setFrozeMoney((double)rsmap.get("rsMoney"));
             stQuote.setCommissionFee((double) rsmap.get("commissionFee"));
-            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(),(double)rsmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(), (double) rsmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
 
-        }else if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_SELL) {//卖股票
+        }else if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
             //委托卖股票，减少股票持仓数量
             rs = stPositionServiceI.operateStPosition(stQuote.getAccountId(),stQuote.getStockId(),stQuote.getAmount(),Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
         }else{}
@@ -196,12 +244,12 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
                 stTradeQueue = new StTradeQueue();
             }
             synchronized (Constant.stTradeQueueMap) {
-                if (stQuote.getType() == Constant.STOCK_STQUOTE_TYPE_BUY) {
-//            	Constant.buyList.add(stQuote);
+                if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
+            	Constant.buyList.add(stQuote);
                     stTradeQueue.addBuyStQuote(stQuote);
                     stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
                 } else {
-//            	Constant.sellList.add(stQuote);
+            	Constant.sellList.add(stQuote);
                     stTradeQueue.addSellStQuote(stQuote);
                     stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
                 }

@@ -27,10 +27,10 @@ public class StAccountServiceImpl implements StAccountServiceI {
         double totalMoney = account.getTotalMoney();
 
         //新增资产，交易增加费用
-        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD) {
+        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD.intValue()) {
             account.setUseMoney(useMoney + oinmoney);
             return true;
-        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE) { //如果状态为减少，则是减少费用
+        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE.intValue()) { //如果状态为减少，则是减少费用
             //交易减少费用
             if (useMoney >= oinmoney) {
                 account.setUseMoney(useMoney - oinmoney);
@@ -56,10 +56,10 @@ public class StAccountServiceImpl implements StAccountServiceI {
         double totalMoney = account.getTotalMoney();
 
         //新增资产，交易增加费用
-        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD) {
+        if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD.intValue()) {
             account.setTotalMoney(totalMoney + oinmoney);
             return true;
-        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE) { //如果状态为减少，则是减少费用
+        }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE.intValue()) { //如果状态为减少，则是减少费用
             //交易减少费用
             if (totalMoney >= oinmoney) {
 //                account.setTotalMoney(totalMoney - oinmoney);
