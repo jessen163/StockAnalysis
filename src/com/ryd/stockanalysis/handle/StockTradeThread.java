@@ -41,7 +41,7 @@ public class StockTradeThread implements Runnable {
 					for (String key : quoteTable.keySet()) {
 						Map paramMap = quoteTable.get(key);
 						if (paramMap == null) {
-							Thread.sleep(10);
+							Thread.sleep(100);
 							continue;
 						}
 
@@ -57,12 +57,12 @@ public class StockTradeThread implements Runnable {
 
 						stockAnalysisServiceI.quotePrice(stQuote);
 
-						logger.info(paramMap.get("info").toString());
+						logger.info(paramMap.get("info").toString()+"--报价时间->"+stQuote.getDateTime());
 
-						Thread.sleep(10);
+						Thread.sleep(100);
 					}
 				}else{
-					Thread.sleep(10);
+					Thread.sleep(100);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

@@ -34,57 +34,56 @@ public class StockAnalysis {
         // 创建一个可重用固定线程数的线程池
         ExecutorService pool = Executors.newFixedThreadPool(50);
 
-        // 往线程池中放入用户报价（买入/卖出）信息------------StockTradeThread
-        pool.execute(new StTradeThread());
-
         //创建基础数据
-        DataInitTool.createBaseData();
-        DataInitTool.initQuotePriceMap(pool,serviceI);
+        boolean rs = DataInitTool.createBaseData();
 
         //数据监测
         DataInitTool.dataCheck("open开盘前");
-
         //初始数据
-        for(String key: Constant.stAccounts.keySet()){
+        for (String key : Constant.stAccounts.keySet()) {
             StAccount uu = Constant.stAccounts.get(key);
-            DataInitTool.printAccountInfo(uu,"初始");
+            DataInitTool.printAccountInfo(uu, "初始");
         }
 
-//        //买卖家报价
-//        pool.execute(new StockTradeThread(serviceI));
+        if(rs) {
 
+            // 往线程池中放入用户报价（买入/卖出）信息------------StockTradeThread
+            pool.execute(new StTradeThread());
 
-        try {
-            //30秒后结算
-            Thread.sleep(1000*Constant.TRADE_LATER_TIME);
-            //结算前用户信息
-            for(String key: Constant.stAccounts.keySet()){
-                StAccount uu = Constant.stAccounts.get(key);
-                DataInitTool.printAccountInfo(uu,"结算前");
+            DataInitTool.initQuotePriceMap(pool, serviceI);
+
+            try {
+                //30秒后结算
+                Thread.sleep(1000 * Constant.TRADE_LATER_TIME);
+                //结算前用户信息
+                for (String key : Constant.stAccounts.keySet()) {
+                    StAccount uu = Constant.stAccounts.get(key);
+                    DataInitTool.printAccountInfo(uu, "结算前");
+                }
+                //结算信息
+                serviceI.settleResult();
+
+            } catch (InterruptedException e) {
+
             }
-            //结算信息
-            serviceI.settleResult();
 
-        }catch (InterruptedException e){
+
+            //结算后用户信息
+            for (String key : Constant.stAccounts.keySet()) {
+                StAccount uu = Constant.stAccounts.get(key);
+                DataInitTool.printAccountInfo(uu, "结算后");
+            }
+
+
+            for (StTradeRecord stt : Constant.recordList) {
+                StStock stock = Constant.stockTable.get(stt.getStockId());
+                logger.info("记录分析--交易买方->" + stt.getBuyerAccountId() + "--卖方->" + stt.getSellerAccountId() + "--交易股票->" + stock.getStockName() + "--股票编码->" + stock.getStockCode() + "--交易价格->" + stt.getQuotePrice() + "--交易数量->" + stt.getAmount() + "--交易总额->" + stt.getDealMoney() + "--买卖家佣金总合->" + stt.getDealFee() + "--印花税->" + stt.getDealTax());
+            }
+
+            //数据监测
+            DataInitTool.dataCheck("settle结算后");
 
         }
-
-
-        //结算后用户信息
-        for(String key: Constant.stAccounts.keySet()){
-            StAccount uu = Constant.stAccounts.get(key);
-            DataInitTool.printAccountInfo(uu,"结算后");
-        }
-
-
-        for(StTradeRecord stt:Constant.recordList){
-            StStock stock = Constant.stockTable.get(stt.getStockId());
-            logger.info("记录分析--交易买方->"+stt.getBuyerAccountId()+"--卖方->"+stt.getSellerAccountId()+"--交易股票->"+stock.getStockName()+"--股票编码->"+stock.getStockCode()+"--交易价格->"+stt.getQuotePrice()+"--交易数量->"+stt.getAmount()+"--交易总额->"+stt.getDealMoney()+"--买卖家佣金总合->"+stt.getDealFee()+"--印花税->"+stt.getDealTax());
-        }
-
-        //数据监测
-        DataInitTool.dataCheck("settle结算后");
-
         logger.info("股票分析---------------结束---------------------");
     }
 
