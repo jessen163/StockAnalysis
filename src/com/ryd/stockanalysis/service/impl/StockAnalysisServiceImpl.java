@@ -236,7 +236,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         if(rs) {
             stQuote.setQuoteId(UUID.randomUUID().toString());
             // 用于排序的字段
-            long quotePriceSort = Long.parseLong("100000000") * (int)(stQuote.getQuotePrice()*100)+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
+            long quotePriceSort = Long.parseLong("100000000") * stQuote.getQuotePrice().longValue()+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
             stQuote.setQuotePriceForSort(quotePriceSort);
 
             StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
@@ -247,11 +247,11 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
                 if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
             	Constant.buyList.add(stQuote);
                     stTradeQueue.addBuyStQuote(stQuote);
-                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
+//                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
                 } else {
             	Constant.sellList.add(stQuote);
                     stTradeQueue.addSellStQuote(stQuote);
-                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+//                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
                 }
                 Constant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
             }
