@@ -83,7 +83,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     }
 
 
-    public void trading(StQuote buyQuote, StQuote sellQuote, int tradeStockAmount,StStock sts){
+    private void trading(StQuote buyQuote, StQuote sellQuote, int tradeStockAmount,StStock sts){
 
         //交易成功，交易买家持仓增加
         stPositionServiceI.operateStPosition(buyQuote.getAccountId(), buyQuote.getStockId(), tradeStockAmount, Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
@@ -94,7 +94,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //交易成功，交易卖家资产增加
         stAccountServiceI.opearteUseMoney(sellQuote.getAccountId(), (double) sellmap.get("rsMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
-        double fee = new BigDecimal((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
+        double fee = BigDecimal.valueOf((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
         //收取买家卖家佣金和卖家印花税
         Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY.intValue() + fee + (double) sellmap.get("bstampFax");
 
@@ -106,7 +106,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         str.setAmount(tradeStockAmount);
         str.setStockId(sellQuote.getStockId());
         str.setQuotePrice(buyQuote.getQuotePrice());
-        BigDecimal quotePriceb = new BigDecimal(buyQuote.getQuotePrice());
+        BigDecimal quotePriceb = BigDecimal.valueOf(buyQuote.getQuotePrice());
         BigDecimal amonutb = new BigDecimal(tradeStockAmount);
         str.setDealMoney(quotePriceb.multiply(amonutb).doubleValue());
         str.setDealFee(fee);
@@ -169,7 +169,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //金额
         BigDecimal volMoney = null;
 
-        BigDecimal qutoPriceb = new BigDecimal(qutoPrice==null ? 0 : qutoPrice);
+        BigDecimal qutoPriceb = BigDecimal.valueOf(qutoPrice == null ? 0 : qutoPrice);
         BigDecimal amountb = new BigDecimal(amount == null ? 0 : amount);
 
         volMoney = qutoPriceb.multiply(amountb);
@@ -179,10 +179,9 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //印花税
         double bstampFax = 0d;
         //佣金比例
-        BigDecimal cratio = new BigDecimal(Constant.STOCK_COMMINSSION_MONEY);
+        BigDecimal cratio = BigDecimal.valueOf(Constant.STOCK_COMMINSSION_MONEY);
         //计算佣金
         commissionFee = volMoney.multiply(cratio).doubleValue();
-
         //买股票
         if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
 
@@ -191,7 +190,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         }else if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
 
             //印花税比例
-            BigDecimal bsratio = new BigDecimal(Constant.STOCK_STAMP_TAX);
+            BigDecimal bsratio = BigDecimal.valueOf(Constant.STOCK_STAMP_TAX);
             //计算印花税
             bstampFax = volMoney.multiply(bsratio).doubleValue();
 
