@@ -49,4 +49,16 @@ public class Constant {
     //印花税比例
     public static double STOCK_STAMP_TAX = 0.001;
 
+    //股票涨跌幅度
+    public static double STOCK_UP_AND_DOWN_EXTENT = 0.1;
+
+    //开盘时间
+    public static String STOCK_OPEN_TIME = "9:30";
+
+    //收盘时间
+    public static String STOCK_CLOSE_TIME = "15:00";
+
+    //休盘时间开始，结束
+    public static String STOCK_REST_TIME_START = "11:30";
+    public static String STOCK_REST_TIME_END = "13:00";
 }

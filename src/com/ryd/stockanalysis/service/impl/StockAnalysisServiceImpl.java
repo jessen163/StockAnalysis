@@ -401,4 +401,25 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         return true;
     }
+
+
+    @Override
+    public Map stockUpAndDownScope(double closePrice){
+
+        Map<String, Object> rs = new HashMap<String, Object>();
+
+        BigDecimal closePriceB = BigDecimal.valueOf(closePrice);
+        BigDecimal scopeB = BigDecimal.valueOf(Constant.STOCK_UP_AND_DOWN_EXTENT);
+
+        double extent = closePriceB.multiply(scopeB).doubleValue();
+
+        //上涨最大价格
+        rs.put("upMaxPrice",(closePrice+extent));
+        //下跌最小价格
+        rs.put("downMinPrice",(closePrice-extent));
+        //幅度
+        rs.put("extent",extent);
+
+        return rs;
+    }
 }

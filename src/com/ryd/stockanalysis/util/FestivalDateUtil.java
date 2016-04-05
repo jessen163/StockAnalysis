@@ -28,6 +28,8 @@ public class FestivalDateUtil {
 
     public static FestivalDateUtil instance;
 
+    public static String DATE_FORMAT = "yyyy-MM-dd";
+
     private final String FILE = "d:\\festival.xlsx";
 
     private List<Date> festival = new ArrayList<Date>();// 节假日
@@ -191,7 +193,7 @@ public class FestivalDateUtil {
 
     public Date getDate(String str) {
         Date dt = null;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         try {
             dt = df.parse(str);
         } catch (ParseException e) {
@@ -203,7 +205,7 @@ public class FestivalDateUtil {
 
     public String getDate(Date date) {
         String dt = null;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat(DATE_FORMAT);
         dt = df.format(date);
         return dt;
     }
@@ -215,30 +217,14 @@ public class FestivalDateUtil {
         //如果当前时间是工作日
         if(isWorkDay(calNow.getTime())) {
             long tnow = calNow.getTime().getTime();
-            //上午9：30
-            Calendar calH9 = Calendar.getInstance();
-            calH9.set(Calendar.HOUR_OF_DAY, 9);
-            calH9.set(Calendar.MINUTE, 30);
-            calH9.set(Calendar.SECOND, 0);
-            long t9 = calH9.getTime().getTime();
-            //上午11：30
-            Calendar calH11 = Calendar.getInstance();
-            calH11.set(Calendar.HOUR_OF_DAY, 11);
-            calH11.set(Calendar.MINUTE, 30);
-            calH11.set(Calendar.SECOND, 0);
-            long t11 = calH11.getTime().getTime();
-            //下午1：00
-            Calendar calH13 = Calendar.getInstance();
-            calH13.set(Calendar.HOUR_OF_DAY, 13);
-            calH13.set(Calendar.MINUTE, 0);
-            calH13.set(Calendar.SECOND, 0);
-            long t13 = calH13.getTime().getTime();
-            //下午3：00
-            Calendar calH15 = Calendar.getInstance();
-            calH15.set(Calendar.HOUR_OF_DAY, 15);
-            calH15.set(Calendar.MINUTE, 0);
-            calH15.set(Calendar.SECOND, 0);
-            long t15 = calH15.getTime().getTime();
+            //开盘时间
+            long t9 = getDateHour(Constant.STOCK_OPEN_TIME).getTime();
+            //休盘时间开始
+            long t11 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
+            //休盘时间结束
+            long t13 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
+            //收盘时间
+            long t15 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
 
             //如果当前时间在上午9：30~11：30之间，或者下午1：00~3：00之间，可以交易和报价
             if ((t9 < tnow && tnow < t11) || (t13 < tnow && tnow < t15)) {
@@ -251,6 +237,21 @@ public class FestivalDateUtil {
         }
         return Constant.STQUOTE_TRADE_TIMECOMPARE_3;
     }
+
+    /**
+     * 设置小时分钟
+     * @param hourStr
+     * @return
+     */
+    private Date getDateHour(String hourStr){
+        String[] strarr = hourStr.split(":");
+        Calendar cal = Calendar.getInstance();
+        if(strarr.length>0){
+            cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),cal.get(Calendar.DATE),Integer.parseInt(strarr[0]),Integer.parseInt(strarr[1]),0);
+        }
+        return cal.getTime();
+    }
+
     /**
      * @param args
      */

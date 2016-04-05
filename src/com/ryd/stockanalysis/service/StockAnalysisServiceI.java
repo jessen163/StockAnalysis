@@ -53,4 +53,11 @@ public interface StockAnalysisServiceI {
      */
     public boolean cancelStQuote(StQuote stQuote);
 
+
+    /**
+     * 计算股票涨跌幅
+     * @param closePrice 昨日收盘价
+     * @return
+     */
+    public Map stockUpAndDownScope(double closePrice);
 }
