@@ -222,9 +222,9 @@ public class FestivalDateUtil {
             //休盘时间开始
             long t11 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
             //休盘时间结束
-            long t13 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
+            long t13 = getDateHour(Constant.STOCK_REST_TIME_END).getTime();
             //收盘时间
-            long t15 = getDateHour(Constant.STOCK_REST_TIME_START).getTime();
+            long t15 = getDateHour(Constant.STOCK_CLOSE_TIME).getTime();
 
             //如果当前时间在上午9：30~11：30之间，或者下午1：00~3：00之间，可以交易和报价
             if ((t9 < tnow && tnow < t11) || (t13 < tnow && tnow < t15)) {
