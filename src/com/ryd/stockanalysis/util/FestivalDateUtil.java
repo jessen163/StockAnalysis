@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.ryd.stockanalysis.common.Constant;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.*;
 
@@ -23,23 +24,27 @@ import org.apache.poi.xssf.usermodel.*;
  * 创建时间：2016/4/5 10:25
  */
 
-public class Festival {
+public class FestivalDateUtil {
 
-    public static Festival instance;
+    public static FestivalDateUtil instance;
 
     private final String FILE = "d:\\festival.xlsx";
 
     private List<Date> festival = new ArrayList<Date>();// 节假日
     private List<Date> workDay = new ArrayList<Date>();// 工作日
 
-    public static Festival getInstance() {
+    public static FestivalDateUtil getInstance() {
         if (instance == null) {
-            instance = new Festival();
+            instance = new FestivalDateUtil();
         }
         return instance;
     }
 
-    public Festival() {
+    public FestivalDateUtil(){
+        readExcel();
+    }
+
+    public void readExcel() {
         File excel = this.getExcel();
         FileInputStream fin = null;
         try {
@@ -203,6 +208,49 @@ public class Festival {
         return dt;
     }
 
+
+    public int dateJudge(){
+        //当前时间
+        Calendar calNow = Calendar.getInstance();
+        //如果当前时间是工作日
+        if(isWorkDay(calNow.getTime())) {
+            long tnow = calNow.getTime().getTime();
+            //上午9：30
+            Calendar calH9 = Calendar.getInstance();
+            calH9.set(Calendar.HOUR_OF_DAY, 9);
+            calH9.set(Calendar.MINUTE, 30);
+            calH9.set(Calendar.SECOND, 0);
+            long t9 = calH9.getTime().getTime();
+            //上午11：30
+            Calendar calH11 = Calendar.getInstance();
+            calH11.set(Calendar.HOUR_OF_DAY, 11);
+            calH11.set(Calendar.MINUTE, 30);
+            calH11.set(Calendar.SECOND, 0);
+            long t11 = calH11.getTime().getTime();
+            //下午1：00
+            Calendar calH13 = Calendar.getInstance();
+            calH13.set(Calendar.HOUR_OF_DAY, 13);
+            calH13.set(Calendar.MINUTE, 0);
+            calH13.set(Calendar.SECOND, 0);
+            long t13 = calH13.getTime().getTime();
+            //下午3：00
+            Calendar calH15 = Calendar.getInstance();
+            calH15.set(Calendar.HOUR_OF_DAY, 15);
+            calH15.set(Calendar.MINUTE, 0);
+            calH15.set(Calendar.SECOND, 0);
+            long t15 = calH15.getTime().getTime();
+
+            //如果当前时间在上午9：30~11：30之间，或者下午1：00~3：00之间，可以交易和报价
+            if ((t9 < tnow && tnow < t11) || (t13 < tnow && tnow < t15)) {
+                return Constant.STQUOTE_TRADE_TIMECOMPARE_1;
+            } else if ((t11 < tnow && tnow < t13)) {//如果当前时间在11：30~13：00之间只允许报价
+                return Constant.STQUOTE_TRADE_TIMECOMPARE_2;
+            }else{//之外的时间，不允许报价，不允许交易
+                return Constant.STQUOTE_TRADE_TIMECOMPARE_3;
+            }
+        }
+        return Constant.STQUOTE_TRADE_TIMECOMPARE_3;
+    }
     /**
      * @param args
      */
@@ -214,13 +262,16 @@ public class Festival {
 
         System.out.println(dateString);
 
-        Festival f = Festival.getInstance();
+        FestivalDateUtil f = FestivalDateUtil.getInstance();
         //当前日期
         Date dt = f.getDate(dateString);
         //判断当前日期是不是工作日
         boolean isWorkDay = f.isWorkDay(dt);
 
         System.out.println(isWorkDay);
+
+        //判断当前时间状态
+        System.out.println(f.dateJudge());
     }
 }
 

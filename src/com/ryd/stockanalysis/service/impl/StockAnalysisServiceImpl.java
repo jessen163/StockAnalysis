@@ -5,6 +5,7 @@ import java.util.*;
 
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StAccountServiceI;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 import com.ryd.stockanalysis.service.StTradeRecordServiceI;
@@ -35,7 +36,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     }
 
     @Override
-    public void dealTrading(StQuote buyQuote, StQuote sellQuote, StStock sts){
+    public void dealTrading(StTradeQueue stTradeQueueMap, StQuote buyQuote, StQuote sellQuote, StStock sts){
         //添加买入/卖出交易成功后的逻辑
 
         //股票交易数量
@@ -54,7 +55,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             sellQuote.setAmount(sellQuote.getAmount() - tradeStockAmount);
 
             //买家移出队列
-            Constant.buyList.removeElement(buyQuote);
+//            DataConstant.buyList.removeElement(buyQuote);
+            stTradeQueueMap.removeBuyStQuote(buyQuote);
 
         } else if (buyQuote.getAmount().intValue() == sellQuote.getAmount().intValue()) {//买卖相等
 
@@ -63,9 +65,10 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             trading(buyQuote, sellQuote, tradeStockAmount, sts);
 
             //买家卖家移出队列
-            Constant.sellList.removeElement(sellQuote);
-            Constant.buyList.removeElement(buyQuote);
-
+//            DataConstant.sellList.removeElement(sellQuote);
+//            DataConstant.buyList.removeElement(buyQuote);
+            stTradeQueueMap.removeBuyStQuote(buyQuote);
+            stTradeQueueMap.removeSellStQuote(sellQuote);
         }else if(buyQuote.getAmount().intValue() > sellQuote.getAmount().intValue()){//买多卖少
 
             //股票交易数量为卖家卖掉数量
@@ -85,7 +88,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             buyQuote.setAmount(remainAmount);
 
             //卖家移出队列
-            Constant.sellList.removeElement(sellQuote);
+//            DataConstant.sellList.removeElement(sellQuote);
+            stTradeQueueMap.removeSellStQuote(sellQuote);
         }
     }
 
@@ -115,7 +119,11 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         double fee = BigDecimal.valueOf((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
         //收取买家卖家佣金和卖家印花税
-        Constant.STOCK_TRADE_AGENT_MONEY = Constant.STOCK_TRADE_AGENT_MONEY.intValue() + fee + (double) sellmap.get("bstampFax");
+        DataConstant.STOCK_TRADE_AGENT_MONEY = DataConstant.STOCK_TRADE_AGENT_MONEY.intValue() + fee + (double) sellmap.get("bstampFax");
+
+        //修改交易状态,变为交易中
+        buyQuote.setStatus(Constant.STOCK_STPOSITION_STATUS_DEAL);
+        sellQuote.setStatus(Constant.STOCK_STPOSITION_STATUS_DEAL);
 
         //添加交易记录
         StTradeRecord str = new StTradeRecord();
@@ -176,11 +184,56 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return tradeStockQuotePrice;
     }
 
-
     @Override
     public boolean settleResult(){
+        for (String key : DataConstant.stTradeQueueMap.keySet()) {
+            StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(key);
+
+            if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
+
+            //卖家结算
+            for(Long bkey: stTradeQueueMap.sellList.keySet()){
+                StQuote stq = (StQuote) stTradeQueueMap.sellList.get(bkey);
+
+                if (stq==null) {
+                    continue;
+                }
+
+                //撤回托管为卖的股票，持仓数量增加
+                stPositionServiceI.operateStPosition(stq.getAccountId(), stq.getStockId(), stq.getAmount(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
+
+                StStock sto = DataConstant.stockTable.get(stq.getStockId());
+
+                logger.info("卖家结算--卖家->" + stq.getAccountId() + "--股票名称->" + sto.getStockName() + "--股票编码->" + sto.getStockCode() + "--退还股票数--" +stq.getAmount());
+            }
+
+            //买家结算，退还未交易报价费用
+            for(Long skey: stTradeQueueMap.buyList.keySet()){
+
+                StQuote stqb = (StQuote)stTradeQueueMap.buyList.get(skey);
+
+                if (stqb==null) {
+                    continue;
+                }
+
+                //撤回托管买股票费用,帐户增加资产
+                stAccountServiceI.opearteUseMoney(stqb.getAccountId(), stqb.getFrozeMoney(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
+
+                StStock sto = DataConstant.stockTable.get(stqb.getStockId());
+
+                logger.info("买家结算--买家->"+stqb.getAccountId()+"--交易股票->"+sto.getStockName()+"--股票编码->"+sto.getStockCode()+"--退还金额->"+stqb.getFrozeMoney());
+            }
+
+            //清除结算完股票买卖队列
+            DataConstant.stTradeQueueMap.remove(key);
+        }
+        return true;
+    }
+
+
+    public boolean settleResultAcount(){
         //卖家结算
-        LinkedList<StQuote> sellLinkList = Constant.sellList.getList();
+        LinkedList<StQuote> sellLinkList = DataConstant.sellList.getList();
         Iterator iterator = sellLinkList.iterator();
         while (iterator.hasNext())
         {
@@ -189,16 +242,16 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             //撤回托管为卖的股票，持仓数量增加
             stPositionServiceI.operateStPosition(stq.getAccountId(), stq.getStockId(), stq.getAmount(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
-            StStock sto = Constant.stockTable.get(stq.getStockId());
+            StStock sto = DataConstant.stockTable.get(stq.getStockId());
 
             logger.info("卖家结算--卖家->" + stq.getAccountId() + "--股票名称->" + sto.getStockName() + "--股票编码->" + sto.getStockCode() + "--退还股票数--" +stq.getAmount());
        }
         //清除卖家队列
-        Constant.sellList.clear();
+        DataConstant.sellList.clear();
 
 
         //买家结算，退还未交易报价费用
-        LinkedList<StQuote> buyLinkList =  Constant.buyList.getList();
+        LinkedList<StQuote> buyLinkList =  DataConstant.buyList.getList();
         Iterator iteratorb = buyLinkList.iterator();
         while (iteratorb.hasNext())
         {
@@ -207,12 +260,12 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             //撤回托管买股票费用,帐户增加资产
             stAccountServiceI.opearteUseMoney(stqb.getAccountId(), stqb.getFrozeMoney(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
-            StStock sto = Constant.stockTable.get(stqb.getStockId());
+            StStock sto = DataConstant.stockTable.get(stqb.getStockId());
 
             logger.info("买家结算--买家->"+stqb.getAccountId()+"--交易股票->"+sto.getStockName()+"--股票编码->"+sto.getStockCode()+"--退还金额->"+stqb.getFrozeMoney());
         }
         //清除买家队列
-        Constant.buyList.clear();
+        DataConstant.buyList.clear();
 
         return true;
     }
@@ -258,7 +311,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         rs.put("figureMoney",figureMoney);
         rs.put("volMoney",volMoney);
         rs.put("commissionFee",commissionFee);
-        rs.put("bstampFax",bstampFax);
+        rs.put("bstampFax", bstampFax);
 
         return rs;
     }
@@ -295,24 +348,57 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             long quotePriceSort = Long.parseLong("100000000") * stQuote.getQuotePrice().longValue()+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
             stQuote.setQuotePriceForSort(quotePriceSort);
 
-            StTradeQueue stTradeQueue = Constant.stTradeQueueMap.get(stQuote.getStockId());
+            StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
             if (stTradeQueue==null) {
                 stTradeQueue = new StTradeQueue();
             }
-            synchronized (Constant.stTradeQueueMap) {
+            synchronized (DataConstant.stTradeQueueMap) {
                 if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
-            	Constant.buyList.add(stQuote);
+//            	DataConstant.buyList.add(stQuote);
                     stTradeQueue.addBuyStQuote(stQuote);
 //                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
                 } else {
-            	Constant.sellList.add(stQuote);
+//            	DataConstant.sellList.add(stQuote);
                     stTradeQueue.addSellStQuote(stQuote);
 //                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
                 }
-                Constant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
+                DataConstant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
             }
         }
 
         return stQuote;
+    }
+
+    @Override
+    public boolean cancelStQuote(StQuote stQuote){
+
+        //获取股票对应队列
+        StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
+        if (stTradeQueue==null) {
+            return false;
+        }
+
+        int quoteStatus = 0;
+        StQuote getQuote = null;
+        //获取队列里的报价
+        if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()){
+            getQuote = stTradeQueue.buyList.get(stQuote.getQuoteId());
+        }else if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL){
+            getQuote = stTradeQueue.sellList.get(stQuote.getQuoteId());
+        }
+
+        if(getQuote != null){
+            quoteStatus = getQuote.getStatus();
+        }
+
+        if(quoteStatus==1){
+            if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()){
+                stTradeQueue.buyList.remove(getQuote);
+            } else if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL){
+                stTradeQueue.sellList.remove(getQuote);
+            }
+        }
+
+        return true;
     }
 }

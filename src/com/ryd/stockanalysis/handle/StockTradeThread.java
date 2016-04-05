@@ -55,9 +55,9 @@ public class StockTradeThread implements Runnable {
 						stQuote.setDateTime(System.currentTimeMillis());
 						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
-						stockAnalysisServiceI.quotePrice(stQuote);
+						StQuote rss = stockAnalysisServiceI.quotePrice(stQuote);
 
-						logger.info(paramMap.get("info").toString()+"--报价时间->"+stQuote.getDateTime());
+						logger.info(paramMap.get("info").toString()+"--冻结资金->"+rss.getFrozeMoney()+"--报价时间->"+rss.getDateTime());
 
 						Thread.sleep(100);
 					}

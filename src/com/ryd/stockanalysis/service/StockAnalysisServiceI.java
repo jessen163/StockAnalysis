@@ -2,6 +2,7 @@ package com.ryd.stockanalysis.service;
 
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.bean.StStock;
+import com.ryd.stockanalysis.bean.StTradeQueue;
 
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public interface StockAnalysisServiceI {
      * @param sellQuote
      * @param sts
      */
-    public void dealTrading(StQuote buyQuote, StQuote sellQuote, StStock sts);
+    public void dealTrading(StTradeQueue stTradeQueueMap, StQuote buyQuote, StQuote sellQuote, StStock sts);
     /**
      * 结算结果
      * @return
@@ -44,5 +45,12 @@ public interface StockAnalysisServiceI {
      */
     public StQuote quotePrice(StQuote stQuote);
 
+
+    /**
+     * 撤单
+     * @param stQuote
+     * @return
+     */
+    public boolean cancelStQuote(StQuote stQuote);
 
 }
