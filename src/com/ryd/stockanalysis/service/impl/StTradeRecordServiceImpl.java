@@ -2,6 +2,7 @@ package com.ryd.stockanalysis.service.impl;
 
 import com.ryd.stockanalysis.bean.StTradeRecord;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StTradeRecordServiceI;
 
 /**
@@ -16,7 +17,7 @@ public class StTradeRecordServiceImpl implements StTradeRecordServiceI {
     @Override
     public StTradeRecord addStTradeRecord(StTradeRecord record){
         //添加交易记录列表
-        Constant.recordList.add(record);
+        DataConstant.recordList.add(record);
         return record;
     }
 }

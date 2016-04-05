@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.ryd.stockanalysis.bean.*;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.common.DataInitTool;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
@@ -40,8 +41,8 @@ public class StockAnalysis {
         //数据监测
         DataInitTool.dataCheck("open开盘前");
         //初始数据
-        for (String key : Constant.stAccounts.keySet()) {
-            StAccount uu = Constant.stAccounts.get(key);
+        for (String key : DataConstant.stAccounts.keySet()) {
+            StAccount uu = DataConstant.stAccounts.get(key);
             DataInitTool.printAccountInfo(uu, "初始");
         }
 
@@ -56,8 +57,8 @@ public class StockAnalysis {
                 //30秒后结算
                 Thread.sleep(1000 * Constant.TRADE_LATER_TIME);
                 //结算前用户信息
-                for (String key : Constant.stAccounts.keySet()) {
-                    StAccount uu = Constant.stAccounts.get(key);
+                for (String key : DataConstant.stAccounts.keySet()) {
+                    StAccount uu = DataConstant.stAccounts.get(key);
                     DataInitTool.printAccountInfo(uu, "结算前");
                 }
                 //结算信息
@@ -69,14 +70,14 @@ public class StockAnalysis {
 
 
             //结算后用户信息
-            for (String key : Constant.stAccounts.keySet()) {
-                StAccount uu = Constant.stAccounts.get(key);
+            for (String key : DataConstant.stAccounts.keySet()) {
+                StAccount uu = DataConstant.stAccounts.get(key);
                 DataInitTool.printAccountInfo(uu, "结算后");
             }
 
 
-            for (StTradeRecord stt : Constant.recordList) {
-                StStock stock = Constant.stockTable.get(stt.getStockId());
+            for (StTradeRecord stt : DataConstant.recordList) {
+                StStock stock = DataConstant.stockTable.get(stt.getStockId());
                 logger.info("记录分析--交易买方->" + stt.getBuyerAccountId() + "--卖方->" + stt.getSellerAccountId() + "--交易股票->" + stock.getStockName() + "--股票编码->" + stock.getStockCode() + "--交易价格->" + stt.getQuotePrice() + "--交易数量->" + stt.getAmount() + "--交易总额->" + stt.getDealMoney() + "--买卖家佣金总合->" + stt.getDealFee() + "--印花税->" + stt.getDealTax());
             }
 

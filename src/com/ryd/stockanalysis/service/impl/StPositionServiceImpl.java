@@ -3,6 +3,7 @@ package com.ryd.stockanalysis.service.impl;
 import com.ryd.stockanalysis.bean.StAccount;
 import com.ryd.stockanalysis.bean.StPosition;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class StPositionServiceImpl implements StPositionServiceI {
     public boolean operateStPosition(String accountId, String stockId, int amount,int type) {
 
         //获取对应的帐户信息
-        StAccount account = Constant.stAccounts.get(accountId);
+        StAccount account = DataConstant.stAccounts.get(accountId);
 
         if(account==null){return false;}
 
@@ -48,7 +49,7 @@ public class StPositionServiceImpl implements StPositionServiceI {
                 atPos.setPositionId(UUID.randomUUID().toString());
                 atPos.setAccountId(accountId);
                 atPos.setStockId(stockId);
-                atPos.setStStock(Constant.stockTable.get(stockId));
+                atPos.setStStock(DataConstant.stockTable.get(stockId));
                 atPos.setAmount(amount);
                 atPos.setStatus(Constant.STOCK_STPOSITION_STATUS_TRUSTEE);
 

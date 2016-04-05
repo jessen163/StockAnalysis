@@ -2,6 +2,7 @@ package com.ryd.stockanalysis.service.impl;
 
 import com.ryd.stockanalysis.bean.StAccount;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StAccountServiceI;
 
 /**
@@ -17,7 +18,7 @@ public class StAccountServiceImpl implements StAccountServiceI {
     public boolean opearteUseMoney(String accountId, double oinmoney, int type){
 
         //获取对应的帐户信息
-        StAccount account = Constant.stAccounts.get(accountId);
+        StAccount account = DataConstant.stAccounts.get(accountId);
 
         if(account==null){return false;}
 
@@ -48,7 +49,7 @@ public class StAccountServiceImpl implements StAccountServiceI {
     public boolean opearteTotalMoney(String accountId, double oinmoney, int type){
 
         //获取对应的帐户信息
-        StAccount account = Constant.stAccounts.get(accountId);
+        StAccount account = DataConstant.stAccounts.get(accountId);
 
         if(account==null){return false;}
 
