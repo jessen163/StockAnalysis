@@ -119,7 +119,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         double fee = BigDecimal.valueOf((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
         //收取买家卖家佣金和卖家印花税
-        DataConstant.STOCK_TRADE_AGENT_MONEY = DataConstant.STOCK_TRADE_AGENT_MONEY.intValue() + fee + (double) sellmap.get("bstampFax");
+        DataConstant.STOCK_TRADE_AGENT_MONEY = DataConstant.STOCK_TRADE_AGENT_MONEY.doubleValue() + fee + (double) sellmap.get("bstampFax");
 
         //修改交易状态,变为交易中
         buyQuote.setStatus(Constant.STOCK_STPOSITION_STATUS_DEAL);
