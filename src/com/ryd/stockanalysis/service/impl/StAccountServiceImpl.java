@@ -4,6 +4,7 @@ import com.ryd.stockanalysis.bean.StAccount;
 import com.ryd.stockanalysis.common.Constant;
 import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StAccountServiceI;
+import com.ryd.stockanalysis.util.ArithUtil;
 
 /**
  * <p>标题:</p>
@@ -29,12 +30,12 @@ public class StAccountServiceImpl implements StAccountServiceI {
 
         //新增资产，交易增加费用
         if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD.intValue()) {
-            account.setUseMoney(useMoney + oinmoney);
+            account.setUseMoney(ArithUtil.add(useMoney, oinmoney));
             return true;
         }else if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE.intValue()) { //如果状态为减少，则是减少费用
             //交易减少费用
-            if (useMoney >= oinmoney) {
-                account.setUseMoney(useMoney - oinmoney);
+            if (ArithUtil.compare(useMoney,oinmoney)>=0) {
+                account.setUseMoney(ArithUtil.subtract(useMoney, oinmoney));
                 return true;
             } else {
                 return false;
