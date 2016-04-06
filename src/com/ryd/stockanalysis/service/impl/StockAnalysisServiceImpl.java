@@ -1,6 +1,5 @@
 package com.ryd.stockanalysis.service.impl;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import com.ryd.stockanalysis.bean.*;
@@ -10,6 +9,7 @@ import com.ryd.stockanalysis.service.StAccountServiceI;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 import com.ryd.stockanalysis.service.StTradeRecordServiceI;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
+import com.ryd.stockanalysis.util.ArithUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -55,8 +55,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             sellQuote.setAmount(sellQuote.getAmount() - tradeStockAmount);
 
             //买家移出队列
-//            DataConstant.buyList.removeElement(buyQuote);
-            stTradeQueueMap.removeBuyStQuote(buyQuote);
+            DataConstant.buyList.removeElement(buyQuote);
+//            stTradeQueueMap.removeBuyStQuote(buyQuote);
 
         } else if (buyQuote.getAmount().intValue() == sellQuote.getAmount().intValue()) {//买卖相等
 
@@ -65,10 +65,10 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             trading(buyQuote, sellQuote, tradeStockAmount, sts);
 
             //买家卖家移出队列
-//            DataConstant.sellList.removeElement(sellQuote);
-//            DataConstant.buyList.removeElement(buyQuote);
-            stTradeQueueMap.removeBuyStQuote(buyQuote);
-            stTradeQueueMap.removeSellStQuote(sellQuote);
+            DataConstant.sellList.removeElement(sellQuote);
+            DataConstant.buyList.removeElement(buyQuote);
+//            stTradeQueueMap.removeBuyStQuote(buyQuote);
+//            stTradeQueueMap.removeSellStQuote(sellQuote);
         }else if(buyQuote.getAmount().intValue() > sellQuote.getAmount().intValue()){//买多卖少
 
             //股票交易数量为卖家卖掉数量
@@ -88,8 +88,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             buyQuote.setAmount(remainAmount);
 
             //卖家移出队列
-//            DataConstant.sellList.removeElement(sellQuote);
-            stTradeQueueMap.removeSellStQuote(sellQuote);
+            DataConstant.sellList.removeElement(sellQuote);
+//            stTradeQueueMap.removeSellStQuote(sellQuote);
         }
     }
 
@@ -117,9 +117,9 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //交易成功，交易卖家资产增加
         stAccountServiceI.opearteUseMoney(sellQuote.getAccountId(), (double) sellmap.get("figureMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
-        double fee = BigDecimal.valueOf((double) sellmap.get("commissionFee")).multiply(new BigDecimal(2)).doubleValue();
+        double fee = ArithUtil.multiply((double) sellmap.get("commissionFee"), 2);
         //收取买家卖家佣金和卖家印花税
-        DataConstant.STOCK_TRADE_AGENT_MONEY = DataConstant.STOCK_TRADE_AGENT_MONEY.doubleValue() + fee + (double) sellmap.get("bstampFax");
+        DataConstant.STOCK_TRADE_AGENT_MONEY = DataConstant.STOCK_TRADE_AGENT_MONEY.doubleValue() + ArithUtil.add(fee,(double) sellmap.get("bstampFax"));
 
         //修改交易状态,变为交易中
         buyQuote.setStatus(Constant.STOCK_STPOSITION_STATUS_DEAL);
@@ -133,9 +133,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         str.setAmount(tradeStockAmount);
         str.setStockId(sts.getStockId());
         str.setQuotePrice(tradeStockQuotePrice);
-        BigDecimal quotePriceb = BigDecimal.valueOf(tradeStockQuotePrice);
-        BigDecimal amonutb = new BigDecimal(tradeStockAmount);
-        str.setDealMoney(quotePriceb.multiply(amonutb).doubleValue());
+        str.setDealMoney(ArithUtil.multiply(tradeStockQuotePrice, tradeStockAmount));
         str.setDealFee(fee);
         str.setDealTax((double) sellmap.get("bstampFax"));
         str.setDateTime(System.currentTimeMillis());
@@ -144,7 +142,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //交易记录列表
         stTradeRecordServiceI.addStTradeRecord(str);
 
-        logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--" + "--交易股票->" + sts.getStockName() + "--股票编码->" + sts.getStockCode() + "--交易价格->" + tradeStockQuotePrice + "-交易数量->" + tradeStockAmount + "-交易总额->" + quotePriceb.multiply(amonutb).doubleValue() + "-买家卖家佣金->" + fee + "-印花税->" + +(double) sellmap.get("bstampFax"));
+        logger.info("交易--买家->" + buyQuote.getAccountId() + "-和-卖家->" + sellQuote.getAccountId() + "--交易成功--" + "--交易股票->" + sts.getStockName() + "--股票编码->" + sts.getStockCode() + "--交易价格->" + tradeStockQuotePrice + "-交易数量->" + tradeStockAmount + "-交易总额->" + ArithUtil.multiply(tradeStockQuotePrice,tradeStockAmount) + "-买家卖家佣金->" + fee + "-印花税->" + +(double) sellmap.get("bstampFax"));
     }
 
     /**
@@ -157,7 +155,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         double tradeStockQuotePrice = 0d;
         //买家报价大于卖家报价
-        if(Double.doubleToLongBits(sellQuote.getQuotePrice()) < Double.doubleToLongBits(buyQuote.getQuotePrice())){
+        if(ArithUtil.compare(buyQuote.getQuotePrice(),sellQuote.getQuotePrice())==1){
             //如果卖家报价早于买家报价
             if(sellQuote.getDateTime().longValue() < buyQuote.getDateTime().longValue()){
                 //交易价格取卖家报价
@@ -170,7 +168,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
                 //以交易价格计算交易成本
                 Map<String, Object> dealmap = buyOrSellStockMoney(tradeStockQuotePrice, tradeStockAmount, buyQuote.getType());
                 //节省成本
-                saveMoney = (double) buymap.get("figureMoney") - (double) dealmap.get("figureMoney");
+                saveMoney = ArithUtil.subtract((double) buymap.get("figureMoney"), (double) dealmap.get("figureMoney"));
                 //将节省成本归还买家
                 stAccountServiceI.opearteUseMoney(buyQuote.getAccountId(),saveMoney,Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD);
 
@@ -184,8 +182,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return tradeStockQuotePrice;
     }
 
-    @Override
-    public boolean settleResult(){
+
+    public boolean settleResultAcount(){
         for (String key : DataConstant.stTradeQueueMap.keySet()) {
             StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(key);
 
@@ -230,8 +228,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return true;
     }
 
-
-    public boolean settleResultAcount(){
+    @Override
+    public boolean settleResult(){
         //卖家结算
         LinkedList<StQuote> sellLinkList = DataConstant.sellList.getList();
         Iterator iterator = sellLinkList.iterator();
@@ -277,34 +275,26 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         double figureMoney = 0d;
         //金额
-        BigDecimal volMoney = null;
+        double volMoney = 0d;
 
-        BigDecimal qutoPriceb = BigDecimal.valueOf(qutoPrice == null ? 0 : qutoPrice);
-        BigDecimal amountb = new BigDecimal(amount == null ? 0 : amount);
-
-        volMoney = qutoPriceb.multiply(amountb);
+        volMoney = ArithUtil.multiply(qutoPrice,amount);
 
         //佣金
         double commissionFee = 0d;
         //印花税
         double bstampFax = 0d;
-        //佣金比例
-        BigDecimal cratio = BigDecimal.valueOf(Constant.STOCK_COMMINSSION_MONEY);
         //计算佣金
-        commissionFee = volMoney.multiply(cratio).doubleValue();
+        commissionFee =  ArithUtil.multiply(volMoney,Constant.STOCK_COMMINSSION_MONEY_PERCENT);
         //买股票
         if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
 
-            figureMoney = volMoney.doubleValue() + commissionFee;
+            figureMoney = ArithUtil.add(volMoney, commissionFee);
 
         }else if (type.intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
-
-            //印花税比例
-            BigDecimal bsratio = BigDecimal.valueOf(Constant.STOCK_STAMP_TAX);
             //计算印花税
-            bstampFax = volMoney.multiply(bsratio).doubleValue();
+            bstampFax =  ArithUtil.multiply(volMoney, Constant.STOCK_STAMP_TAX_PERCENT);
 
-            figureMoney = volMoney.doubleValue() - (commissionFee+bstampFax);
+            figureMoney =  ArithUtil.subtract(volMoney, ArithUtil.add(commissionFee, bstampFax));
 
         }else{}
 
@@ -314,6 +304,26 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         rs.put("bstampFax", bstampFax);
 
         return rs;
+    }
+
+
+    @Override
+    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice){
+
+        Map<String,Object>  rs = stockUpAndDownScope(closePrice);
+
+        double quotePrice = stQuote.getQuotePrice();
+        double maxPrice = (double)rs.get("maxPrice");
+        double minPrice = (double)rs.get("minPrice");
+
+        //报价大于等于最小价格，小于等于最大价格，可以正常报价
+        if((ArithUtil.compare(quotePrice, minPrice)>=0) && (ArithUtil.compare(quotePrice, maxPrice)<=0)){
+            quotePrice(stQuote);
+            return true;
+        }else{
+            logger.info("报价失败-----报价价格->"+quotePrice+"--最高涨幅->"+maxPrice+"--最低跌幅->"+minPrice);
+        }
+        return false;
     }
 
 
@@ -354,11 +364,11 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             }
             synchronized (DataConstant.stTradeQueueMap) {
                 if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
-//            	DataConstant.buyList.add(stQuote);
+            	DataConstant.buyList.add(stQuote);
                     stTradeQueue.addBuyStQuote(stQuote);
 //                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
                 } else {
-//            	DataConstant.sellList.add(stQuote);
+            	DataConstant.sellList.add(stQuote);
                     stTradeQueue.addSellStQuote(stQuote);
 //                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
                 }
@@ -404,19 +414,16 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
 
     @Override
-    public Map stockUpAndDownScope(double closePrice){
+    public Map<String, Object> stockUpAndDownScope(double closePrice){
 
         Map<String, Object> rs = new HashMap<String, Object>();
 
-        BigDecimal closePriceB = BigDecimal.valueOf(closePrice);
-        BigDecimal scopeB = BigDecimal.valueOf(Constant.STOCK_UP_AND_DOWN_EXTENT);
-
-        double extent = closePriceB.multiply(scopeB).doubleValue();
+        double extent = ArithUtil.multiply(closePrice, Constant.STOCK_UP_AND_DOWN_PERCENT);
 
         //上涨最大价格
-        rs.put("upMaxPrice",(closePrice+extent));
+        rs.put("maxPrice",(closePrice+extent));
         //下跌最小价格
-        rs.put("downMinPrice",(closePrice-extent));
+        rs.put("minPrice",(closePrice-extent));
         //幅度
         rs.put("extent",extent);
 

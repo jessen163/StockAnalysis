@@ -38,13 +38,20 @@ public interface StockAnalysisServiceI {
      * @return
      */
     public Map<String, Object> buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
+
+    /**
+     * 委托买卖股票
+     * @param stQuote
+     * @param closePrice
+     * @return
+     */
+    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice);
     /**
      * 报价
      * @param stQuote
      * @return
      */
     public StQuote quotePrice(StQuote stQuote);
-
 
     /**
      * 撤单

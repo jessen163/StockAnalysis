@@ -38,17 +38,17 @@ public class DataConstant {
     public static Double STOCK_TRADE_AGENT_MONEY = 0d;
 
     //A、B、C、D、E买卖次数
-    public static Integer STQUOTE_A_NUM = 5;
+    public static Integer STQUOTE_A_NUM = 2;
     public static Integer STQUOTE_B_NUM = 1;
-    public static Integer STQUOTE_C_NUM = 1;
+    public static Integer STQUOTE_C_NUM = 2;
     public static Integer STQUOTE_D_NUM = 2;
     public static Integer STQUOTE_E_NUM = 2;
 
     //A、B、C、D、E买卖报价
-    public static Double STQUOTE_A_QUOTEPRICE = 20d;
-    public static Double STQUOTE_B_QUOTEPRICE = 10d;
-    public static Double STQUOTE_C_QUOTEPRICE = 20d;
-    public static Double STQUOTE_D_QUOTEPRICE = 10d;
+    public static Double STQUOTE_A_QUOTEPRICE = 10d;
+    public static Double STQUOTE_B_QUOTEPRICE = 10.5d;
+    public static Double STQUOTE_C_QUOTEPRICE = 9.5d;
+    public static Double STQUOTE_D_QUOTEPRICE = 10.5d;
     public static Double STQUOTE_E_QUOTEPRICE = 10d;
 
     //A、B、C、D、E买卖数量
@@ -63,4 +63,6 @@ public class DataConstant {
     public static String TRADEING_STOCK_ID2 = "2";
     public static String TRADEING_STOCK_ID3 = "2";
 
+    //昨日收盘价
+    public static Double STQUOTE_PREVIOUS_CLOSEPRICE = 10d;
 }

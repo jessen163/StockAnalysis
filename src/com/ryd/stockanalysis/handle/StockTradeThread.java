@@ -4,6 +4,7 @@ import com.ryd.stockanalysis.bean.StAccount;
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.bean.StStock;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import org.apache.log4j.Logger;
 
@@ -41,7 +42,7 @@ public class StockTradeThread implements Runnable {
 					for (String key : quoteTable.keySet()) {
 						Map paramMap = quoteTable.get(key);
 						if (paramMap == null) {
-							Thread.sleep(100);
+							Thread.sleep(1000);
 							continue;
 						}
 
@@ -55,14 +56,15 @@ public class StockTradeThread implements Runnable {
 						stQuote.setDateTime(System.currentTimeMillis());
 						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
-						StQuote rss = stockAnalysisServiceI.quotePrice(stQuote);
+						boolean rs = stockAnalysisServiceI.trusteeStockBuySale(stQuote, DataConstant.STQUOTE_PREVIOUS_CLOSEPRICE);
 
-						logger.info(paramMap.get("info").toString()+"--冻结资金->"+rss.getFrozeMoney()+"--报价时间->"+rss.getDateTime());
-
-						Thread.sleep(100);
+						if(rs) {
+							logger.info(paramMap.get("info").toString());
+						}
+						Thread.sleep(1000);
 					}
 				}else{
-					Thread.sleep(100);
+					Thread.sleep(1000);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
