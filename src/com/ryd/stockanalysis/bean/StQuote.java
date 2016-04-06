@@ -1,5 +1,8 @@
 package com.ryd.stockanalysis.bean;
 
+import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.util.ArithUtil;
+
 import java.io.Serializable;
 
 /**
@@ -116,10 +119,24 @@ public class StQuote implements Serializable, Comparable<StQuote> {
 
     @Override
     public int compareTo(StQuote o) {
+
         if(this.quotePrice < o.quotePrice){
             return 1;
-        } else if(this.quotePrice==o.quotePrice){
-            return 0;
+        } else if(ArithUtil.compare(this.quotePrice,o.quotePrice)==0){
+            if(o.getType() == Constant.STOCK_STQUOTE_TYPE_BUY){
+                if(this.dateTime.longValue() < o.getDateTime().longValue()){
+                    return -1;
+                }else{
+                    return 1;
+                }
+            }else{
+                if(this.dateTime.longValue() < o.getDateTime().longValue()){
+                    return 1;
+                }else{
+                    return -1;
+                }
+            }
+
         } else{
             return -1;
         }
