@@ -26,6 +26,29 @@ public class StStock implements Serializable{
     private double minPrice;//今日最低价
     private double tradeAmount;//成交量
     private double tradeMoney;//成交金额
+
+    private double buyOnePrice;//买一报价
+    private int buyOneAmount;//买一申请股数
+    private double buyTwoPrice;
+    private int buyTwoAmount;
+    private double buyThreePrice;
+    private int buyThreeAmount;
+    private double buyFourPrice;
+    private int buyFourAmount;
+    private double buyFivePrice;
+    private int buyFiveAmount;
+
+    private double sellOnePrice;//卖一报价
+    private int sellOneAmount;//卖一申请股数
+    private double sellTwoPrice;
+    private int sellTwoAmount;
+    private double sellThreePrice;
+    private int sellThreeAmount;
+    private double sellFourPrice;
+    private int sellFourAmount;
+    private double sellFivePrice;
+    private int sellFiveAmount;
+
     private Date datetime;//取值时间
     private String stockPinyin;
     private String stockShortPinyin;
@@ -39,6 +62,7 @@ public class StStock implements Serializable{
         this.stockName = stockName;
         this.stockCode = stockCode;
     }
+
 
     public String getStockId() {
         return stockId;
@@ -118,6 +142,166 @@ public class StStock implements Serializable{
 
     public void setTradeMoney(double tradeMoney) {
         this.tradeMoney = tradeMoney;
+    }
+
+    public double getBuyOnePrice() {
+        return buyOnePrice;
+    }
+
+    public void setBuyOnePrice(double buyOnePrice) {
+        this.buyOnePrice = buyOnePrice;
+    }
+
+    public int getBuyOneAmount() {
+        return buyOneAmount;
+    }
+
+    public void setBuyOneAmount(int buyOneAmount) {
+        this.buyOneAmount = buyOneAmount;
+    }
+
+    public double getBuyTwoPrice() {
+        return buyTwoPrice;
+    }
+
+    public void setBuyTwoPrice(double buyTwoPrice) {
+        this.buyTwoPrice = buyTwoPrice;
+    }
+
+    public int getBuyTwoAmount() {
+        return buyTwoAmount;
+    }
+
+    public void setBuyTwoAmount(int buyTwoAmount) {
+        this.buyTwoAmount = buyTwoAmount;
+    }
+
+    public double getBuyThreePrice() {
+        return buyThreePrice;
+    }
+
+    public void setBuyThreePrice(double buyThreePrice) {
+        this.buyThreePrice = buyThreePrice;
+    }
+
+    public int getBuyThreeAmount() {
+        return buyThreeAmount;
+    }
+
+    public void setBuyThreeAmount(int buyThreeAmount) {
+        this.buyThreeAmount = buyThreeAmount;
+    }
+
+    public double getBuyFourPrice() {
+        return buyFourPrice;
+    }
+
+    public void setBuyFourPrice(double buyFourPrice) {
+        this.buyFourPrice = buyFourPrice;
+    }
+
+    public int getBuyFourAmount() {
+        return buyFourAmount;
+    }
+
+    public void setBuyFourAmount(int buyFourAmount) {
+        this.buyFourAmount = buyFourAmount;
+    }
+
+    public double getBuyFivePrice() {
+        return buyFivePrice;
+    }
+
+    public void setBuyFivePrice(double buyFivePrice) {
+        this.buyFivePrice = buyFivePrice;
+    }
+
+    public int getBuyFiveAmount() {
+        return buyFiveAmount;
+    }
+
+    public void setBuyFiveAmount(int buyFiveAmount) {
+        this.buyFiveAmount = buyFiveAmount;
+    }
+
+    public double getSellOnePrice() {
+        return sellOnePrice;
+    }
+
+    public void setSellOnePrice(double sellOnePrice) {
+        this.sellOnePrice = sellOnePrice;
+    }
+
+    public int getSellOneAmount() {
+        return sellOneAmount;
+    }
+
+    public void setSellOneAmount(int sellOneAmount) {
+        this.sellOneAmount = sellOneAmount;
+    }
+
+    public double getSellTwoPrice() {
+        return sellTwoPrice;
+    }
+
+    public void setSellTwoPrice(double sellTwoPrice) {
+        this.sellTwoPrice = sellTwoPrice;
+    }
+
+    public int getSellTwoAmount() {
+        return sellTwoAmount;
+    }
+
+    public void setSellTwoAmount(int sellTwoAmount) {
+        this.sellTwoAmount = sellTwoAmount;
+    }
+
+    public double getSellThreePrice() {
+        return sellThreePrice;
+    }
+
+    public void setSellThreePrice(double sellThreePrice) {
+        this.sellThreePrice = sellThreePrice;
+    }
+
+    public int getSellThreeAmount() {
+        return sellThreeAmount;
+    }
+
+    public void setSellThreeAmount(int sellThreeAmount) {
+        this.sellThreeAmount = sellThreeAmount;
+    }
+
+    public double getSellFourPrice() {
+        return sellFourPrice;
+    }
+
+    public void setSellFourPrice(double sellFourPrice) {
+        this.sellFourPrice = sellFourPrice;
+    }
+
+    public int getSellFourAmount() {
+        return sellFourAmount;
+    }
+
+    public void setSellFourAmount(int sellFourAmount) {
+        this.sellFourAmount = sellFourAmount;
+    }
+
+    public double getSellFivePrice() {
+        return sellFivePrice;
+    }
+
+    public void setSellFivePrice(double sellFivePrice) {
+        this.sellFivePrice = sellFivePrice;
+    }
+
+    public int getSellFiveAmount() {
+        return sellFiveAmount;
+    }
+
+    public void setSellFiveAmount(int sellFiveAmount) {
+        this.sellFiveAmount = sellFiveAmount;
     }
 
     public Date getDatetime() {
