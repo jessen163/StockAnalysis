@@ -25,6 +25,9 @@ public class DataConstant {
     public static ConcurrentMap<String,StAccount> stAccounts = new ConcurrentHashMap<String,StAccount>();
     //帐户委托,报价
     public static ConcurrentHashMap<String,Map<String,StQuote>> stAccountQuoteMap = new ConcurrentHashMap<String,Map<String,StQuote>>();
+    //持仓
+    public static ConcurrentHashMap<String, Map<String,StPosition>> stAccountPositionMap = new ConcurrentHashMap<String, Map<String,StPosition>>();
+
     //股票列表
     public static ConcurrentMap<String,StStock> stockTable = new ConcurrentHashMap<String,StStock>();
     //买卖家报价

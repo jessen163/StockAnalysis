@@ -7,6 +7,7 @@ import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -24,20 +25,12 @@ public class StPositionServiceImpl implements StPositionServiceI {
 
         //获取对应的帐户信息
         StAccount account = DataConstant.stAccounts.get(accountId);
+        //获取对应的持仓
+        Map<String,StPosition> stpMap = DataConstant.stAccountPositionMap.get(accountId);
 
-        if(account==null){return false;}
+        if(account==null||stpMap==null){return false;}
 
-        //获取所有的股票持仓
-        List<StPosition> stplist = account.getStPositionList();
-
-        //判断对应股票要增加/减少的仓位
-        StPosition stp = null;
-        for (StPosition p : stplist) {
-            if (p.getStockId().equals(stockId)) {
-                stp = p;
-                break;
-            }
-        }
+        StPosition stp = stpMap.get(stockId);
 
         //如果状态为增加，则是增加仓位
         if(type == Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_ADD.intValue()) {
@@ -53,7 +46,7 @@ public class StPositionServiceImpl implements StPositionServiceI {
                 atPos.setAmount(amount);
                 atPos.setStatus(Constant.STOCK_STPOSITION_STATUS_TRUSTEE);
 
-                account.getStPositionList().add(atPos);
+                stpMap.put(stockId,atPos);
             } else {
 
                 //原有持仓

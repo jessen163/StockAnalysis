@@ -99,7 +99,7 @@ public class StTradeThread implements Runnable {
 							Long sellerKey = 0L;
 //							logger.info("stTradeQueueMap："+stTradeQueueMap);
 							while (sellFlag) {
-								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, 2);
+								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, Constant.STOCK_STQUOTE_TYPE_SELL);
 								if (sellQuote==null) {
 									sellFlag = false;
 									break;
@@ -108,7 +108,7 @@ public class StTradeThread implements Runnable {
 //								logger.info("buyQuote: 股票ID"+buyQuote.getStockId()+"-------------------其他信息："+buyQuote);
 								boolean buyFlag = true;
 								while (buyFlag) {
-									StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, 1);
+									StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, Constant.STOCK_STQUOTE_TYPE_BUY);
 									if (buyQuote==null) {
 										buyFlag = false;
 										break;

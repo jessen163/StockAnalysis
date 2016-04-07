@@ -3,6 +3,8 @@ package com.ryd.stockanalysis.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * <p>标题:账户</p>
@@ -20,8 +22,7 @@ public class StAccount implements Serializable {
     private String accountNumber;
     private Double useMoney; //可以花的钱
     private Double totalMoney; //包含因报价/下单冻结的钱和持仓的钱
-    private List<StPosition> stPositionList = new ArrayList<StPosition>();//持仓
-    private List<StQuote> stQuotesList = new ArrayList<StQuote>();//报价
+
     public StAccount() {
     }
 
@@ -73,11 +74,4 @@ public class StAccount implements Serializable {
         this.totalMoney = totalMoney;
     }
 
-    public List<StPosition> getStPositionList() {
-        return stPositionList;
-    }
-
-    public List<StQuote> getStQuotesList() {
-        return stQuotesList;
-    }
 }

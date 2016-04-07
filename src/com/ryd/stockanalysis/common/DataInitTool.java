@@ -34,7 +34,10 @@ public class DataInitTool {
             StAccount uu = DataConstant.stAccounts.get(key);
             totalUseMoney = totalUseMoney + uu.getUseMoney();
             totalAllMoney = totalAllMoney + uu.getTotalMoney();
-            for(StPosition sstp:uu.getStPositionList()) {
+            //获取对应的持仓
+            Map<String,StPosition> stpMap = DataConstant.stAccountPositionMap.get(uu.getAccountId());
+            for(String keys:stpMap.keySet()) {
+                StPosition sstp = stpMap.get(keys);
                 Integer amount = (Integer)stmap.get(sstp.getStockId());
                 if(amount==null){
                     stmap.put(sstp.getStockId(), sstp.getAmount());
@@ -98,7 +101,10 @@ public class DataInitTool {
         ata1Pos.setAmount(1000);
         ata1Pos.setStatus(1);
 
-        ataA.getStPositionList().add(ata1Pos);
+        //获取对应的持仓
+        Map<String,StPosition> stpMapA = new HashMap<String,StPosition>();
+        stpMapA.put(ata1Pos.getStockId(), ata1Pos);
+        DataConstant.stAccountPositionMap.put(ataA.getAccountId(), stpMapA);
 
         //创建买家B
         StAccount ataB = new StAccount("B","B","2",1000000d,2000000d);
@@ -111,7 +117,10 @@ public class DataInitTool {
         ata2Pos.setAmount(10000);
         ata2Pos.setStatus(1);
 
-        ataB.getStPositionList().add(ata2Pos);
+        //获取对应的持仓
+        Map<String,StPosition> stpMapB = new HashMap<String,StPosition>();
+        stpMapB.put(ata2Pos.getStockId(), ata2Pos);
+        DataConstant.stAccountPositionMap.put(ataB.getAccountId(), stpMapB);
 
 
         StAccount ataC = new StAccount("C","C","3",10000d,1000000d);
@@ -124,7 +133,8 @@ public class DataInitTool {
         atc1Pos.setAmount(100000);
         atc1Pos.setStatus(1);
 
-        ataC.getStPositionList().add(atc1Pos);
+        Map<String,StPosition> stpMapC = new HashMap<String,StPosition>();
+        stpMapC.put(atc1Pos.getStockId(), atc1Pos);
 
         //用户C持仓 广发证券
         StPosition atc2Pos = new StPosition();
@@ -135,7 +145,8 @@ public class DataInitTool {
         atc2Pos.setAmount(100000);
         atc2Pos.setStatus(1);
 
-        ataC.getStPositionList().add(atc2Pos);
+        stpMapC.put(atc2Pos.getStockId(), atc2Pos);
+        DataConstant.stAccountPositionMap.put(ataC.getAccountId(), stpMapC);
 
 
         StAccount ataD = new StAccount("D","D","4",10000d,1000000d);
@@ -148,7 +159,10 @@ public class DataInitTool {
         ata4Pos.setAmount(100000);
         ata4Pos.setStatus(1);
 
-        ataD.getStPositionList().add(ata4Pos);
+        //获取对应的持仓
+        Map<String,StPosition> stpMapD = new HashMap<String,StPosition>();
+        stpMapD.put(ata4Pos.getStockId(), ata4Pos);
+        DataConstant.stAccountPositionMap.put(ataD.getAccountId(), stpMapD);
 
         StAccount ataE = new StAccount("E","E","5",10000d,1000000d);
         //用户E持仓
@@ -160,7 +174,10 @@ public class DataInitTool {
         ata5Pos.setAmount(100000);
         ata5Pos.setStatus(1);
 
-        ataE.getStPositionList().add(ata5Pos);
+        //获取对应的持仓
+        Map<String,StPosition> stpMapE = new HashMap<String,StPosition>();
+        stpMapE.put(ata5Pos.getStockId(), ata5Pos);
+        DataConstant.stAccountPositionMap.put(ataE.getAccountId(), stpMapE);
 
         DataConstant.stAccounts.put(ataA.getAccountId(),ataA);
         DataConstant.stAccounts.put(ataB.getAccountId(),ataB);
@@ -180,8 +197,10 @@ public class DataInitTool {
         sbu.append("--帐户总金额->" + uu.getTotalMoney());
 
         logger.info(sbu.toString());
-
-        for(StPosition sp : uu.getStPositionList()) {
+        //获取对应的持仓
+        Map<String,StPosition> stpMap = DataConstant.stAccountPositionMap.get(uu.getAccountId());
+        for(String key : stpMap.keySet()) {
+            StPosition sp = stpMap.get(key);
             StStock st = sp.getStStock();
             StringBuffer sb = new StringBuffer(pinfo);
             sb.append("帐户信息--帐号->" + uu.getAccountName());
