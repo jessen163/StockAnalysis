@@ -95,7 +95,7 @@ public class StTradeThread implements Runnable {
 //							logger.info("stTradeQueueMap: 股票ID"+s+"-------------------其他信息："+stTradeQueueMap);
 
 							boolean sellFlag = true;
-							Long buyerKey = 0L;
+							Long buyerKey = Long.MIN_VALUE;
 							Long sellerKey = 0L;
 //							logger.info("stTradeQueueMap："+stTradeQueueMap);
 							while (sellFlag) {
