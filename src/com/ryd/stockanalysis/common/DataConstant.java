@@ -23,6 +23,8 @@ public class DataConstant {
     public static ConcurrentHashMap<String,StTradeQueue> stTradeQueueMap = new ConcurrentHashMap<String,StTradeQueue>();
     //帐户
     public static ConcurrentMap<String,StAccount> stAccounts = new ConcurrentHashMap<String,StAccount>();
+    //帐户委托,报价
+    public static ConcurrentHashMap<String,Map<String,StQuote>> stAccountQuoteMap = new ConcurrentHashMap<String,Map<String,StQuote>>();
     //股票列表
     public static ConcurrentMap<String,StStock> stockTable = new ConcurrentHashMap<String,StStock>();
     //买卖家报价
@@ -38,10 +40,10 @@ public class DataConstant {
     public static Double STOCK_TRADE_AGENT_MONEY = 0d;
 
     //A、B、C、D、E买卖次数
-    public static Integer STQUOTE_A_NUM = 2;
-    public static Integer STQUOTE_B_NUM = 1;
+    public static Integer STQUOTE_A_NUM = 3;
+    public static Integer STQUOTE_B_NUM = 3;
     public static Integer STQUOTE_C_NUM = 2;
-    public static Integer STQUOTE_D_NUM = 2;
+    public static Integer STQUOTE_D_NUM = 3;
     public static Integer STQUOTE_E_NUM = 2;
 
     //A、B、C、D、E买卖报价
