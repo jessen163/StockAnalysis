@@ -52,6 +52,7 @@ public class StockTradeThread implements Runnable {
 						stQuote.setAccountId(paramMap.get("accountId").toString());
 						stQuote.setQuotePrice((double) paramMap.get("quotePrice"));
 						stQuote.setAmount((int) paramMap.get("amount"));
+						stQuote.setCurrentAmount((int) paramMap.get("amount"));
 						stQuote.setType((int) paramMap.get("type"));
 						stQuote.setDateTime(System.currentTimeMillis());
 						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
