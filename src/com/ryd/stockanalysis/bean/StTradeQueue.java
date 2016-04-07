@@ -27,28 +27,30 @@ public class StTradeQueue implements Serializable {
     private Map.Entry<Long, StQuote> sellMap = null;
 
     public boolean addSellStQuote(StQuote stQuote) {
-        Long k = Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getQuotePriceForSort();
-        return sellList.put(k, stQuote) != null;
+        Long quotePriceForSort = Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getTimeSort();
+        stQuote.setQuotePriceForSort(quotePriceForSort);
+        return sellList.put(quotePriceForSort, stQuote) != null;
     }
 
     public boolean addBuyStQuote(StQuote stQuote) {
-        Long k = -1 * Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getQuotePriceForSort();
-        return buyList.put(k, stQuote) != null;
+        Long quotePriceForSort = -1 * Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getTimeSort();
+        stQuote.setQuotePriceForSort(quotePriceForSort);
+        return buyList.put(quotePriceForSort, stQuote) != null;
     }
 
     public boolean removeSellStQuote(StQuote stQuote) {
-        Long k = Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getQuotePriceForSort();
-        return sellList.remove(k) != null;
+        Long quotePriceForSort = Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getTimeSort();
+        return sellList.remove(quotePriceForSort) != null;
     }
 
     public boolean removeBuyStQuote(StQuote stQuote) {
-        Long k = -1 * Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getQuotePriceForSort();
-        return buyList.remove(k) != null;
+        Long quotePriceForSort = -1 * Long.parseLong("100000000") * (long)(stQuote.getQuotePrice()*100) + stQuote.getTimeSort();
+        return buyList.remove(quotePriceForSort) != null;
     }
 
     public StQuote getStQuote(Long key, int type) {
         if (type == Constant.STOCK_STQUOTE_TYPE_BUY) {
-            sellMap = buyList.lowerEntry(key);
+            sellMap = buyList.higherEntry(key);
         } else {
             sellMap = sellList.higherEntry(key);
         }
@@ -65,9 +67,5 @@ public class StTradeQueue implements Serializable {
                 ", buyList=" + buyList.size() +
                 ", sellMap=" + sellMap +
                 '}';
-    }
-
-    public static void main(String[] args) {
-
     }
 }
