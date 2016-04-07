@@ -41,7 +41,7 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setDateTime(Long.parseLong(strArr[6]));
                 stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
-                stockAnalysisServiceI.quotePrice(stQuote);
+//                stockAnalysisServiceI.quotePrice(stQuote);
             }
         } finally {
             ReferenceCountUtil.release(msg);
