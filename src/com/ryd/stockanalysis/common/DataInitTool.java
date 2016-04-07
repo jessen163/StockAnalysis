@@ -83,6 +83,7 @@ public class DataInitTool {
 
         //中国平安-股票
         StStock stStock = new StStock("1","中国平安","633256");
+        stStock.setBfclosePrice(10);
         StStock stStock2 = new StStock("2","广发证券","000776");
         StStock stStock3 = new StStock("3","创业板A","150153");
         DataConstant.stockTable.put(stStock.getStockId(),stStock);
