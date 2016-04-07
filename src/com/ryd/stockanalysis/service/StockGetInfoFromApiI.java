@@ -12,5 +12,11 @@ import com.ryd.stockanalysis.bean.StStock;
 public interface StockGetInfoFromApiI {
 
 
+    /**
+     * 获取股票信息
+     * @param st
+     * @param stockCode
+     * @return
+     */
     public StStock getStStockInfo(String st, String stockCode);
 }
