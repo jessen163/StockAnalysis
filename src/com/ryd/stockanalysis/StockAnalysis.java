@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.common.DataInitTool;
+import com.ryd.stockanalysis.net.StockServer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
@@ -28,12 +29,22 @@ public class StockAnalysis {
     private static Logger logger = Logger.getLogger(StockAnalysis.class);
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         logger.info("股票分析---------------开始--------------------");
-
         StockAnalysisServiceI serviceI = new StockAnalysisServiceImpl();
         // 创建一个可重用固定线程数的线程池
         ExecutorService pool = Executors.newFixedThreadPool(50);
+        pool.execute(new Runnable() {
+            @Override
+            public void run() {
+                StockServer stockServer = new StockServer(8888);
+                try {
+                    stockServer.run();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         //创建基础数据
         boolean rs = DataInitTool.createBaseData();
@@ -87,7 +98,4 @@ public class StockAnalysis {
         }
         logger.info("股票分析---------------结束---------------------");
     }
-
-
-
 }
