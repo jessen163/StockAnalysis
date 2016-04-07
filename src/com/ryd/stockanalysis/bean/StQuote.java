@@ -27,9 +27,18 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private Double frozeMoney;//买股票时冻结资金
     private Double commissionFee;//佣金
     private Long dateTime;//报价时间
+    private Long timeSort; // 用于时间排序
     private Long quotePriceForSort; // 用于排序
 
     private Integer currentAmount; //交易数量-当前数量
+
+    public Long getTimeSort() {
+        return timeSort;
+    }
+
+    public void setTimeSort(Long timeSort) {
+        this.timeSort = timeSort;
+    }
 
     public Integer getCurrentAmount() {
         return currentAmount;
