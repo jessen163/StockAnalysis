@@ -2,7 +2,6 @@ package com.ryd.stockanalysis.net;
 
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.common.Constant;
-import com.ryd.stockanalysis.common.DataInitTool;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import io.netty.buffer.ByteBuf;
@@ -29,7 +28,7 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
             }
             System.out.println(str.toString());
             String[] strArr = str.toString().split("@");
-//            if (strArr==null||strArr.length!=7) return;
+            if (strArr==null||strArr.length!=7) return;
 
             if (strArr[0].equals("A")) {
                 // 从互动端获取报价
@@ -43,16 +42,8 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
                 stockAnalysisServiceI.quotePrice(stQuote);
-            }else  if (strArr[0].equals("B")) {
-                // 从互动端获取撤单报价
-                StQuote stQuote = new StQuote();
-                stQuote.setQuoteId(strArr[1]);
-                stQuote.setStockId(strArr[2]);
-                stQuote.setAccountId(strArr[3]);
-                stQuote.setType(Integer.parseInt(strArr[4]));
-                DataInitTool.printTradeQueue("cancel before");
-                stockAnalysisServiceI.cancelStQuote(stQuote);
-                DataInitTool.printTradeQueue("cancel end");
+            } else if(strArr[0].equals("B")) {
+                // 撤单
             }
         } finally {
             ReferenceCountUtil.release(msg);
