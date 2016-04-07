@@ -64,15 +64,25 @@ public class StTradeThread implements Runnable {
 					}
 
 					if (sellQuote.getStockId().equals(buyQuote.getStockId()) && Double.doubleToLongBits(sellQuote.getQuotePrice())<=Double.doubleToLongBits(buyQuote.getQuotePrice())) {
+						logger.info("-----------------------------------------------------------------");
+						for(StQuote stq : DataConstant.sellList.getList()){
+							logger.info("卖家队列---"+stq.getAccountId()+"--价格-"+stq.getQuotePrice()+"--报价时间-"+new Date(stq.getDateTime()) + "--报价时间-" + stq.getDateTime());
+						}
+						logger.info("-----------------------------------------------------------------");
+						for(StQuote stqb : DataConstant.buyList.getList()){
+							logger.info("买家队列---"+stqb.getAccountId()+"--价格-"+stqb.getQuotePrice()+"--报价时间-"+new Date(stqb.getDateTime())+"--报价时间-"+stqb.getDateTime());
+						}
+						logger.info("-----------------------------------------------------------------");
 						//股票
 						StStock sts = DataConstant.stockTable.get(buyQuote.getStockId());
 						//交易
 						stockAnalysisServiceI.dealTrading(null,buyQuote,sellQuote,sts);
+						logger.info("-----------------------------------------------------------------");
 					}
 
-					Thread.sleep(10);
+					Thread.sleep(2000);
 				} else {
-					Thread.sleep(10);
+					Thread.sleep(1000);
 				}
 
 //				logger.info("股票交易引擎---------------开始--------------------");

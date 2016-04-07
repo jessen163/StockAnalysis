@@ -65,4 +65,7 @@ public class DataConstant {
 
     //昨日收盘价
     public static Double STQUOTE_PREVIOUS_CLOSEPRICE = 10d;
+
+    //新浪接口URL
+    public static String STOCK_SINA_URL = "http://hq.sinajs.cn/list=";
 }
