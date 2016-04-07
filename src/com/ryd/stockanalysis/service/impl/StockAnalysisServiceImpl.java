@@ -50,7 +50,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
         //报价大于等于最小价格，小于等于最大价格，可以正常报价
         if(isStockQuotePriceInScope(stStock.getBfclosePrice(),stQuote.getQuotePrice())) {
-
+            stQuote.setCurrentAmount(stQuote.getAmount());
             //买股票
             if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
                 //委托买股票，减少资产
@@ -101,6 +101,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
                     DataConstant.stAccountQuoteMap.put(stQuote.getAccountId(), stQuoteMap);
                 }
                 stQuoteMap.put(stQuote.getQuoteId(), stQuote);
+//                logger.info("B@"+stQuote.getQuoteId()+"@"+stQuote.getStockId()+"@"+stQuote.getAccountId()+"@"+stQuote.getType());
             }
         }
 
