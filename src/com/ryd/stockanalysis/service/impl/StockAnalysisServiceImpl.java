@@ -355,7 +355,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         if(rs) {
             stQuote.setQuoteId(UUID.randomUUID().toString());
             // 用于排序的字段
-            long quotePriceSort = Long.parseLong("100000000") * stQuote.getQuotePrice().longValue()+Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
+            long quotePriceSort = Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
             stQuote.setQuotePriceForSort(quotePriceSort);
 
             StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
