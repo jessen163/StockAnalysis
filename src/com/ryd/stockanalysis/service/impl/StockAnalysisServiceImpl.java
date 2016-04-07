@@ -37,21 +37,74 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
 
     @Override
-    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice){
+    public synchronized boolean quotePrice(StQuote stQuote) {
 
-        Map<String,Object>  rs = stockUpAndDownScope(closePrice);
+        if(stQuote == null){
+            return false;
+        }
 
-        double quotePrice = stQuote.getQuotePrice();
-        double maxPrice = (double)rs.get("maxPrice");
-        double minPrice = (double)rs.get("minPrice");
+        //报价对应股票
+        StStock stStock = DataConstant.stockTable.get(stQuote.getStockId());
+
+        boolean rs = false;
 
         //报价大于等于最小价格，小于等于最大价格，可以正常报价
-        if((ArithUtil.compare(quotePrice, minPrice)>=0) && (ArithUtil.compare(quotePrice, maxPrice)<=0)){
-            return quotePrice(stQuote);
-        }else{
-            logger.info("报价失败-----报价价格->"+quotePrice+"--最高涨幅->"+maxPrice+"--最低跌幅->"+minPrice);
+        if(isStockQuotePriceInScope(stStock.getBfclosePrice(),stQuote.getQuotePrice())) {
+
+            //买股票
+            if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
+                //委托买股票，减少资产
+
+                //金额计算
+                Map<String, Object> rsmap = buyOrSellStockMoney(stQuote.getQuotePrice(), stQuote.getAmount(), stQuote.getType());
+                //冻结资金
+                stQuote.setFrozeMoney((double) rsmap.get("figureMoney"));
+                stQuote.setCommissionFee((double) rsmap.get("commissionFee"));
+                rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(), (double) rsmap.get("figureMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+
+            } else if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
+                //委托卖股票，减少股票持仓数量
+                rs = stPositionServiceI.operateStPosition(stQuote.getAccountId(), stQuote.getStockId(), stQuote.getAmount(), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
+            } else {
+            }
+
+            if (rs) {
+                stQuote.setQuoteId(UUID.randomUUID().toString());
+                // 用于排序的字段
+                long quotePriceSort = Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
+                stQuote.setQuotePriceForSort(quotePriceSort);
+
+                StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
+                if (stTradeQueue == null) {
+                    stTradeQueue = new StTradeQueue();
+                }
+
+
+                synchronized (DataConstant.stTradeQueueMap) {
+                    if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
+                        DataConstant.buyList.add(stQuote);
+                        stTradeQueue.addBuyStQuote(stQuote);
+//                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
+                    } else {
+                        DataConstant.sellList.add(stQuote);
+                        stTradeQueue.addSellStQuote(stQuote);
+//                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+                    }
+                    DataConstant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
+                }
+
+
+                //我的委托买或卖
+                Map stQuoteMap = DataConstant.stAccountQuoteMap.get(stQuote.getAccountId());
+                if (stQuoteMap == null) {
+                    stQuoteMap = new HashMap<>();
+                    DataConstant.stAccountQuoteMap.put(stQuote.getAccountId(), stQuoteMap);
+                }
+                stQuoteMap.put(stQuote.getQuoteId(), stQuote);
+            }
         }
-        return false;
+
+        return rs;
     }
 
 
@@ -190,84 +243,29 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     }
 
 
-    @Override
-    public Map<String, Object> stockUpAndDownScope(double closePrice){
+    /**
+     * 是否在范围内报价
+     * @param closePrice 昨日收盘价
+     * @param quotePrice 当前报价
+     * @return
+     */
+    private boolean isStockQuotePriceInScope(double closePrice, double quotePrice){
 
         Map<String, Object> rs = new HashMap<String, Object>();
 
         double extent = ArithUtil.multiply(closePrice, Constant.STOCK_UP_AND_DOWN_PERCENT);
 
-        //上涨最大价格
-        rs.put("maxPrice",(closePrice+extent));
-        //下跌最小价格
-        rs.put("minPrice",(closePrice-extent));
-        //幅度
-        rs.put("extent",extent);
+        double maxPrice = ArithUtil.add(closePrice, extent);
+        double minPrice = ArithUtil.subtract(closePrice,extent);
 
-        return rs;
-    }
-
-
-    private synchronized boolean quotePrice(StQuote stQuote) {
-
-        if(stQuote == null){
-            return false;
+        //报价大于等于最小价格，小于等于最大价格，可以正常报价
+        if((ArithUtil.compare(quotePrice, minPrice)>=0) && (ArithUtil.compare(quotePrice, maxPrice)<=0)){
+            return true;
+        }else{
+            logger.info("报价失败-----报价价格->"+quotePrice+"--最高涨幅->"+maxPrice+"--最低跌幅->"+minPrice);
         }
 
-        boolean rs = false;
-
-        //买股票
-        if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
-            //委托买股票，减少资产
-
-            //金额计算
-            Map<String, Object> rsmap = buyOrSellStockMoney(stQuote.getQuotePrice(), stQuote.getAmount(), stQuote.getType());
-            //冻结资金
-            stQuote.setFrozeMoney((double)rsmap.get("figureMoney"));
-            stQuote.setCommissionFee((double) rsmap.get("commissionFee"));
-            rs = stAccountServiceI.opearteUseMoney(stQuote.getAccountId(), (double) rsmap.get("figureMoney"), Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
-
-        }else if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL.intValue()) {//卖股票
-            //委托卖股票，减少股票持仓数量
-            rs = stPositionServiceI.operateStPosition(stQuote.getAccountId(),stQuote.getStockId(),stQuote.getAmount(),Constant.STOCK_STQUOTE_ACCOUNTMONEY_TYPE_REDUSE);
-        }else{}
-
-        if(rs) {
-            stQuote.setQuoteId(UUID.randomUUID().toString());
-            // 用于排序的字段
-            long quotePriceSort = Integer.parseInt(String.valueOf(System.currentTimeMillis()).substring(5));
-            stQuote.setQuotePriceForSort(quotePriceSort);
-
-            StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
-            if (stTradeQueue==null) {
-                stTradeQueue = new StTradeQueue();
-            }
-
-
-            synchronized (DataConstant.stTradeQueueMap) {
-                if (stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()) {
-            	DataConstant.buyList.add(stQuote);
-                    stTradeQueue.addBuyStQuote(stQuote);
-//                    stTradeQueue.buyList.put(stQuote.getQuotePriceForSort(), stQuote);
-                } else {
-            	DataConstant.sellList.add(stQuote);
-                    stTradeQueue.addSellStQuote(stQuote);
-//                    stTradeQueue.sellList.put(stQuote.getQuotePriceForSort(), stQuote);
-                }
-                DataConstant.stTradeQueueMap.put(stQuote.getStockId(), stTradeQueue);
-            }
-
-
-            //我的委托买或卖
-            Map stQuoteMap = DataConstant.stAccountQuoteMap.get(stQuote.getAccountId());
-            if (stQuoteMap==null) {
-                stQuoteMap = new HashMap<>();
-                DataConstant.stAccountQuoteMap.put(stQuote.getAccountId(),stQuoteMap);
-            }
-            stQuoteMap.put(stQuote.getQuoteId(),stQuote);
-        }
-
-        return rs;
+        return false;
     }
 
     /**

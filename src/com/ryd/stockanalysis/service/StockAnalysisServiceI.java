@@ -16,12 +16,11 @@ import java.util.Map;
 public interface StockAnalysisServiceI {
 
     /**
-     * 委托买卖股票
+     * 报价--委托买卖股票
      * @param stQuote
-     * @param closePrice
      * @return
      */
-    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice);
+    public boolean quotePrice(StQuote stQuote);
 
     /**
      * 交易
@@ -43,11 +42,4 @@ public interface StockAnalysisServiceI {
      */
     public boolean cancelStQuote(StQuote stQuote);
 
-
-    /**
-     * 计算股票涨跌幅
-     * @param closePrice 昨日收盘价
-     * @return
-     */
-    public Map stockUpAndDownScope(double closePrice);
 }
