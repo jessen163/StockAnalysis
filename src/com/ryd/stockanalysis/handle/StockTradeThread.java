@@ -57,7 +57,7 @@ public class StockTradeThread implements Runnable {
 						stQuote.setDateTime(System.currentTimeMillis());
 						stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
-						boolean rs = stockAnalysisServiceI.trusteeStockBuySale(stQuote, DataConstant.STQUOTE_PREVIOUS_CLOSEPRICE);
+						boolean rs = stockAnalysisServiceI.quotePrice(stQuote);
 
 						if(rs) {
 							logger.info(paramMap.get("info").toString());
