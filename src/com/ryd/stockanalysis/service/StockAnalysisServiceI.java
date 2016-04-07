@@ -15,6 +15,13 @@ import java.util.Map;
  */
 public interface StockAnalysisServiceI {
 
+    /**
+     * 委托买卖股票
+     * @param stQuote
+     * @param closePrice
+     * @return
+     */
+    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice);
 
     /**
      * 交易
@@ -28,30 +35,6 @@ public interface StockAnalysisServiceI {
      * @return
      */
     public boolean settleResult();
-
-
-    /**
-     * 买卖钱数
-     * @param qutoPrice
-     * @param amount
-     * @param type
-     * @return
-     */
-    public Map<String, Object> buyOrSellStockMoney(Double qutoPrice, Integer amount, Integer type);
-
-    /**
-     * 委托买卖股票
-     * @param stQuote
-     * @param closePrice
-     * @return
-     */
-    public boolean trusteeStockBuySale(StQuote stQuote,double closePrice);
-    /**
-     * 报价
-     * @param stQuote
-     * @return
-     */
-    public StQuote quotePrice(StQuote stQuote);
 
     /**
      * 撤单
