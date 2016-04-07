@@ -14,8 +14,8 @@ public interface StockGetInfoFromApiI {
 
     /**
      * 获取股票信息
-     * @param st
-     * @param stockCode
+     * @param st 交易所 sh 上海 sz 深圳
+     * @param stockCode 股票编码
      * @return
      */
     public StStock getStStockInfo(String st, String stockCode);
