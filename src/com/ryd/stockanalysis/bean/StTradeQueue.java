@@ -20,28 +20,28 @@ public class StTradeQueue implements Serializable {
 
     static final int INIT_CAPACITY = 2000;
 
-//    //买卖家报价
+    //买卖家报价
     public ConcurrentSkipListMap<Long, StQuote> sellList = new ConcurrentSkipListMap<Long, StQuote>();
     public ConcurrentSkipListMap<Long, StQuote> buyList = new ConcurrentSkipListMap<Long, StQuote>();
 
     private Map.Entry<Long, StQuote> sellMap = null;
 
     public void addSellStQuote(StQuote stQuote) {
-            sellList.put(stQuote.getQuotePriceForSort(), stQuote);
+            sellList.put(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote);
 //            this.stockId=stQuote.getStockId();
 //            this.stQuote=stQuote;
     }
 
     public void addBuyStQuote(StQuote stQuote) {
-            buyList.put(-1 * stQuote.getQuotePriceForSort(), stQuote);
+            buyList.put(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote);
     }
 
     public void removeSellStQuote(StQuote stQuote) {
-        sellList.remove(stQuote.getQuotePriceForSort());
+        sellList.remove(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort());
     }
 
     public void removeBuyStQuote(StQuote stQuote) {
-        buyList.remove(-1 * stQuote.getQuotePriceForSort());
+        buyList.remove(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort());
     }
 
     public StQuote getStQuote(Long key, int type) {
