@@ -20,7 +20,7 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private String quoteId;
     private String accountId;
     private String stockId;
-    private Integer amount; //数量
+    private Integer amount; //报价数量
     private Double quotePrice;//报价
     private Integer type; //1、买，2、卖
     private Integer status; //1、托管 2、成交 -1、过期
@@ -28,6 +28,16 @@ public class StQuote implements Serializable, Comparable<StQuote> {
     private Double commissionFee;//佣金
     private Long dateTime;//报价时间
     private Long quotePriceForSort; // 用于排序
+
+    private Integer currentAmount; //交易数量-当前数量
+
+    public Integer getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(Integer currentAmount) {
+        this.currentAmount = currentAmount;
+    }
 
     public Long getQuotePriceForSort() {
         return quotePriceForSort;
