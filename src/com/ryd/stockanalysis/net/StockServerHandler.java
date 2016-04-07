@@ -42,6 +42,8 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
                 stockAnalysisServiceI.quotePrice(stQuote);
+            } else if(strArr[0].equals("B")) {
+                // 撤单
             }
         } finally {
             ReferenceCountUtil.release(msg);
