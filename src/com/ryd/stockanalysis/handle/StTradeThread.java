@@ -102,6 +102,7 @@ public class StTradeThread implements Runnable {
 								StQuote sellQuote = stTradeQueueMap.getStQuote(sellerKey, Constant.STOCK_STQUOTE_TYPE_SELL);
 								if (sellQuote==null) {
 									sellFlag = false;
+									sellerKey = 0L;
 									break;
 								}
 
@@ -111,6 +112,8 @@ public class StTradeThread implements Runnable {
 									StQuote buyQuote = stTradeQueueMap.getStQuote(buyerKey, Constant.STOCK_STQUOTE_TYPE_BUY);
 									if (buyQuote==null) {
 										buyFlag = false;
+										buyerKey = Long.MIN_VALUE;
+										sellerKey = sellQuote.getQuotePriceForSort();
 										break;
 									}
 									if (ArithUtil.compare(buyQuote.getQuotePrice(),sellQuote.getQuotePrice()) >= 0) {
