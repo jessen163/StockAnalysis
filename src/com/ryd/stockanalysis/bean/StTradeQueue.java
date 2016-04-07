@@ -26,22 +26,22 @@ public class StTradeQueue implements Serializable {
 
     private Map.Entry<Long, StQuote> sellMap = null;
 
-    public void addSellStQuote(StQuote stQuote) {
-            sellList.put(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote);
+    public boolean addSellStQuote(StQuote stQuote) {
+            return sellList.put(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote) != null;
 //            this.stockId=stQuote.getStockId();
 //            this.stQuote=stQuote;
     }
 
-    public void addBuyStQuote(StQuote stQuote) {
-            buyList.put(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote);
+    public boolean addBuyStQuote(StQuote stQuote) {
+        return buyList.put(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort(), stQuote) != null;
     }
 
-    public void removeSellStQuote(StQuote stQuote) {
-        sellList.remove(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort());
+    public boolean removeSellStQuote(StQuote stQuote) {
+        return sellList.remove(Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort()) != null;
     }
 
-    public void removeBuyStQuote(StQuote stQuote) {
-        buyList.remove(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort());
+    public boolean removeBuyStQuote(StQuote stQuote) {
+        return buyList.remove(-1 * Long.parseLong("100000000") * stQuote.getQuotePrice().longValue() + stQuote.getQuotePriceForSort()) != null;
     }
 
     public StQuote getStQuote(Long key, int type) {
