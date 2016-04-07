@@ -2,6 +2,7 @@ package com.ryd.stockanalysis.net;
 
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.common.Constant;
+import com.ryd.stockanalysis.common.DataInitTool;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import io.netty.buffer.ByteBuf;
@@ -44,6 +45,14 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stockAnalysisServiceI.quotePrice(stQuote);
             } else if(strArr[0].equals("B")) {
                 // 撤单
+                StQuote stQuote = new StQuote();
+                stQuote.setQuoteId(strArr[1]);
+                stQuote.setStockId(strArr[2]);
+                stQuote.setAccountId(strArr[3]);
+                stQuote.setType(Integer.parseInt(strArr[4]));
+                DataInitTool.printTradeQueue("cancel before");
+                stockAnalysisServiceI.cancelStQuote(stQuote);
+                DataInitTool.printTradeQueue("cancel end");
             }
         } finally {
             ReferenceCountUtil.release(msg);
