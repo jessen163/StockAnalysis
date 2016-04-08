@@ -121,7 +121,7 @@ public class StTradeThread implements Runnable {
 									if (ArithUtil.compare(buyQuote.getQuotePrice(), sellQuote.getQuotePrice()) >= 0 && !buyQuote.getAccountId().equals(sellQuote.getAccountId())) {
 
 										//打印队列
-										DataInitTool.printTradeQueue("trade before");
+										DataInitTool.printTradeQueue("trade before",buyQuote.getStockId());
 
 										//股票
 										StStock sts = DataConstant.stockTable.get(buyQuote.getStockId());
@@ -129,7 +129,7 @@ public class StTradeThread implements Runnable {
 										stockAnalysisServiceI.dealTrading(stTradeQueueMap, buyQuote, sellQuote, sts);
 
 										//打印队列
-										DataInitTool.printTradeQueue("trade end");
+										DataInitTool.printTradeQueue("trade end",buyQuote.getStockId());
 
 										buyFlag = false;
 									}
