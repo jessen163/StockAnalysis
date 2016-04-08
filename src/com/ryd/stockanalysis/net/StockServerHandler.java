@@ -50,9 +50,9 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setStockId(strArr[2]);
                 stQuote.setAccountId(strArr[3]);
                 stQuote.setType(Integer.parseInt(strArr[4]));
-                DataInitTool.printTradeQueue("cancel before");
+                DataInitTool.printTradeQueue("cancel before",stQuote.getStockId());
                 stockAnalysisServiceI.cancelStQuote(stQuote);
-                DataInitTool.printTradeQueue("cancel end");
+                DataInitTool.printTradeQueue("cancel end",stQuote.getStockId());
             }
         } finally {
             ReferenceCountUtil.release(msg);
