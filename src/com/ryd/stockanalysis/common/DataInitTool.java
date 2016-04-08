@@ -84,6 +84,7 @@ public class DataInitTool {
         StStock stStock = new StStock("1","中国平安","633256");
         stStock.setBfclosePrice(10);
         StStock stStock2 = new StStock("2","广发证券","000776");
+        stStock2.setBfclosePrice(10);
         StStock stStock3 = new StStock("3","创业板A","150153");
         DataConstant.stockTable.put(stStock.getStockId(),stStock);
         DataConstant.stockTable.put(stStock2.getStockId(),stStock2);
@@ -331,13 +332,13 @@ public class DataInitTool {
     }
 
 
-    public static synchronized void printTradeQueue(String info) {
-        for (String key : DataConstant.stTradeQueueMap.keySet()) {
-            StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(key);
+    public static synchronized void printTradeQueue(String info,String stockId) {
 
-            if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
+            StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(stockId);
 
-            logger.info("-----------------------------"+info+"------------------------------------");
+            if (stTradeQueueMap.buyList.isEmpty() && stTradeQueueMap.sellList.isEmpty()) return;
+
+            logger.info("-----------------------------"+info+" start------------------------------------");
             //卖家队列
             for (Long bkey : stTradeQueueMap.sellList.keySet()) {
                 StQuote stq = (StQuote) stTradeQueueMap.sellList.get(bkey);
@@ -365,8 +366,6 @@ public class DataInitTool {
 
                 logger.info("买家队列---" + stqb.getAccountId() + "--股票-" + sstb.getStockName() + "--价格-" + stqb.getQuotePrice() + "--报价时间-" + new Date(stqb.getDateTime()) + "--报价时间-" + stqb.getDateTime());
             }
-            logger.info("-----------------------------"+info+"------------------------------------");
-
-        }
+            logger.info("-----------------------------"+info+" end------------------------------------");
     }
 }
