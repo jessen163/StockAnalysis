@@ -182,7 +182,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         for (String key : DataConstant.stTradeQueueMap.keySet()) {
             StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(key);
 
-            if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
+            if (stTradeQueueMap.buyList.isEmpty() && stTradeQueueMap.sellList.isEmpty()) continue;
 
             //卖家结算
             for(Long bkey: stTradeQueueMap.sellList.keySet()){
