@@ -44,14 +44,12 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         if(FestivalDateUtil.getInstance().dateJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_1 ||
                 FestivalDateUtil.getInstance().dateJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_2) {
 
-            if (stQuote == null) {
-                return false;
-            }
-
             //报价对应股票
             StStock stStock = DataConstant.stockTable.get(stQuote.getStockId());
 
-
+            if (stStock == null) {
+                return false;
+            }
 
             //报价大于等于最小价格，小于等于最大价格，可以正常报价
             if (isStockQuotePriceInScope(stStock.getBfclosePrice(), stQuote.getQuotePrice())) {
