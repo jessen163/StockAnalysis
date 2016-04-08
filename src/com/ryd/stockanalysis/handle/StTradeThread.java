@@ -118,7 +118,7 @@ public class StTradeThread implements Runnable {
 										break;
 									}
 
-									if (ArithUtil.compare(buyQuote.getQuotePrice(), sellQuote.getQuotePrice()) >= 0) {
+									if (ArithUtil.compare(buyQuote.getQuotePrice(), sellQuote.getQuotePrice()) >= 0 && !buyQuote.getAccountId().equals(sellQuote.getAccountId())) {
 
 										//打印队列
 										DataInitTool.printTradeQueue("trade before");
