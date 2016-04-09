@@ -250,6 +250,63 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return false;
     }
 
+    @Override
+    public boolean quotePriceBySimulation(List<StAccount> stAccountList, StStock stStock) {
+        if (stAccountList.isEmpty()) return false;
+        StAccount account = stAccountList.get(0);
+
+        double[] priceArr = new double[10];
+        int[] amountArr = new int[10];
+        int[] typeArr = new int[10];
+
+        priceArr[0]=stStock.getBuyOnePrice();
+        priceArr[1]=stStock.getBuyTwoPrice();
+        priceArr[2]=stStock.getBuyThreePrice();
+        priceArr[3]=stStock.getBuyFourPrice();
+        priceArr[4]=stStock.getBuyFivePrice();
+        priceArr[5]=stStock.getSellOnePrice();
+        priceArr[6]=stStock.getSellTwoPrice();
+        priceArr[7]=stStock.getSellThreePrice();
+        priceArr[8]=stStock.getSellFourPrice();
+        priceArr[9]=stStock.getSellFivePrice();
+
+        amountArr[0]=stStock.getBuyOneAmount();
+        amountArr[1]=stStock.getBuyTwoAmount();
+        amountArr[2]=stStock.getBuyThreeAmount();
+        amountArr[3]=stStock.getBuyFourAmount();
+        amountArr[4]=stStock.getBuyFiveAmount();
+        amountArr[5]=stStock.getSellOneAmount();
+        amountArr[6]=stStock.getSellTwoAmount();
+        amountArr[7]=stStock.getSellThreeAmount();
+        amountArr[8]=stStock.getSellFourAmount();
+        amountArr[9]=stStock.getSellFiveAmount();
+
+        typeArr[0] = Constant.STOCK_STQUOTE_TYPE_BUY;
+        typeArr[1] = Constant.STOCK_STQUOTE_TYPE_BUY;
+        typeArr[2] = Constant.STOCK_STQUOTE_TYPE_BUY;
+        typeArr[3] = Constant.STOCK_STQUOTE_TYPE_BUY;
+        typeArr[4] = Constant.STOCK_STQUOTE_TYPE_BUY;
+        typeArr[5] = Constant.STOCK_STQUOTE_TYPE_SELL;
+        typeArr[6] = Constant.STOCK_STQUOTE_TYPE_SELL;
+        typeArr[7] = Constant.STOCK_STQUOTE_TYPE_SELL;
+        typeArr[8] = Constant.STOCK_STQUOTE_TYPE_SELL;
+        typeArr[9] = Constant.STOCK_STQUOTE_TYPE_SELL;
+
+        for (int i = 0; i< priceArr.length; i++) {
+            if (amountArr[i]==0||priceArr[i]==0||typeArr[i]==0) continue;
+
+            StQuote s = new StQuote();
+            s.setAccountId(account.getAccountId());
+            s.setStockId(stStock.getStockId());
+            s.setQuotePrice(priceArr[i]);
+            s.setAmount(amountArr[i]);
+            s.setType(typeArr[i]);
+            s.setDateTime(System.currentTimeMillis());
+            this.quotePrice(s);
+        }
+
+        return true;
+    }
 
     /**
      * 是否在范围内报价
@@ -270,7 +327,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         if((ArithUtil.compare(quotePrice, minPrice)>=0) && (ArithUtil.compare(quotePrice, maxPrice)<=0)){
             return true;
         }else{
-            logger.info("报价失败-----报价价格->"+quotePrice+"--最高涨幅->"+maxPrice+"--最低跌幅->"+minPrice);
+            logger.info("报价失败-----报价价格->" + quotePrice + "--最高涨幅->" + maxPrice + "--最低跌幅->" + minPrice);
         }
 
         return false;
