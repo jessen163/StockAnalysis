@@ -19,11 +19,16 @@ public class StStock implements Serializable{
     private String stockId;
     private String stockName;
     private String stockCode;
+    private String stockType; // 上证，深市
     private double openPrice;//今日开盘价
     private double bfclosePrice;//昨日收盘价
     private double currentPrice;//当前价格
     private double maxPrice;//今日最高价
     private double minPrice;//今日最低价
+
+    private double biddingBuyPrice; // 竞买价
+    private double biddingSellPrice; // 竞买价
+
     private double tradeAmount;//成交量
     private double tradeMoney;//成交金额
 
@@ -57,12 +62,36 @@ public class StStock implements Serializable{
     public StStock() {
     }
 
-    public StStock(String stockId, String stockName, String stockCode) {
+    public StStock(String stockId, String stockName, String stockCode, String stockType) {
         this.stockId = stockId;
         this.stockName = stockName;
         this.stockCode = stockCode;
+        this.stockType = stockType;
     }
 
+    public String getStockType() {
+        return stockType;
+    }
+
+    public void setStockType(String stockType) {
+        this.stockType = stockType;
+    }
+
+    public double getBiddingBuyPrice() {
+        return biddingBuyPrice;
+    }
+
+    public void setBiddingBuyPrice(double biddingBuyPrice) {
+        this.biddingBuyPrice = biddingBuyPrice;
+    }
+
+    public double getBiddingSellPrice() {
+        return biddingSellPrice;
+    }
+
+    public void setBiddingSellPrice(double biddingSellPrice) {
+        this.biddingSellPrice = biddingSellPrice;
+    }
 
     public String getStockId() {
         return stockId;
