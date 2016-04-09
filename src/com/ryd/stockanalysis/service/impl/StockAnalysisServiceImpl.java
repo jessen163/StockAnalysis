@@ -5,10 +5,7 @@ import java.util.*;
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.common.Constant;
 import com.ryd.stockanalysis.common.DataConstant;
-import com.ryd.stockanalysis.service.StAccountServiceI;
-import com.ryd.stockanalysis.service.StPositionServiceI;
-import com.ryd.stockanalysis.service.StTradeRecordServiceI;
-import com.ryd.stockanalysis.service.StockAnalysisServiceI;
+import com.ryd.stockanalysis.service.*;
 import com.ryd.stockanalysis.util.ArithUtil;
 import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
@@ -30,10 +27,13 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
     private StTradeRecordServiceI stTradeRecordServiceI;
 
+    private StockGetInfoFromApiI stockGetInfoFromApiI;
+
     public StockAnalysisServiceImpl() {
         stAccountServiceI = new StAccountServiceImpl();
         stPositionServiceI = new StPositionServiceImpl();
         stTradeRecordServiceI = new StTradeRecordServiceImpl();
+        stockGetInfoFromApiI = new StockGetInfoFromApiImpl();
     }
 
 
@@ -306,6 +306,21 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         }
 
         return true;
+    }
+
+    public void quotePriceBySimulation() {
+        logger.info("更新股票实时信息.............start...........");
+        StStock stock = null;
+        for (String k :DataConstant.stockTable.keySet()) {
+            StStock stStock = DataConstant.stockTable.get(k);
+            stock = stockGetInfoFromApiI.getStStockInfo(stStock.getStockType(), stStock.getStockCode());
+            if (stock!=null) {
+                stock.setStockId(stStock.getStockId());
+                this.quotePriceBySimulation(DataConstant.accountList,stock);
+            }
+        }
+
+        logger.info("更新股票实时信息.............end...........");
     }
 
     /**
