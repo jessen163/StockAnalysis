@@ -8,7 +8,6 @@ import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  * 处理客户端任务
@@ -19,17 +18,29 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        boolean flag = false;
         ByteBuf in = (ByteBuf) msg;
-        try {
+//        try {
             StringBuffer str = new StringBuffer();
             while (in.isReadable()) { // (1)
 //                System.out.print((char) in.readByte());
                 str.append((char) in.readByte());
                 System.out.flush();
             }
+
+        // 释放资源，这行很关键
+        in.release();
             System.out.println(str.toString());
             String[] strArr = str.toString().split("@");
-            if (strArr==null||strArr.length!=7) return;
+            if (strArr==null||strArr.length!=7) {
+                // 向客户端发送消息
+                String response = "parameter error";
+                // 在当前场景下，发送的数据必须转换成ByteBuf数组
+                ByteBuf encoded = ctx.alloc().buffer(4 * response.length());
+                encoded.writeBytes(response.getBytes());
+                ctx.write(encoded);
+                return;
+            }
 
             if (strArr[0].equals("A")) {
                 // 从互动端获取报价
@@ -42,7 +53,7 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setDateTime(Long.parseLong(strArr[6]));
                 stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
 
-                stockAnalysisServiceI.quotePrice(stQuote);
+                flag = stockAnalysisServiceI.quotePrice(stQuote);
             } else if(strArr[0].equals("B")) {
                 // 撤单
                 StQuote stQuote = new StQuote();
@@ -51,12 +62,25 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                 stQuote.setAccountId(strArr[3]);
                 stQuote.setType(Integer.parseInt(strArr[4]));
                 DataInitTool.printTradeQueue("cancel before",stQuote.getStockId());
-                stockAnalysisServiceI.cancelStQuote(stQuote);
+                flag = stockAnalysisServiceI.cancelStQuote(stQuote);
                 DataInitTool.printTradeQueue("cancel end",stQuote.getStockId());
             }
-        } finally {
-            ReferenceCountUtil.release(msg);
-        }
+
+            // 向客户端发送消息
+            String response = flag?"Operation success":"Operation fail";
+            // 在当前场景下，发送的数据必须转换成ByteBuf数组
+            ByteBuf encoded = ctx.alloc().buffer(4 * response.length());
+            encoded.writeBytes(response.getBytes());
+            ctx.write(encoded);
+        ctx.flush();
+//        } finally {
+//            ReferenceCountUtil.release(msg);
+//        }
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
     }
 
     @Override
@@ -64,10 +88,5 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
         // Close the connection when an exception is raised.
         cause.printStackTrace();
         ctx.close();
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//        super.channelActive(ctx);
     }
 }
