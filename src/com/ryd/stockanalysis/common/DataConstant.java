@@ -23,6 +23,16 @@ public class DataConstant {
     public static ConcurrentHashMap<String,StTradeQueue> stTradeQueueMap = new ConcurrentHashMap<String,StTradeQueue>();
     //帐户
     public static ConcurrentMap<String,StAccount> stAccounts = new ConcurrentHashMap<String,StAccount>();
+
+    // 模拟账户-马甲
+    public static List<StAccount> accountList = null;
+
+    static {
+        accountList = new ArrayList<StAccount>();
+        StAccount ataA = new StAccount("A","A","1",1000000d,2000000d);
+        accountList.add(ataA);
+    }
+
     //帐户委托,报价
     public static ConcurrentHashMap<String,Map<String,StQuote>> stAccountQuoteMap = new ConcurrentHashMap<String,Map<String,StQuote>>();
     //持仓
