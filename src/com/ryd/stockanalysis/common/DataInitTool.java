@@ -1,10 +1,9 @@
 package com.ryd.stockanalysis.common;
 
-import com.ryd.stockanalysis.bean.StAccount;
-import com.ryd.stockanalysis.bean.StPosition;
-import com.ryd.stockanalysis.bean.StStock;
+import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.handle.StockTradeThread;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
+import com.ryd.stockanalysis.util.ArithUtil;
 import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
 
@@ -85,6 +84,7 @@ public class DataInitTool {
         StStock stStock = new StStock("1","中国平安","633256");
         stStock.setBfclosePrice(10);
         StStock stStock2 = new StStock("2","广发证券","000776");
+        stStock2.setBfclosePrice(10);
         StStock stStock3 = new StStock("3","创业板A","150153");
         DataConstant.stockTable.put(stStock.getStockId(),stStock);
         DataConstant.stockTable.put(stStock2.getStockId(),stStock2);
@@ -331,4 +331,41 @@ public class DataInitTool {
         }
     }
 
+
+    public static synchronized void printTradeQueue(String info,String stockId) {
+
+            StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(stockId);
+
+            if (stTradeQueueMap.buyList.isEmpty() && stTradeQueueMap.sellList.isEmpty()) return;
+
+            logger.info("-----------------------------"+info+" start------------------------------------");
+            //卖家队列
+            for (Long bkey : stTradeQueueMap.sellList.keySet()) {
+                StQuote stq = (StQuote) stTradeQueueMap.sellList.get(bkey);
+
+                if (stq == null) {
+                    continue;
+                }
+                StStock sst = DataConstant.stockTable.get(stq.getStockId());
+
+                logger.info("卖家队列---" + stq.getAccountId() + "--股票-" + sst.getStockName() + "--价格-" + stq.getQuotePrice() + "--报价时间-" + new Date(stq.getDateTime()) + "--报价时间-" + stq.getDateTime());
+            }
+
+            logger.info("  ");
+
+            //买家队列
+            for (Long skey : stTradeQueueMap.buyList.keySet()) {
+
+                StQuote stqb = (StQuote) stTradeQueueMap.buyList.get(skey);
+
+                if (stqb == null) {
+                    continue;
+                }
+
+                StStock sstb = DataConstant.stockTable.get(stqb.getStockId());
+
+                logger.info("买家队列---" + stqb.getAccountId() + "--股票-" + sstb.getStockName() + "--价格-" + stqb.getQuotePrice() + "--报价时间-" + new Date(stqb.getDateTime()) + "--报价时间-" + stqb.getDateTime());
+            }
+            logger.info("-----------------------------"+info+" end------------------------------------");
+    }
 }

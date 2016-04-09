@@ -2,6 +2,7 @@ package com.ryd.stockanalysis.handle;
 
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.common.DataConstant;
+import com.ryd.stockanalysis.common.DataInitTool;
 import com.ryd.stockanalysis.service.StAccountServiceI;
 import com.ryd.stockanalysis.service.StPositionServiceI;
 import com.ryd.stockanalysis.service.StTradeRecordServiceI;
@@ -116,46 +117,23 @@ public class StTradeThread implements Runnable {
 										sellerKey = sellQuote.getQuotePriceForSort();
 										break;
 									}
-									if (ArithUtil.compare(buyQuote.getQuotePrice(),sellQuote.getQuotePrice()) >= 0) {
 
-										logger.info("-----------------------------------------------------------------");
-										//卖家队列
-										for(Long bkey: stTradeQueueMap.sellList.keySet()){
-											StQuote stq = (StQuote) stTradeQueueMap.sellList.get(bkey);
+									if (ArithUtil.compare(buyQuote.getQuotePrice(), sellQuote.getQuotePrice()) >= 0 && !buyQuote.getAccountId().equals(sellQuote.getAccountId())) {
 
-											if (stq==null) {
-												continue;
-											}
-											StStock sst = DataConstant.stockTable.get(stq.getStockId());
-
-											logger.info("卖家队列---"+stq.getAccountId()+"--股票-"+sst.getStockName()+"--价格-"+stq.getQuotePrice()+"--报价时间-"+new Date(stq.getDateTime()) + "--报价时间-" + stq.getDateTime());
-										}
-
-										logger.info("-----------------------------------------------------------------");
-
-										//买家队列
-										for(Long skey: stTradeQueueMap.buyList.keySet()){
-
-											StQuote stqb = (StQuote)stTradeQueueMap.buyList.get(skey);
-
-											if (stqb==null) {
-												continue;
-											}
-
-											StStock sstb = DataConstant.stockTable.get(stqb.getStockId());
-
-											logger.info("买家队列---"+stqb.getAccountId()+"--股票-"+sstb.getStockName()+"--价格-"+stqb.getQuotePrice()+"--报价时间-"+new Date(stqb.getDateTime())+"--报价时间-"+stqb.getDateTime());
-										}
-										logger.info("-----------------------------------------------------------------");
-
+										//打印队列
+										DataInitTool.printTradeQueue("trade before",buyQuote.getStockId());
 
 										//股票
 										StStock sts = DataConstant.stockTable.get(buyQuote.getStockId());
 										//交易
 										stockAnalysisServiceI.dealTrading(stTradeQueueMap, buyQuote, sellQuote, sts);
 
-										buyFlag=false;
+										//打印队列
+										DataInitTool.printTradeQueue("trade end",buyQuote.getStockId());
+
+										buyFlag = false;
 									}
+
 									buyerKey = buyQuote.getQuotePriceForSort();
 									sellerKey = sellQuote.getQuotePriceForSort();
 								}
@@ -165,7 +143,6 @@ public class StTradeThread implements Runnable {
 							DataConstant.stTradeQueueMap.put(s, stTradeQueueMap);
 						}
 //					}
-					Thread.sleep(2000);
 				}
 //				logger.info("股票交易引擎---------------结束--------------------");
 			} catch (Exception e) {
