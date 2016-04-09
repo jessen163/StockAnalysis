@@ -32,7 +32,7 @@ public class StockGetInfoFromApiImpl implements StockGetInfoFromApiI {
         //访问新浪股票接口
         URL url = null;
         try {
-            url = new URL(DataConstant.STOCK_SINA_URL + "sh" + stockCode);
+            url = new URL(DataConstant.STOCK_SINA_URL + st + stockCode);
 
             InputStream in = null;
             try {
@@ -55,31 +55,55 @@ public class StockGetInfoFromApiImpl implements StockGetInfoFromApiI {
                 String[] s = str.split("\"");
                 String[] sk = null;
                 if (!s[1].equals("")) {
-                    bf.append(stockCode + ",");
+//                    bf.append(stockCode + ",");
                     bf.append(s[1]);
                     int n = bf.lastIndexOf(",");
                     String string = bf.substring(0, n);
                     sk = string.split(",");
 
                     sts = new StStock();
-                    sts.setStockId(sk[0]);
-                    sts.setStockCode(sk[0]);
-                    sts.setStockName(sk[1]);
-                    sts.setOpenPrice(Double.parseDouble(sk[2]));
-                    sts.setBfclosePrice(Double.parseDouble(sk[3]));
-                    sts.setCurrentPrice(Double.parseDouble(sk[4]));
-                    sts.setMaxPrice(Double.parseDouble(sk[5]));
-                    sts.setMinPrice(Double.parseDouble(sk[6]));
-                    sts.setTradeAmount(Double.parseDouble(sk[9]));
-                    sts.setTradeMoney(Double.parseDouble(sk[10]));
+                    sts.setStockId(stockCode);
+                    sts.setStockCode(stockCode);
+                    sts.setStockName(sk[0]);
+                    sts.setOpenPrice(Double.parseDouble(sk[1]));
+                    sts.setBfclosePrice(Double.parseDouble(sk[2]));
+                    sts.setCurrentPrice(Double.parseDouble(sk[3]));
+                    sts.setMaxPrice(Double.parseDouble(sk[4]));
+                    sts.setMinPrice(Double.parseDouble(sk[5]));
+                    sts.setBiddingBuyPrice(Double.parseDouble(sk[6]));
+                    sts.setBiddingSellPrice(Double.parseDouble(sk[7]));
+                    sts.setTradeAmount(Double.parseDouble(sk[8]));
+                    sts.setTradeMoney(Double.parseDouble(sk[9]));
 
-                    //买一
-                    StTrustee stt1 = new StTrustee();
-                    stt1.setStockId(sts.getStockId());
-                    stt1.setTrustName("买一");
-                    stt1.setAmount(Long.parseLong(sk[11]));
-                    stt1.setQuotePrice(Double.parseDouble(sk[12]));
-                    stt1.setType(Constant.STOCK_STQUOTE_TYPE_BUY);
+                    sts.setBuyOneAmount(Integer.parseInt(sk[10]));
+                    sts.setBuyOnePrice(Double.parseDouble(sk[11]));
+                    sts.setBuyTwoAmount(Integer.parseInt(sk[12]));
+                    sts.setBuyTwoPrice(Double.parseDouble(sk[13]));
+                    sts.setBuyThreeAmount(Integer.parseInt(sk[14]));
+                    sts.setBuyThreePrice(Double.parseDouble(sk[15]));
+                    sts.setBuyFourAmount(Integer.parseInt(sk[16]));
+                    sts.setBuyFourPrice(Double.parseDouble(sk[17]));
+                    sts.setBuyFiveAmount(Integer.parseInt(sk[18]));
+                    sts.setBuyFivePrice(Double.parseDouble(sk[19]));
+
+                    sts.setSellOneAmount(Integer.parseInt(sk[20]));
+                    sts.setSellOnePrice(Double.parseDouble(sk[21]));
+                    sts.setSellTwoAmount(Integer.parseInt(sk[22]));
+                    sts.setSellTwoPrice(Double.parseDouble(sk[23]));
+                    sts.setSellThreeAmount(Integer.parseInt(sk[24]));
+                    sts.setSellThreePrice(Double.parseDouble(sk[25]));
+                    sts.setSellFourAmount(Integer.parseInt(sk[26]));
+                    sts.setSellFourPrice(Double.parseDouble(sk[27]));
+                    sts.setSellFiveAmount(Integer.parseInt(sk[28]));
+                    sts.setSellFivePrice(Double.parseDouble(sk[29]));
+
+//                    10：”4695″，“买一”申请4695股，即47手；
+//                    11：”26.91″，“买一”报价；
+//                    12：”57590″，“买二”
+//                    13：”26.90″，“买二”
+//                    14：”14700″，“买三”
+//                    15：”26.89″，“买三”
+//                    16：”14300″，“买四”
 
                 }
             } catch (IOException e) {
