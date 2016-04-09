@@ -1,9 +1,11 @@
 package com.ryd.stockanalysis.service;
 
+import com.ryd.stockanalysis.bean.StAccount;
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.bean.StStock;
 import com.ryd.stockanalysis.bean.StTradeQueue;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,4 +44,11 @@ public interface StockAnalysisServiceI {
      */
     public boolean cancelStQuote(StQuote stQuote);
 
+    /**
+     * 模拟报价
+     * @param stAccountList
+     * @param stStock
+     * @return
+     */
+    public boolean quotePriceBySimulation(List<StAccount> stAccountList, StStock stStock);
 }
