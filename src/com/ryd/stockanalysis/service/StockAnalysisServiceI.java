@@ -51,4 +51,10 @@ public interface StockAnalysisServiceI {
      * @return
      */
     public boolean quotePriceBySimulation(List<StAccount> stAccountList, StStock stStock);
+
+    /**
+     * 马甲盘模拟报价
+     * @return
+     */
+    public void quotePriceBySimulation();
 }
