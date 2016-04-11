@@ -6,7 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.*;
 
 import javax.swing.*;
-
+import swing.bean.*;
 
 import com.ryd.stockanalysis.bean.StAccount;
 import swing.frame.*;
@@ -32,9 +32,8 @@ public class LoginListener extends MouseAdapter implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 
 			}else{
-				 StAccount acc = new StAccount();
 				 LoginFrame.instance().setVisible(false);
-				 MainFrame.instance().open(acc);
+				 MainFrame.instance().open();
 			}
 		} else if (e.getSource() == cancel) {
 			 System.exit(0);
