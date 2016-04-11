@@ -1,8 +1,9 @@
 package swing.frame;
 
-import swing.bean.*;
+
+import com.ryd.stockanalysis.bean.*;
 import swing.ClientConstants;
-import swing.bean.StStock;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -95,7 +96,7 @@ public class StockInfoDialog extends JDialog {
 		minPrice = new JLabel("26.6");
 		westPanel.add(minPrice);
 		panelAdd(westPanel, g, c, minPrice, 4, 3, 1, 1);
-		
+
 		westPanel.add(Box.createHorizontalStrut(10));
 	}
 	

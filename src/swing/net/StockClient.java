@@ -1,6 +1,5 @@
 package swing.net;
 
-import com.ryd.client.service.bound.HelloClientIntHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -46,7 +45,7 @@ public class StockClient {
     }
 
     public static void main(String[] args) throws Exception {
-        StockClient client = new StockClient();
-        client.connect("127.0.0.1", 8888);
+//        StockClient client = new StockClient();
+//        client.connect("127.0.0.1", 8888);
     }
 }

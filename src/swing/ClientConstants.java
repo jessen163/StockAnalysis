@@ -2,12 +2,6 @@ package swing;
 
 import com.ryd.stockanalysis.bean.*;
 import org.apache.commons.collections.CollectionUtils;
-import swing.bean.*;
-import swing.bean.StAccount;
-import swing.bean.StPosition;
-import swing.bean.StQuote;
-import swing.bean.StStock;
-
 
 import java.util.*;
 
@@ -30,6 +24,13 @@ public class ClientConstants {
 
     // 仓位报价信息
     public static List<StQuote> stQuoteList = null;
+
+    public static final Integer CLIENT_LOGIN = 1;
+    public static final Integer STSTOCK_LIST = 2;
+    public static final Integer STQUOTE_PRICE_LIST = 3;
+    public static final Integer STQUOTE_PRICE = 4;
+    public static final Integer STQUOTE_RECALL = 5;
+    public static final Integer STSTOCK_POSITION = 6;
 
     static {
         stStockList = new ArrayList<StStock>();

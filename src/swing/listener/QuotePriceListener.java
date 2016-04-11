@@ -12,7 +12,11 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import com.ryd.stockanalysis.bean.StQuote;
+import com.ryd.stockanalysis.protocol.NettyMessage;
+import swing.ClientConstants;
 import swing.frame.*;
+import swing.service.impl.MessageServiceImpl;
 
 public class QuotePriceListener extends MouseAdapter implements ActionListener {
 
@@ -35,51 +39,26 @@ public class QuotePriceListener extends MouseAdapter implements ActionListener {
 		this.ensure = ensure;
 		this.cancel = cancel;
 	}
-	
-	   private String paramStr(){
-	    	 String accId=textAccountId.getText();
-	         String stId=stockCode;
-	         String price=textQuotePrice.getText();
-	         String amout=textAmount.getText();
-	         Long dateTime=System.currentTimeMillis();
-	         String info = "A@"+stId+"@"+accId+"@"+price+"@"+amout+"@"+(buyOrSellBuy.isSelected()==true?1:2)+"@"+dateTime.toString();
-	         
-	         return info;
-	    }
 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
 		if (e.getSource() == ensure) {
-			 try {  
-	          
-	             Socket socket = new Socket("192.168.5.37",8888);  
-	   
-	             try {  
-	               
-	            	 InputStreamReader isr=new InputStreamReader(socket.getInputStream());
-	                 BufferedReader br=new BufferedReader(isr);
-	     
-	                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());  
+			NettyMessage msg = new NettyMessage();
 
-	                out.write(paramStr().getBytes());  
-	                
-//	                String readline = "";
-//	                readline = br.readLine();
-//	                while(!readline.equals("")){
-//	                    result.append(readline);
-//	                }
-	                
-	                out.close();
-	                isr.close();
-	                br.close();
-	             } finally {  
-	                 socket.close();  
-	             }  
-	         } catch (IOException xe) {  
-	             xe.printStackTrace();  
-	         }  
+			StQuote quote = new StQuote();
+			quote.setAccountId(textAccountId.getText());
+			quote.setStockId(textStockId.getText());
+			quote.setQuotePrice(Double.valueOf(textQuotePrice.getText()));
+			quote.setAmount(Integer.valueOf(textAmount.getText()));
+			quote.setType((buyOrSellBuy.isSelected()==true?1:2));
+
+			msg.setMsgObj(quote);
+			msg.setMsgType(ClientConstants.STQUOTE_PRICE);
+
+			MessageServiceImpl.sendMessage(msg);
+
 		} else if (e.getSource() == cancel) {
 			QuotePriceJDialog.instance().setVisible(false);
 		}

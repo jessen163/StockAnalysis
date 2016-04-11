@@ -16,10 +16,10 @@ public class StockClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         // Send the message to Server
-        super.channelActive(ctx);
+//        super.channelActive(ctx);
         MessageServiceImpl.ctx = ctx;
-        String message = "A@1@1@1@1@1@1";
-        ctx.writeAndFlush(message);
+//        String message = "A@1@1@1@1@1@1";
+//        ctx.writeAndFlush(message);
     }
 
     @Override

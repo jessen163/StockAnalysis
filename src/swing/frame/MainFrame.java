@@ -2,7 +2,9 @@ package swing.frame;
 
 import javafx.stage.Screen;
 import swing.ClientConstants;
-import swing.bean.*;
+
+import com.ryd.stockanalysis.bean.*;
+import swing.common.ListToArray;
 import swing.listener.StockSearchListener;
 
 import javax.swing.*;
@@ -17,6 +19,11 @@ import java.util.*;
 import java.util.List;
 
 public class MainFrame extends JFrame implements Runnable {
+
+	public static String[] columnName = {"股票代码", "股票名称","现价", "持仓" };
+
+	public static String[] columnName2 = {"股票代码", "股票名称", "现价", "今开", "昨收", "最高", "最低", "总手", "买一","卖一" };
+
 
 	private static MainFrame mainFrame;
 
@@ -54,7 +61,7 @@ public class MainFrame extends JFrame implements Runnable {
 		panelAdd(topPanel,g,c,accountLab,0,0,1,1);
 		account = new JLabel("A");
 		topPanel.add(account);
-		panelAdd(topPanel,g,c,account,1,0,1,1);
+		panelAdd(topPanel, g, c, account, 1, 0, 1, 1);
 		
 		totalMoneyLab = new JLabel("总资产");
 		topPanel.add(totalMoneyLab);
@@ -101,8 +108,7 @@ public class MainFrame extends JFrame implements Runnable {
 		stCode.setMaximumSize(new Dimension(200, 30));
 		panel3.add(stCode);
 		search = new JButton("查询");
-		StockSearchListener searchListener = new StockSearchListener(stCode, search);
-		search.addActionListener(searchListener);
+
 		panel3.add(search);
 		panel3.add(Box.createHorizontalStrut(510));
 
@@ -111,6 +117,9 @@ public class MainFrame extends JFrame implements Runnable {
 		table2 = new JTable();
 		JScrollPane scrollPane2 = new JScrollPane(table2);
 		scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		StockSearchListener searchListener = new StockSearchListener(stCode, table2, search);
+		search.addActionListener(searchListener);
 
 		panel2.add(scrollPane2);
 
@@ -204,17 +213,13 @@ public class MainFrame extends JFrame implements Runnable {
 
 	public void open() {
 
-        String[] columnName = {"股票代码", "股票名称","现价", "持仓" };
-
-		String[] columnName2 = {"股票代码", "股票名称", "现价", "今开", "昨收", "最高", "最低", "总手", "买一","卖一" };
-
 		List<StPosition> stPositionList = ClientConstants.stPositionList;
 		List<StStock> stStockList = ClientConstants.stStockList;
 
-		DefaultTableModel tableModel = new DefaultTableModel(positionListToArray(stPositionList), columnName);
+		DefaultTableModel tableModel = new DefaultTableModel(ListToArray.positionListToArray(stPositionList), columnName);
 		table.setModel(tableModel);
 
-		DefaultTableModel tableModel2 = new DefaultTableModel(stockListToArray(stStockList),columnName2);
+		DefaultTableModel tableModel2 = new DefaultTableModel(ListToArray.stockListToArray(stStockList),columnName2);
 		table2.setModel(tableModel2);
 
 		StAccount acc = ClientConstants.stAccount;
@@ -227,50 +232,6 @@ public class MainFrame extends JFrame implements Runnable {
 		LoginFrame.instance().setVisible(false);
 	}
 
-	/**
-	 * {"股票代码", "股票名称", "现价", "今开", "昨收", "最高", "最低", "总手", "买一","卖一" };
-	 * @param stockList
-	 * @return
-	 */
-	private Object[][] stockListToArray(List<StStock> stockList){
-		Object[][] arr = new Object[stockList.size()][10];
-		for(int i=0;i<stockList.size();i++){
-			StStock st = stockList.get(i);
-			arr[i][0] = st.getStockCode();
-			arr[i][1] = st.getStockName();
-			arr[i][2] = st.getCurrentPrice();
-			arr[i][3] = st.getOpenPrice();
-			arr[i][4] = st.getBfclosePrice();
-			arr[i][5] = st.getMaxPrice();
-			arr[i][6] = st.getMinPrice();
-			arr[i][7] = st.getTradeAmount();
-			arr[i][8] = st.getBuyOnePrice();
-			arr[i][9] = st.getSellOnePrice();
-		}
-
-		return arr;
-	}
-
-
-	/**
-	 * {"股票代码", "股票名称", "现价", "持仓"};
-	 * @param stPositionList
-	 * @return
-	 */
-	private Object[][] positionListToArray(List<StPosition> stPositionList){
-		Object[][] arr = new Object[stPositionList.size()][4];
-		for(int i=0;i<stPositionList.size();i++){
-			StPosition stq = stPositionList.get(i);
-			StStock stock = ClientConstants.stStockMap.get(stq.getStockId());
-
-			arr[i][0] = stock.getStockCode();
-			arr[i][1] = stock.getStockName();
-			arr[i][2] = stock.getCurrentPrice();
-			arr[i][3] = stq.getAmount();
-		}
-
-		return arr;
-	}
 
 	@Override
 	public void run() {
