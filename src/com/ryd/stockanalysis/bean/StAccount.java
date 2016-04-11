@@ -74,4 +74,14 @@ public class StAccount implements Serializable {
         this.totalMoney = totalMoney;
     }
 
+    @Override
+    public String toString() {
+        return "StAccount{" +
+                "accountId='" + accountId + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", useMoney=" + useMoney +
+                ", totalMoney=" + totalMoney +
+                '}';
+    }
 }

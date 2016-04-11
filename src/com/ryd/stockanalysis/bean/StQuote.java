@@ -160,4 +160,23 @@ public class StQuote implements Serializable, Comparable<StQuote> {
             return -1;
         }
     }
+
+    @Override
+    public String toString() {
+        return "StQuote{" +
+                "quoteId='" + quoteId + '\'' +
+                ", accountId='" + accountId + '\'' +
+                ", stockId='" + stockId + '\'' +
+                ", amount=" + amount +
+                ", quotePrice=" + quotePrice +
+                ", type=" + type +
+                ", status=" + status +
+                ", frozeMoney=" + frozeMoney +
+                ", commissionFee=" + commissionFee +
+                ", dateTime=" + dateTime +
+                ", timeSort=" + timeSort +
+                ", quotePriceForSort=" + quotePriceForSort +
+                ", currentAmount=" + currentAmount +
+                '}';
+    }
 }
