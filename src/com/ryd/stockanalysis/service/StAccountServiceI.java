@@ -1,5 +1,7 @@
 package com.ryd.stockanalysis.service;
 
+import com.ryd.stockanalysis.bean.StAccount;
+
 /**
  * <p>标题:</p>
  * <p>描述:</p>
@@ -8,7 +10,12 @@ package com.ryd.stockanalysis.service;
  * 创建时间：2016/3/30 13:33
  */
 public interface StAccountServiceI {
-
+    /**
+     * 通过参数查询账户信息
+     * @param stAccount
+     * @return
+     */
+    public StAccount findStAccountByParams(StAccount stAccount);
 
     /**
      * 增加/减少可用资产

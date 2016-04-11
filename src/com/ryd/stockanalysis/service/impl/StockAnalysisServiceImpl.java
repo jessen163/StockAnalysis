@@ -50,6 +50,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             if (stStock == null) {
                 return false;
             }
+            stQuote.setDateTime(System.currentTimeMillis());
 
             //报价大于等于最小价格，小于等于最大价格，可以正常报价
             if (isStockQuotePriceInScope(stStock.getBfclosePrice(), stQuote.getQuotePrice())) {
@@ -308,19 +309,35 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         return true;
     }
 
-    public void quotePriceBySimulation() {
+    @Override
+    public void updateSyncStockInfo() {
         logger.info("更新股票实时信息.............start...........");
         StStock stock = null;
         for (String k :DataConstant.stockTable.keySet()) {
             StStock stStock = DataConstant.stockTable.get(k);
             stock = stockGetInfoFromApiI.getStStockInfo(stStock.getStockType(), stStock.getStockCode());
+            logger.info("股票信息：" + stock);
             if (stock!=null) {
                 stock.setStockId(stStock.getStockId());
-                this.quotePriceBySimulation(DataConstant.accountList,stock);
+                stock.setStockType(stStock.getStockType());
+                DataConstant.stockTable.put(stStock.getStockId(), stock);
+            }
+        }
+        logger.info("更新股票实时信息.............end...........");
+    }
+
+    public void quotePriceBySimulation() {
+        logger.info("增加马甲盘.............start...........");
+        this.updateSyncStockInfo();
+        for (String k :DataConstant.stockTable.keySet()) {
+            StStock stock = DataConstant.stockTable.get(k);
+            logger.info("股票信息：" + stock);
+            if (stock!=null) {
+                this.quotePriceBySimulation(DataConstant.accountList, stock);
             }
         }
 
-        logger.info("更新股票实时信息.............end...........");
+        logger.info("增加马甲盘.............end...........");
     }
 
     /**
