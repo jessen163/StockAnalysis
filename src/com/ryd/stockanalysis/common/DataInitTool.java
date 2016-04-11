@@ -3,6 +3,7 @@ package com.ryd.stockanalysis.common;
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.handle.StockTradeThread;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
+import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import com.ryd.stockanalysis.util.ArithUtil;
 import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
@@ -82,7 +83,7 @@ public class DataInitTool {
 
         //中国平安-股票
         StStock stStock = new StStock("1","中国平安","601318","sh");
-        stStock.setBfclosePrice(10);
+        stStock.setBfclosePrice(31);
         StStock stStock2 = new StStock("2","广发证券","000776", "sz");
         stStock2.setBfclosePrice(10);
         StStock stStock3 = new StStock("3","首商股份","600723", "sh");
@@ -90,7 +91,8 @@ public class DataInitTool {
         DataConstant.stockTable.put(stStock2.getStockId(),stStock2);
         DataConstant.stockTable.put(stStock3.getStockId(),stStock3);
 
-
+        StockAnalysisServiceI stockAnalysisServiceI = new StockAnalysisServiceImpl();
+        stockAnalysisServiceI.updateSyncStockInfo();
 
         //初始数据用户A、B为卖家拥有持仓，用户C、D、E为买家，持仓为空
 
