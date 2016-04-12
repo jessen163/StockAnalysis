@@ -21,9 +21,20 @@ public class MainClinet {
 		} catch (Exception e) {
 		}
 
-		StockClient client = new StockClient();
-		client.connect("127.0.0.1", 8888);
+		new Thread(new ClientRun()).start();
 
 		new Thread(new MainFrame()).start();
+	}
+}
+
+class ClientRun implements Runnable {
+	@Override
+	public void run() {
+		try {
+			StockClient client = new StockClient();
+			client.connect("127.0.0.1", 8888);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

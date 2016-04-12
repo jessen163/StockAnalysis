@@ -3,10 +3,12 @@ package swing.frame;
 import com.ryd.stockanalysis.bean.StPosition;
 import com.ryd.stockanalysis.bean.StQuote;
 import com.ryd.stockanalysis.bean.StStock;
+import com.ryd.stockanalysis.protocol.NettyMessage;
 import swing.ClientConstants;
 import swing.common.ListToArray;
 import swing.listener.QuoteCancelListener;
 import swing.listener.QuotePriceListener;
+import swing.service.impl.MessageServiceImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -37,6 +39,16 @@ public class QuoteListDialog extends JDialog {
 		setLayout(new BorderLayout());
 		setSize(600, 450);
 		setLocationRelativeTo(null);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+		addComponent();
+	}
+
+
+	public void addComponent(){
+
+		JPanel panelContainer = new JPanel();
+		panelContainer.setLayout(new BoxLayout(panelContainer, BoxLayout.Y_AXIS));
 
 		JPanel panel1 = new JPanel();
 //		panel1.setBorder(BorderFactory.createTitledBorder("当前委托"));
@@ -59,7 +71,7 @@ public class QuoteListDialog extends JDialog {
 		JButton jcloseButton = new JButton("退出");
 		jcloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
+				quoteListDialog.dispose();
 			}
 		});
 
@@ -67,20 +79,24 @@ public class QuoteListDialog extends JDialog {
 		buttonPanel.add(Box.createHorizontalGlue());
 		buttonPanel.add(jcloseButton);
 
-        add(panel1, BorderLayout.CENTER);
-		add(buttonPanel,BorderLayout.SOUTH);
+		panelContainer.add(panel1, BorderLayout.CENTER);
+		panelContainer.add(buttonPanel,BorderLayout.SOUTH);
 
+        add(panelContainer);
 	}
 
 	public void open() {
+		setTableData();
+		setVisible(true);
+	}
+
+	public void setTableData(){
 
 		List<StQuote> stQuoteList = ClientConstants.stQuoteList;
 		table.removeAll();
 		DefaultTableModel tableModel = new DefaultTableModel(ListToArray.quoteListToArray(stQuoteList), columnName);
 		table.setModel(tableModel);
 		hideColumn(table,7);
-
-		setVisible(true);
 	}
 
 	/**

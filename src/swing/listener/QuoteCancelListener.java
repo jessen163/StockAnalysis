@@ -2,6 +2,7 @@ package swing.listener;
 
 import com.ryd.stockanalysis.protocol.NettyMessage;
 import swing.ClientConstants;
+import swing.frame.QuoteListDialog;
 import swing.frame.QuotePriceJDialog;
 import swing.service.impl.MessageServiceImpl;
 
@@ -30,6 +31,11 @@ public class QuoteCancelListener extends MouseAdapter implements ActionListener 
 			msg.setMsgType(ClientConstants.STQUOTE_RECALL);
 
 			MessageServiceImpl.sendMessage(msg);
+
+			QuoteListDialog.instance().dispose();
+		}else{
+			JOptionPane.showMessageDialog(null, "请选择撤单报价", "提示",
+					JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

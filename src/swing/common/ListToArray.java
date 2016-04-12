@@ -70,7 +70,7 @@ public class ListToArray {
      */
     public static Object[][] quoteListToArray(List<StQuote> stQuoteList){
         Object[][] arr = new Object[stQuoteList.size()][8];
-        SimpleDateFormat format=new SimpleDateFormat("MM/dd HH:MM");
+        SimpleDateFormat format=new SimpleDateFormat("MM/dd HH:mm");
         for(int i=0;i<stQuoteList.size();i++){
             StQuote stq = stQuoteList.get(i);
             StStock stock = ClientConstants.stStockMap.get(stq.getStockId());

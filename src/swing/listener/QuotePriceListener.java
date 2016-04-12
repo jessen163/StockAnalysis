@@ -58,7 +58,7 @@ public class QuotePriceListener extends MouseAdapter implements ActionListener {
 			MessageServiceImpl.sendMessage(msg);
 
 		} else if (e.getSource() == cancel) {
-			QuotePriceJDialog.instance().setVisible(false);
+			QuotePriceJDialog.instance().dispose();
 		}
 		
 	}

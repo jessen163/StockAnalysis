@@ -47,6 +47,7 @@ public class QuotePriceJDialog extends JDialog {
 		setLayout(null);
 		setSize(400, 330);
 		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		quotePriceJDialog = this;
 		JLabel accountLab = new JLabel("用户帐号");
 		JLabel stockCodeLab = new JLabel("股票代码");

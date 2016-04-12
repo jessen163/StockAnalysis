@@ -85,7 +85,7 @@ public class MessageServiceImpl extends MessageServiceI {
             if(rs) {
                 JOptionPane.showMessageDialog(null, "报价成功", "提示",
                         JOptionPane.ERROR_MESSAGE);
-                QuotePriceJDialog.instance().setVisible(false);
+                QuotePriceJDialog.instance().dispose();
             }
             break;
         case 5:
@@ -93,11 +93,11 @@ public class MessageServiceImpl extends MessageServiceI {
             if(crs) {
                 JOptionPane.showMessageDialog(null, "撤单成功", "提示",
                         JOptionPane.ERROR_MESSAGE);
-                QuoteListDialog.instance().setVisible(false);
             }else{
                 JOptionPane.showMessageDialog(null, "撤单失败", "提示",
                         JOptionPane.ERROR_MESSAGE);
             }
+            break;
         case 6:
             ClientConstants.stPositionList = (List<StPosition>) rsmsg.getMsgObj();
             break;
