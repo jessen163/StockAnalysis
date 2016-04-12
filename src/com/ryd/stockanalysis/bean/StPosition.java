@@ -18,6 +18,7 @@ public class StPosition implements Serializable{
     private String accountId;
     private String stockId;
     private Integer amount; //数量
+    private Double avgPrice; //平均成本
     private Integer status;
 
     private StStock stStock;
@@ -62,6 +63,14 @@ public class StPosition implements Serializable{
 
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    public Double getAvgPrice() {
+        return avgPrice;
+    }
+
+    public void setAvgPrice(Double avgPrice) {
+        this.avgPrice = avgPrice;
     }
 
     public Integer getStatus() {
