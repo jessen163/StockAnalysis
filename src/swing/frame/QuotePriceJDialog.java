@@ -74,11 +74,11 @@ public class QuotePriceJDialog extends JDialog {
 		textAmount.setBounds(130, 120, 133, 25);
 		
         buyOrSellBuy=new JRadioButton("买入");
-        buyOrSellBuy.setBounds(130, 150, 40, 25);
+        buyOrSellBuy.setBounds(130, 150, 60, 25);
         buyOrSellBuy.setSelected(true);
         
         buyOrSellSell=new JRadioButton("卖出");
-        buyOrSellSell.setBounds(170, 150, 40, 25);
+        buyOrSellSell.setBounds(190, 150, 60, 25);
         
 		ButtonGroup group=new ButtonGroup();
 	    group.add(buyOrSellBuy);

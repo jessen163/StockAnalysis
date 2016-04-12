@@ -45,7 +45,7 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                     // 登陆
                     account = (StAccount) nettyMessage.getMsgObj();
                     account = stAccountServiceI.findStAccountByParams(account);
-                    logger.info("登陆信息：" + account.getAccountNumber());
+                    logger.info("登陆信息：" + (account == null ? "登陆失败":account.getAccountNumber()));
                     nettyMessage.setMsgObj(account);
                     logger.info("登陆信息：" + account == null ? "登陆失败" : "登陆成功");
                     break;

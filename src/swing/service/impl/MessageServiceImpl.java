@@ -80,6 +80,8 @@ public class MessageServiceImpl extends MessageServiceI {
         case 4:
             boolean rs = (boolean)rsmsg.getMsgObj();
             if(rs) {
+                JOptionPane.showMessageDialog(null, "报价成功", "提示",
+                        JOptionPane.ERROR_MESSAGE);
                 QuotePriceJDialog.instance().setVisible(false);
             }
             break;
