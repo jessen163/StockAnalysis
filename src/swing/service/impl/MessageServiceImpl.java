@@ -71,7 +71,6 @@ public class MessageServiceImpl extends MessageServiceI {
             ClientConstants.stStockList = (List<StStock>) rsmsg.getMsgObj();
             ClientConstants.stockListToMap();
 
-            LoginFrame.instance().setVisible(false);
             MainFrame.instance().open();
             break;
         case 3:
@@ -104,6 +103,7 @@ public class MessageServiceImpl extends MessageServiceI {
         default:
             break;
         }
+
     }
 
     public static void sendMessage(Object obj) {

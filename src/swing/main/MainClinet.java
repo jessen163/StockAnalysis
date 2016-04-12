@@ -6,6 +6,8 @@ import swing.net.StockClient;
 
 import java.awt.Font;
 import java.util.Enumeration;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.UIManager;
 
@@ -13,21 +15,19 @@ import javax.swing.UIManager;
 public class MainClinet {
 
 	public static void main(String[] args) throws Exception {
-		
-		new Thread(new LoginFrame()).start();
-		
+		ExecutorService es = Executors.newCachedThreadPool();// 线程池
+		es.execute(new ClientServer());
+
+		LoginFrame.instance().open();
+
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
 		}
-
-		new Thread(new ClientRun()).start();
-
-		new Thread(new MainFrame()).start();
 	}
 }
 
-class ClientRun implements Runnable {
+class ClientServer implements Runnable {
 	@Override
 	public void run() {
 		try {
