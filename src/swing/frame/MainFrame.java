@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
-public class MainFrame extends JFrame implements Runnable {
+public class MainFrame extends JFrame {
 
 	public static String[] columnName = {"股票代码", "股票名称","现价", "持仓" };
 
@@ -259,12 +259,6 @@ public class MainFrame extends JFrame implements Runnable {
 		useMoney.setText(acc.getUseMoney()+"");
 		
 		setVisible(true);
-		LoginFrame.instance().setVisible(false);
-	}
-
-
-	@Override
-	public void run() {
-		instance();
+		LoginFrame.instance().dispose();
 	}
 }

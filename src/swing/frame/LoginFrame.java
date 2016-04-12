@@ -7,7 +7,7 @@ import javax.swing.*;
 
 import swing.listener.LoginListener;
 
-public class LoginFrame extends JFrame implements Runnable {
+public class LoginFrame extends JFrame{
 	private static LoginFrame loginFrame;
 	private JPanel outer;
 	private JLabel one;
@@ -76,11 +76,6 @@ public class LoginFrame extends JFrame implements Runnable {
 
 	public void exit() {
 		System.exit(0);
-	}
-
-	@Override
-	public void run() {
-		instance().open();
 	}
 
 }
