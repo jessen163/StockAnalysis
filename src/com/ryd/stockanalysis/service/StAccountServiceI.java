@@ -27,11 +27,8 @@ public interface StAccountServiceI {
     public boolean opearteUseMoney(String accountId, double oinmoney, int type);
 
     /**
-     * 增加/减少总资产
-     * @param accountId
-     * @param oinmoney
-     * @param type 增加/减少
-     * @return
+     * 计算帐户总资产
+     * @param account
      */
-    public boolean opearteTotalMoney(String accountId, double oinmoney, int type);
+    public void sumTotalMoney(StAccount account);
 }
