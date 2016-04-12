@@ -113,7 +113,7 @@ public class DataInitTool {
         DataConstant.stAccountPositionMap.put(ataA.getAccountId(), stpMapA);
 
         //创建买家B
-        StAccount ataB = new StAccount("B","B","",1000000d,2000000d);
+        StAccount ataB = new StAccount("B","B","B",1000000d,2000000d);
         //用户B持仓
         StPosition ata2Pos = new StPosition();
         ata2Pos.setPositionId(UUID.randomUUID().toString());
