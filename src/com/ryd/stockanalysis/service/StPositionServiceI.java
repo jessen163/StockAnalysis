@@ -8,7 +8,6 @@ package com.ryd.stockanalysis.service;
  * 创建时间：2016/3/30 13:34
  */
 public interface StPositionServiceI {
-
     /**
      * 增加/减少仓位
      * @param accountId 增加仓位的帐户

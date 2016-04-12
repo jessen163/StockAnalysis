@@ -14,6 +14,16 @@ import com.ryd.stockanalysis.util.ArithUtil;
  * 创建时间：2016/3/30 13:35
  */
 public class StAccountServiceImpl implements StAccountServiceI {
+    @Override
+    public StAccount findStAccountByParams(StAccount stAccount) {
+        for (String k : DataConstant.stAccounts.keySet()) {
+               StAccount account = DataConstant.stAccounts.get(k);
+            if (stAccount.getAccountNumber().equals(account.getAccountNumber())) {
+                return account;
+            }
+        }
+        return null;
+    }
 
     @Override
     public boolean opearteUseMoney(String accountId, double oinmoney, int type){

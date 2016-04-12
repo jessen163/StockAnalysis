@@ -356,4 +356,46 @@ public class StStock implements Serializable{
     public void setStockShortPinyin(String stockShortPinyin) {
         this.stockShortPinyin = stockShortPinyin;
     }
+
+    @Override
+    public String toString() {
+        return "StStock{" +
+                "stockId='" + stockId + '\'' +
+                ", stockName='" + stockName + '\'' +
+                ", stockCode='" + stockCode + '\'' +
+                ", stockType='" + stockType + '\'' +
+                ", openPrice=" + openPrice +
+                ", bfclosePrice=" + bfclosePrice +
+                ", currentPrice=" + currentPrice +
+                ", maxPrice=" + maxPrice +
+                ", minPrice=" + minPrice +
+                ", biddingBuyPrice=" + biddingBuyPrice +
+                ", biddingSellPrice=" + biddingSellPrice +
+                ", tradeAmount=" + tradeAmount +
+                ", tradeMoney=" + tradeMoney +
+                ", buyOnePrice=" + buyOnePrice +
+                ", buyOneAmount=" + buyOneAmount +
+                ", buyTwoPrice=" + buyTwoPrice +
+                ", buyTwoAmount=" + buyTwoAmount +
+                ", buyThreePrice=" + buyThreePrice +
+                ", buyThreeAmount=" + buyThreeAmount +
+                ", buyFourPrice=" + buyFourPrice +
+                ", buyFourAmount=" + buyFourAmount +
+                ", buyFivePrice=" + buyFivePrice +
+                ", buyFiveAmount=" + buyFiveAmount +
+                ", sellOnePrice=" + sellOnePrice +
+                ", sellOneAmount=" + sellOneAmount +
+                ", sellTwoPrice=" + sellTwoPrice +
+                ", sellTwoAmount=" + sellTwoAmount +
+                ", sellThreePrice=" + sellThreePrice +
+                ", sellThreeAmount=" + sellThreeAmount +
+                ", sellFourPrice=" + sellFourPrice +
+                ", sellFourAmount=" + sellFourAmount +
+                ", sellFivePrice=" + sellFivePrice +
+                ", sellFiveAmount=" + sellFiveAmount +
+                ", datetime=" + datetime +
+                ", stockPinyin='" + stockPinyin + '\'' +
+                ", stockShortPinyin='" + stockShortPinyin + '\'' +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.ryd.stockanalysis.common;
 import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.handle.StockTradeThread;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
+import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
 import com.ryd.stockanalysis.util.ArithUtil;
 import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
@@ -81,21 +82,22 @@ public class DataInitTool {
     public static boolean createBaseData() {
 
         //中国平安-股票
-        StStock stStock = new StStock("1","中国平安","601318","sh");
-        stStock.setBfclosePrice(10);
-        StStock stStock2 = new StStock("2","广发证券","000776", "sz");
+        StStock stStock = new StStock("601318","中国平安","601318","sh");
+        stStock.setBfclosePrice(31);
+        StStock stStock2 = new StStock("000776","广发证券","000776", "sz");
         stStock2.setBfclosePrice(10);
-        StStock stStock3 = new StStock("3","首商股份","600723", "sh");
+        StStock stStock3 = new StStock("600723","首商股份","600723", "sh");
         DataConstant.stockTable.put(stStock.getStockId(),stStock);
         DataConstant.stockTable.put(stStock2.getStockId(),stStock2);
         DataConstant.stockTable.put(stStock3.getStockId(),stStock3);
 
-
+        StockAnalysisServiceI stockAnalysisServiceI = new StockAnalysisServiceImpl();
+        stockAnalysisServiceI.updateSyncStockInfo();
 
         //初始数据用户A、B为卖家拥有持仓，用户C、D、E为买家，持仓为空
 
         //创建买家A
-        StAccount ataA = new StAccount("A","A","1",1000000d,2000000d);
+        StAccount ataA = new StAccount("A","A","A",1000000d,2000000d);
         //用户A持仓
         StPosition ata1Pos = new StPosition();
         ata1Pos.setPositionId(UUID.randomUUID().toString());
@@ -111,7 +113,7 @@ public class DataInitTool {
         DataConstant.stAccountPositionMap.put(ataA.getAccountId(), stpMapA);
 
         //创建买家B
-        StAccount ataB = new StAccount("B","B","2",1000000d,2000000d);
+        StAccount ataB = new StAccount("B","B","",1000000d,2000000d);
         //用户B持仓
         StPosition ata2Pos = new StPosition();
         ata2Pos.setPositionId(UUID.randomUUID().toString());
@@ -127,7 +129,7 @@ public class DataInitTool {
         DataConstant.stAccountPositionMap.put(ataB.getAccountId(), stpMapB);
 
 
-        StAccount ataC = new StAccount("C","C","3",10000d,1000000d);
+        StAccount ataC = new StAccount("C","C","C",10000d,1000000d);
         //用户C持仓 中国平安
         StPosition atc1Pos = new StPosition();
         atc1Pos.setPositionId(UUID.randomUUID().toString());
@@ -153,7 +155,7 @@ public class DataInitTool {
         DataConstant.stAccountPositionMap.put(ataC.getAccountId(), stpMapC);
 
 
-        StAccount ataD = new StAccount("D","D","4",10000d,1000000d);
+        StAccount ataD = new StAccount("D","D","D",10000d,1000000d);
         //用户D持仓
         StPosition ata4Pos = new StPosition();
         ata4Pos.setPositionId(UUID.randomUUID().toString());
@@ -168,7 +170,7 @@ public class DataInitTool {
         stpMapD.put(ata4Pos.getStockId(), ata4Pos);
         DataConstant.stAccountPositionMap.put(ataD.getAccountId(), stpMapD);
 
-        StAccount ataE = new StAccount("E","E","5",10000d,1000000d);
+        StAccount ataE = new StAccount("E","E","E",10000d,1000000d);
         //用户E持仓
         StPosition ata5Pos = new StPosition();
         ata5Pos.setPositionId(UUID.randomUUID().toString());

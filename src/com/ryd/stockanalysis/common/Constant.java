@@ -41,7 +41,7 @@ public class Constant {
     public static Integer STQUOTE_TRADE_TIMECOMPARE_3 = 3;
 
     //结算延迟时间,单位秒
-    public static Integer TRADE_LATER_TIME = 15;
+    public static Integer TRADE_LATER_TIME = 160;
 
     //佣金比例
     public static double STOCK_COMMINSSION_MONEY_PERCENT = 0.0003;
@@ -56,7 +56,7 @@ public class Constant {
     public static String STOCK_OPEN_TIME = "9:30";
 
     //收盘时间
-    public static String STOCK_CLOSE_TIME = "15:00";
+    public static String STOCK_CLOSE_TIME = "20:00";
 
     //休盘时间开始，结束
     public static String STOCK_REST_TIME_START = "12:30";

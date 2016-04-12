@@ -57,4 +57,11 @@ public interface StockAnalysisServiceI {
      * @return
      */
     public void quotePriceBySimulation();
+
+
+    /**
+     * 同步股票实时价格信息
+     * @return
+     */
+    public void updateSyncStockInfo();
 }

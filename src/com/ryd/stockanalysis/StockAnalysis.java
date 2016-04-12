@@ -62,7 +62,7 @@ public class StockAnalysis {
             // 往线程池中放入用户报价（买入/卖出）信息------------StockTradeThread
             pool.execute(new StTradeThread());
 
-            DataInitTool.initQuotePriceMap(pool, serviceI);
+//            DataInitTool.initQuotePriceMap(pool, serviceI);
 
             try {
                 //30秒后结算
