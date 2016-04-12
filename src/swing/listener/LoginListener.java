@@ -43,6 +43,7 @@ public class LoginListener extends MouseAdapter implements ActionListener {
 				msg.setMsgType(ClientConstants.CLIENT_LOGIN);
 
 				MessageServiceImpl.sendMessage(msg);
+
 			}
 		} else if (e.getSource() == cancel) {
 			 System.exit(0);

@@ -11,6 +11,7 @@ import swing.ClientConstants;
 import swing.bean.*;
 import swing.frame.LoginFrame;
 import swing.frame.MainFrame;
+import swing.frame.QuoteListDialog;
 import swing.frame.QuotePriceJDialog;
 import swing.service.MessageServiceI;
 
@@ -75,7 +76,9 @@ public class MessageServiceImpl extends MessageServiceI {
             break;
         case 3:
             ClientConstants.stQuoteList = (List<StQuote>) rsmsg.getMsgObj();
-            ClientConstants.positionListToMap();
+            ClientConstants.quoteListToMap();
+
+            QuoteListDialog.instance().open();
             break;
         case 4:
             boolean rs = (boolean)rsmsg.getMsgObj();
@@ -86,7 +89,15 @@ public class MessageServiceImpl extends MessageServiceI {
             }
             break;
         case 5:
-            break;
+            boolean crs = (boolean)rsmsg.getMsgObj();
+            if(crs) {
+                JOptionPane.showMessageDialog(null, "撤单成功", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+                QuoteListDialog.instance().setVisible(false);
+            }else{
+                JOptionPane.showMessageDialog(null, "撤单失败", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         case 6:
             ClientConstants.stPositionList = (List<StPosition>) rsmsg.getMsgObj();
             break;

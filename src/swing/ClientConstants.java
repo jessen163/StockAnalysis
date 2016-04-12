@@ -24,13 +24,17 @@ public class ClientConstants {
 
     // 仓位报价信息
     public static List<StQuote> stQuoteList = null;
+    // 仓位报价信息
+    public static Map<String, StQuote> stQuoteMap = new HashMap<String, StQuote>();
 
+    //1、登陆 2、股票行情 3、我的报价信息 4、报价 5、撤单 6、持仓信息
     public static final Integer CLIENT_LOGIN = 1;
     public static final Integer STSTOCK_LIST = 2;
     public static final Integer STQUOTE_PRICE_LIST = 3;
     public static final Integer STQUOTE_PRICE = 4;
     public static final Integer STQUOTE_RECALL = 5;
     public static final Integer STSTOCK_POSITION = 6;
+
 
     public static void stockListToMap() {
         if (CollectionUtils.isNotEmpty(stStockList)) {
@@ -46,6 +50,16 @@ public class ClientConstants {
             stPositionMap.clear();
             for (StPosition sp : stPositionList) {
                 stPositionMap.put(sp.getStockId(),sp);
+            }
+        }
+    }
+
+
+    public static void quoteListToMap(){
+        if(CollectionUtils.isNotEmpty(stQuoteList)) {
+            stQuoteMap.clear();
+            for (StQuote sq : stQuoteList) {
+                stQuoteMap.put(sq.getQuoteId(),sq);
             }
         }
     }

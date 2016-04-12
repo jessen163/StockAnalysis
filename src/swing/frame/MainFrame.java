@@ -5,6 +5,7 @@ import swing.ClientConstants;
 
 import com.ryd.stockanalysis.bean.*;
 import swing.common.ListToArray;
+import swing.listener.QuoteListListener;
 import swing.listener.StockSearchListener;
 
 import javax.swing.*;
@@ -83,6 +84,7 @@ public class MainFrame extends JFrame implements Runnable {
         middlePanel = new JPanel();
 		middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 
+		//-------------------------------------------------------------1
 		JPanel panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("持仓"));
 		panel1.setLayout(new BoxLayout(panel1, BoxLayout.Y_AXIS));
@@ -93,26 +95,77 @@ public class MainFrame extends JFrame implements Runnable {
 
 		panel1.add(scrollPane);
 
-        middlePanel.add(panel1);
+//		JPanel panel3 = new JPanel();
+//		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
+//
+//		JButton positionBtn = new JButton("持仓明细");
+//		positionBtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				int selectedRow = table.getSelectedRow();
+//				if (selectedRow != -1) {
+//					String stockCode = (String) table.getValueAt(selectedRow, 0);
+//					QuotePriceJDialog.instance().open(stockCode);
+//				}
+//			}
+//		});
+//
+//		panel1.add(positionBtn);
 
+        middlePanel.add(panel1);
+        //-------------------------------------------------------------1
+
+		//-------------------------------------------------------------2
 		JPanel panel2 = new JPanel();
 		panel2.setBorder(BorderFactory.createTitledBorder("股票行情"));
 		panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
 
-		JPanel panel3 = new JPanel();
-		panel3.setLayout(new BoxLayout(panel3, BoxLayout.X_AXIS));
+		JPanel panel4 = new JPanel();
+		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
 
 		JLabel stCodeLab = new JLabel("股票代码:");
-		panel3.add(stCodeLab);
+		panel4.add(stCodeLab);
 		stCode = new JTextField();
 		stCode.setMaximumSize(new Dimension(200, 30));
-		panel3.add(stCode);
+		panel4.add(stCode);
 		search = new JButton("查询");
 
-		panel3.add(search);
-		panel3.add(Box.createHorizontalStrut(510));
+		panel4.add(search);
 
-		panel2.add(panel3);
+		JButton quoteButton = new JButton("报价");
+		quoteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = table2.getSelectedRow();
+				if (selectedRow != -1) {
+					String stockCode = (String) table2.getValueAt(selectedRow, 0);
+					QuotePriceJDialog.instance().open(stockCode);
+				}else{
+					JOptionPane.showMessageDialog(null, "请选择对应股票", "提示",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		JButton stockInfoButton = new JButton("股票详细");
+		stockInfoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = table2.getSelectedRow();
+				if (selectedRow != -1) {
+					String stockCode = (String) table2.getValueAt(selectedRow, 0);
+					String stockName = (String) table2.getValueAt(selectedRow, 1);
+					StockInfoDialog.instance(instance()).open(stockCode);
+				}else{
+					JOptionPane.showMessageDialog(null, "请选择对应股票", "提示",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		panel4.add(quoteButton);
+		panel4.add(stockInfoButton);
+
+		panel4.add(Box.createHorizontalStrut(410));
+
+		panel2.add(panel4);
 
 		table2 = new JTable();
 		JScrollPane scrollPane2 = new JScrollPane(table2);
@@ -124,66 +177,44 @@ public class MainFrame extends JFrame implements Runnable {
 		panel2.add(scrollPane2);
 
 		middlePanel.add(panel2);
-
+		//-------------------------------------------------------------2
 	}
 
 	 public void createBottomPanel() {
-	        
-	        JButton quoteButton = new JButton("报价");
-	        quoteButton.addActionListener(new ActionListener(){
-	            public void actionPerformed(ActionEvent e){
-	                int selectedRow = table2.getSelectedRow();
-	                if(selectedRow!= -1)  
-	                {
-	                	String stockCode = (String) table2.getValueAt(selectedRow, 0);
-	                	QuotePriceJDialog.instance().open(stockCode);
-	                }
-	            }
-	        });
-	        
-	        JButton stockInfoButton = new JButton("股票详细");
-	        stockInfoButton.addActionListener(new ActionListener(){
-	            public void actionPerformed(ActionEvent e){
-	                int selectedRow = table2.getSelectedRow();
-	                if(selectedRow!= -1)  
-	                {
-	                	String stockCode = (String) table2.getValueAt(selectedRow, 0);
-	                	String stockName = (String) table2.getValueAt(selectedRow, 1);
-	                	StockInfoDialog.instance(instance()).open(stockCode);
-	                }
-	            }
-	        });
 
-	        JButton closeButton = new JButton("退出");
-	        closeButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
-				}
-			});
-	        
-	        bottomPanel = new JPanel();
+		 JButton quoteListButton = new JButton("我的报价列表");
+		 QuoteListListener quoteListListener = new QuoteListListener();
+		 quoteListButton.addActionListener(quoteListListener);
+
+		 JButton closeButton = new JButton("退出");
+		 closeButton.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		 });
+
+		 bottomPanel = new JPanel();
+
+		 bottomPanel .setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+
+		 JPanel buttonPanel = new JPanel();
+
+		 buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+
+		 buttonPanel.add(quoteListButton);
 	      
-	        bottomPanel .setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
-	       
-	        JPanel buttonPanel = new JPanel();
-	   
-	        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-	       
-	        buttonPanel.add(quoteButton);
-	        buttonPanel.add(stockInfoButton);
-	      
-	        buttonPanel.add(Box.createHorizontalGlue ());
-	      
-	        buttonPanel.add(closeButton);
-	      
-	        bottomPanel .add(Box.createVerticalStrut(10));
-	        
-	        bottomPanel .add(buttonPanel);
-	       
-	        bottomPanel .add(Box.createVerticalStrut(10));
-	    }
+		 buttonPanel.add(Box.createHorizontalGlue ());
+
+		 buttonPanel.add(closeButton);
+
+		 bottomPanel .add(Box.createVerticalStrut(10));
+
+		 bottomPanel .add(buttonPanel);
+
+		 bottomPanel .add(Box.createVerticalStrut(10));
+	 }
 	
-	public void addComponent() {
+	 public void addComponent() {
 	
         createTopPanel();
         createMiddlePanel();
