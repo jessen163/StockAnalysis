@@ -14,6 +14,7 @@ import swing.frame.MainFrame;
 import swing.frame.QuotePriceJDialog;
 import swing.service.MessageServiceI;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,26 +44,50 @@ public class MessageServiceImpl extends MessageServiceI {
      传入参数：type=5 obj：quoteId
      * @param msg
      */
-    public static void doMsgForShunt(Object msg) {
+    public static synchronized void doMsgForShunt(Object msg) {
         NettyMessage rsmsg = (NettyMessage)msg;
-        switch (rsmsg.getMsgType()) {
-
+        int msgType = rsmsg.getMsgType();
+        switch (msgType) {
         case 1:
-            ClientConstants.stAccount = (StAccount) rsmsg.getMsgObj();
+            if(rsmsg.getMsgObj()==null){
+                JOptionPane.showMessageDialog(null, "帐号信息错误，没有该用户", "提示",
+                        JOptionPane.ERROR_MESSAGE);
+            }else {
+                ClientConstants.stAccount = (StAccount) rsmsg.getMsgObj();
+                //持仓
+                NettyMessage msg2 = new NettyMessage();
+                msg2.setMsgObj(ClientConstants.stAccount);
+                msg2.setMsgType(ClientConstants.STSTOCK_POSITION);
+                sendMessage(msg2);
+                //股票
+                NettyMessage msg3 = new NettyMessage();
+                msg3.setMsgObj(null);
+                msg3.setMsgType(ClientConstants.STSTOCK_LIST);
+                sendMessage(msg3);
+            }
+            break;
         case 2:
             ClientConstants.stStockList = (List<StStock>) rsmsg.getMsgObj();
+            ClientConstants.stockListToMap();
+
+            LoginFrame.instance().setVisible(false);
+            MainFrame.instance().open();
+            break;
         case 3:
             ClientConstants.stQuoteList = (List<StQuote>) rsmsg.getMsgObj();
+            ClientConstants.positionListToMap();
+            break;
         case 4:
-
             boolean rs = (boolean)rsmsg.getMsgObj();
             if(rs) {
                 QuotePriceJDialog.instance().setVisible(false);
             }
+            break;
         case 5:
-
+            break;
         case 6:
             ClientConstants.stPositionList = (List<StPosition>) rsmsg.getMsgObj();
+            break;
         default:
             break;
         }

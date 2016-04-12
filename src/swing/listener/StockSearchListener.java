@@ -3,7 +3,6 @@ package swing.listener;
 import com.ryd.stockanalysis.bean.StStock;
 import swing.ClientConstants;
 import swing.common.ListToArray;
-import swing.frame.LoginFrame;
 import swing.frame.MainFrame;
 
 import javax.swing.*;
@@ -37,8 +36,7 @@ public class StockSearchListener extends MouseAdapter implements ActionListener 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == search) {
             if (stockCode.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "请输入股票代码", "提示",
-                        JOptionPane.ERROR_MESSAGE);
+                table.setModel(new DefaultTableModel(ListToArray.stockListToArray(ClientConstants.stStockList), MainFrame.columnName2));
             }else{
 
                 StStock sst = ClientConstants.stStockMap.get(stockCode.getText());

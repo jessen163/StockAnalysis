@@ -20,22 +20,20 @@ import swing.service.impl.MessageServiceImpl;
 
 public class QuotePriceListener extends MouseAdapter implements ActionListener {
 
-	private String stockCode;
-	private JTextField textAccountId,textStockId,textAmount,textQuotePrice;
+	private JTextField textAccountName,textStockId,textAmount,textQuotePrice;
 	private JRadioButton buyOrSellBuy,buyOrSellSell;
 	private JButton ensure;
 	private JButton cancel;
 
 
-	public QuotePriceListener(JTextField textAccountId,JTextField textStockId,JTextField textQuotePrice,JTextField textAmount,
-			JRadioButton buyOrSellBuy, JRadioButton buyOrSellSell,String stockCode, JButton ensure, JButton cancel) {
-		this.textAccountId = textAccountId;
+	public QuotePriceListener(JTextField textAccountName,JTextField textStockId,JTextField textQuotePrice,JTextField textAmount,
+			JRadioButton buyOrSellBuy, JRadioButton buyOrSellSell, JButton ensure, JButton cancel) {
+		this.textAccountName = textAccountName;
 		this.textStockId = textStockId;
 		this.textQuotePrice = textQuotePrice;
 		this.textAmount = textAmount;
 		this.buyOrSellSell = buyOrSellSell;
 		this.buyOrSellBuy = buyOrSellBuy;
-		this.stockCode = stockCode;
 		this.ensure = ensure;
 		this.cancel = cancel;
 	}
@@ -48,8 +46,8 @@ public class QuotePriceListener extends MouseAdapter implements ActionListener {
 			NettyMessage msg = new NettyMessage();
 
 			StQuote quote = new StQuote();
-			quote.setAccountId(textAccountId.getText());
-			quote.setStockId(textStockId.getText());
+			quote.setAccountId(QuotePriceJDialog.instance().accountId);
+			quote.setStockId(QuotePriceJDialog.instance().stockCode);
 			quote.setQuotePrice(Double.valueOf(textQuotePrice.getText()));
 			quote.setAmount(Integer.valueOf(textAmount.getText()));
 			quote.setType((buyOrSellBuy.isSelected()==true?1:2));

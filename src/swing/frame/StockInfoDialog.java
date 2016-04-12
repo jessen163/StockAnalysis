@@ -274,7 +274,7 @@ public class StockInfoDialog extends JDialog {
 	public void open(String stockId) {
 		StStock st = ClientConstants.stStockMap.get(stockId);
 		StAccount account = ClientConstants.stAccount;
-		stock.setText(st.getStockName()+"  ");
+		stock.setText(st.getStockName());
 		currentPrice.setText(String.valueOf(st.getCurrentPrice()));
 		openPrice.setText(String.valueOf(st.getOpenPrice()));
 		closePrice.setText(String.valueOf(st.getBfclosePrice()));
@@ -283,27 +283,27 @@ public class StockInfoDialog extends JDialog {
 		amount.setText(String.valueOf(st.getTradeAmount()));
 
 
-//		buyOneAmount.setText(String.valueOf(st.getBuyOneAmount()));
-//		buyOnePrice.setText(String.valueOf(st.getBuyOnePrice()));
-//		buyTwoAmount.setText(String.valueOf(st.getBuyTwoAmount()));
-//		buyTwoPrice.setText(String.valueOf(st.getBuyTwoPrice()));
-//		buyThreeAmount.setText(String.valueOf(st.getBuyThreeAmount()));
-//		buyThreePrice.setText(String.valueOf(st.getBuyThreePrice()));
-//		buyFourAmount.setText(String.valueOf(st.getBuyFourAmount()));
-//		buyFourPrice.setText(String.valueOf(st.getBuyFourPrice()));
-//		buyFiveAmount.setText(String.valueOf(st.getBuyFiveAmount()));
-//		buyFivePrice.setText(String.valueOf(st.getBuyFivePrice()));
-//
-//		sellOneAmount.setText(String.valueOf(st.getSellOneAmount()));
-//		sellOnePrice.setText(String.valueOf(st.getSellOnePrice()));
-//		sellTwoAmount.setText(String.valueOf(st.getSellTwoAmount()));
-//		sellTwoPrice.setText(String.valueOf(st.getSellTwoPrice()));
-//		sellThreeAmount.setText(String.valueOf(st.getSellThreeAmount()));
-//		sellThreePrice.setText(String.valueOf(st.getSellThreePrice()));
-//		sellFourAmount.setText(String.valueOf(st.getSellFourAmount()));
-//		sellFourPrice.setText(String.valueOf(st.getSellFourPrice()));
-//		sellFiveAmount.setText(String.valueOf(st.getSellFiveAmount()));
-//		sellFivePrice.setText(String.valueOf(st.getSellFivePrice()));
+		buyOneAmount.setText(String.valueOf(st.getBuyOneAmount()));
+		buyOnePrice.setText(String.valueOf(st.getBuyOnePrice()));
+		buyTwoAmount.setText(String.valueOf(st.getBuyTwoAmount()));
+		buyTwoPrice.setText(String.valueOf(st.getBuyTwoPrice()));
+		buyThreeAmount.setText(String.valueOf(st.getBuyThreeAmount()));
+		buyThreePrice.setText(String.valueOf(st.getBuyThreePrice()));
+		buyFourAmount.setText(String.valueOf(st.getBuyFourAmount()));
+		buyFourPrice.setText(String.valueOf(st.getBuyFourPrice()));
+		buyFiveAmount.setText(String.valueOf(st.getBuyFiveAmount()));
+		buyFivePrice.setText(String.valueOf(st.getBuyFivePrice()));
+
+		sellOneAmount.setText(String.valueOf(st.getSellOneAmount()));
+		sellOnePrice.setText(String.valueOf(st.getSellOnePrice()));
+		sellTwoAmount.setText(String.valueOf(st.getSellTwoAmount()));
+		sellTwoPrice.setText(String.valueOf(st.getSellTwoPrice()));
+		sellThreeAmount.setText(String.valueOf(st.getSellThreeAmount()));
+		sellThreePrice.setText(String.valueOf(st.getSellThreePrice()));
+		sellFourAmount.setText(String.valueOf(st.getSellFourAmount()));
+		sellFourPrice.setText(String.valueOf(st.getSellFourPrice()));
+		sellFiveAmount.setText(String.valueOf(st.getSellFiveAmount()));
+		sellFivePrice.setText(String.valueOf(st.getSellFivePrice()));
 
 		setVisible(true);
 	}

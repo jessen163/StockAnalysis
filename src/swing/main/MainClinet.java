@@ -21,8 +21,8 @@ public class MainClinet {
 		} catch (Exception e) {
 		}
 
-//		StockClient client = new StockClient();
-//		client.connect("127.0.0.1", 8888);
+		StockClient client = new StockClient();
+		client.connect("127.0.0.1", 8888);
 
 		new Thread(new MainFrame()).start();
 	}

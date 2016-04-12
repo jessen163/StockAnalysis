@@ -32,64 +32,16 @@ public class ClientConstants {
     public static final Integer STQUOTE_RECALL = 5;
     public static final Integer STSTOCK_POSITION = 6;
 
-    static {
-        stStockList = new ArrayList<StStock>();
-//        stAccount = new StAccount();
-        stPositionList = new ArrayList<StPosition>();
-        stQuoteList = new ArrayList<StQuote>();
-
-        StStock stStock = new StStock("601318","中国平安","601318","sh");
-        stStock.setCurrentPrice(31);
-        stStock.setOpenPrice(29);
-        stStock.setBfclosePrice(39.5);
-        stStock.setMaxPrice(32);
-        stStock.setMinPrice(28);
-        stStock.setTradeAmount(100001);
-
-        StStock stStock2 = new StStock("000776","广发证券","000776", "sz");
-
-        stStock2.setCurrentPrice(3.2);
-        stStock2.setOpenPrice(2.9);
-        stStock2.setBfclosePrice(3.95);
-        stStock2.setMaxPrice(3.2);
-        stStock2.setMinPrice(2.8);
-        stStock2.setTradeAmount(103301);
-
-        stStockList.add(stStock);
-        stStockList.add(stStock2);
-
-        stAccount = new StAccount("A","A","A",10000d,1000000d);
-        //用户A持仓
-        StPosition ata5Pos = new StPosition();
-        ata5Pos.setPositionId(UUID.randomUUID().toString());
-        ata5Pos.setAccountId(stAccount.getAccountId());
-        ata5Pos.setStockId(stStock.getStockId());
-        ata5Pos.setAmount(1000);
-        ata5Pos.setStatus(1);
-
-        //用户A持仓
-        StPosition ata4Pos = new StPosition();
-        ata4Pos.setPositionId(UUID.randomUUID().toString());
-        ata4Pos.setAccountId(stAccount.getAccountId());
-        ata4Pos.setStockId(stStock2.getStockId());
-        ata4Pos.setAmount(120);
-        ata4Pos.setStatus(1);
-
-        stPositionList.add(ata5Pos);
-        stPositionList.add(ata4Pos);
-
-        listToMap();
-    }
-
-
-    public static void listToMap(){
-        if(CollectionUtils.isNotEmpty(stStockList)) {
+    public static void stockListToMap() {
+        if (CollectionUtils.isNotEmpty(stStockList)) {
             stStockMap.clear();
             for (StStock st : stStockList) {
                 stStockMap.put(st.getStockId(), st);
             }
         }
+    }
 
+    public static void positionListToMap(){
         if(CollectionUtils.isNotEmpty(stPositionList)) {
             stPositionMap.clear();
             for (StPosition sp : stPositionList) {

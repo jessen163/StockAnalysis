@@ -22,16 +22,18 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.ryd.stockanalysis.bean.StStock;
+import swing.ClientConstants;
 import swing.listener.QuotePriceListener;
 
 
 public class QuotePriceJDialog extends JDialog {
 
 	private static QuotePriceJDialog quotePriceJDialog;
-	
-	private String stockCode;
-	
-	JTextField textAccountId, textStockId, textAmount, textQuotePrice;
+
+	public String stockCode,accountId;
+
+	JTextField textAccountName, textStockName, textAmount, textQuotePrice;
 	JRadioButton buyOrSellBuy, buyOrSellSell;
 
 	public static QuotePriceJDialog instance() {
@@ -55,8 +57,8 @@ public class QuotePriceJDialog extends JDialog {
 		JButton ensure = new JButton("提交");
 		JButton cancel = new JButton("关闭");
 		
-		textAccountId = new JTextField();
-		textStockId = new JTextField();
+		textAccountName = new JTextField();
+		textStockName = new JTextField();
 		textAmount = new JTextField();
 		textQuotePrice = new JTextField();
 
@@ -66,16 +68,16 @@ public class QuotePriceJDialog extends JDialog {
 		amountLab.setBounds(60, 120, 69, 15);
 		buyOrSellLab.setBounds(60, 150, 69, 15);
 	
-		textAccountId.setBounds(130, 30, 133, 25);
-		textStockId.setBounds(130, 60, 133, 25);
+		textAccountName.setBounds(130, 30, 133, 25);
+		textStockName.setBounds(130, 60, 133, 25);
 		textQuotePrice.setBounds(130, 90, 133, 25);
 		textAmount.setBounds(130, 120, 133, 25);
 		
-        buyOrSellBuy=new JRadioButton("买");
+        buyOrSellBuy=new JRadioButton("买入");
         buyOrSellBuy.setBounds(130, 150, 40, 25);
         buyOrSellBuy.setSelected(true);
         
-        buyOrSellSell=new JRadioButton("卖");
+        buyOrSellSell=new JRadioButton("卖出");
         buyOrSellSell.setBounds(170, 150, 40, 25);
         
 		ButtonGroup group=new ButtonGroup();
@@ -86,8 +88,8 @@ public class QuotePriceJDialog extends JDialog {
 		cancel.setBounds(210, 205, 70, 25);
 
 
-	    QuotePriceListener addRoomListener = new QuotePriceListener(textAccountId, textStockId, textQuotePrice, textAmount,
-	    		buyOrSellBuy,buyOrSellSell,stockCode,ensure,cancel);
+	    QuotePriceListener addRoomListener = new QuotePriceListener(textAccountName, textStockName, textQuotePrice, textAmount,
+	    		buyOrSellBuy,buyOrSellSell,ensure,cancel);
 	
 		ensure.addActionListener(addRoomListener);
 		cancel.addActionListener(addRoomListener);
@@ -97,8 +99,8 @@ public class QuotePriceJDialog extends JDialog {
 		add(quotePriceLab);
 		add(amountLab);
 		add(buyOrSellLab);
-		add(textStockId);
-		add(textAccountId);
+		add(textStockName);
+		add(textAccountName);
 		add(textQuotePrice);
 		add(textAmount);
 		add(buyOrSellBuy);
@@ -107,10 +109,12 @@ public class QuotePriceJDialog extends JDialog {
 		add(cancel);
 	}
 
-	public void open(String accountId, String stockCode, String stockName) {
-		textAccountId.setText(accountId);
-		textStockId.setText(stockName);
-		this.stockCode = stockCode;
+	public void open(String stockCode) {
+		StStock stStock = ClientConstants.stStockMap.get(stockCode);
+		textAccountName.setText(ClientConstants.stAccount.getAccountName());
+		textStockName.setText(stStock.getStockName());
+		this.stockCode = stStock.getStockCode();
+		this.accountId = ClientConstants.stAccount.getAccountId();
 		setVisible(true);
 	}
 

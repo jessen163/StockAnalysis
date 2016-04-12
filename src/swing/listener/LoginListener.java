@@ -35,32 +35,14 @@ public class LoginListener extends MouseAdapter implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 
 			}else{
-//				StAccount acc = new StAccount();
-//				acc.setAccountNumber(jtfUserName.getText());
-//				//登录
-//				NettyMessage msg = new NettyMessage();
-//				msg.setMsgObj(acc);
-//				msg.setMsgType(ClientConstants.CLIENT_LOGIN);
-//
-//				//持仓
-//				MessageServiceImpl.sendMessage(msg);
-//				NettyMessage msg2 = new NettyMessage();
-//
-//				msg2.setMsgObj(acc);
-//				msg2.setMsgType(ClientConstants.STSTOCK_POSITION);
-//
-//				//股票
-//				MessageServiceImpl.sendMessage(msg2);
-//				NettyMessage msg3 = new NettyMessage();
-//
-//				msg3.setMsgObj(null);
-//				msg3.setMsgType(ClientConstants.STSTOCK_LIST);
-//
-//				MessageServiceImpl.sendMessage(msg3);
+				StAccount acc = new StAccount();
+				acc.setAccountNumber(jtfUserName.getText());
+				//登录
+				NettyMessage msg = new NettyMessage();
+				msg.setMsgObj(acc);
+				msg.setMsgType(ClientConstants.CLIENT_LOGIN);
 
-				LoginFrame.instance().setVisible(false);
-				MainFrame.instance().open();
-
+				MessageServiceImpl.sendMessage(msg);
 			}
 		} else if (e.getSource() == cancel) {
 			 System.exit(0);

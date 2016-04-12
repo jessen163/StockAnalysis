@@ -136,8 +136,7 @@ public class MainFrame extends JFrame implements Runnable {
 	                if(selectedRow!= -1)  
 	                {
 	                	String stockCode = (String) table2.getValueAt(selectedRow, 0);
-	                	String stockName = (String) table2.getValueAt(selectedRow, 1);
-	                	QuotePriceJDialog.instance().open(account.getText(),stockCode,stockName);
+	                	QuotePriceJDialog.instance().open(stockCode);
 	                }
 	            }
 	        });
