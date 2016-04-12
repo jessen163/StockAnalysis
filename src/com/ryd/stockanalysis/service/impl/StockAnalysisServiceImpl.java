@@ -50,6 +50,7 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
             if (stStock == null) {
                 return false;
             }
+            stQuote.setStatus(Constant.STOCK_STQUOTE_STATUS_TRUSTEE);
             stQuote.setDateTime(System.currentTimeMillis());
 
             //报价大于等于最小价格，小于等于最大价格，可以正常报价
@@ -225,10 +226,11 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
     @Override
     public boolean cancelStQuote(StQuote stQuote){
+        boolean rs = false;
         //获取委托信息
         Map<String,StQuote> stQuoteMap = DataConstant.stAccountQuoteMap.get(stQuote.getAccountId());
         if (stQuoteMap==null) {
-            return false;
+            return rs;
         }
 
         //被撤销的报价
@@ -237,18 +239,22 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
         //获取股票对应队列
         StTradeQueue stTradeQueue = DataConstant.stTradeQueueMap.get(stQuote.getStockId());
         if (stTradeQueue==null) {
-            return false;
+            return rs;
         }
 
         if(cancelQuote.getStatus().intValue()==1){
             if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_BUY.intValue()){
-                return stTradeQueue.removeBuyStQuote(cancelQuote);
+                rs = stTradeQueue.removeBuyStQuote(cancelQuote);
             } else if(stQuote.getType().intValue() == Constant.STOCK_STQUOTE_TYPE_SELL){
-                return stTradeQueue.removeSellStQuote(cancelQuote);
+                rs = stTradeQueue.removeSellStQuote(cancelQuote);
             }
         }
 
-        return false;
+        if(rs){
+            stQuoteMap.remove(cancelQuote.getQuoteId(),cancelQuote);
+        }
+
+        return rs;
     }
 
     @Override

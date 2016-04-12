@@ -62,7 +62,7 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
                     logger.info("获取我的报价信息："+account.getAccountId());
                     List<StQuote> quoteList = new ArrayList<StQuote>();
                     Map<String,StQuote> stQuoteMap= DataConstant.stAccountQuoteMap.get(account.getAccountId());
-                    if (quoteList!=null) {
+                    if (stQuoteMap!=null) {
                         for (String k : stQuoteMap.keySet()) {
                             quoteList.add(stQuoteMap.get(k));
                         }
