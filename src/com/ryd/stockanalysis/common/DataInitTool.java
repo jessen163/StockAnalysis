@@ -23,7 +23,7 @@ public class DataInitTool {
 
     private static Logger logger = Logger.getLogger(DataInitTool.class);
 
-    public static boolean dataCheck(String disinfo){
+    public static boolean dataCheck(String disinfo, String date){
 
         double totalUseMoney = 0d;
         double totalAllMoney = 0d;
@@ -46,7 +46,7 @@ public class DataInitTool {
             }
         }
 
-        logger.info(disinfo+"--所有资产总金额->"+totalAllMoney+"--所有资产总可用金额->"+totalUseMoney);
+        logger.info(disinfo+"--时间--"+date+"--所有资产总可用金额->"+totalUseMoney);
 
         if("settle结算后".equals(disinfo)){
             logger.info(disinfo+"--交易费用总金额->"+DataConstant.STOCK_TRADE_AGENT_MONEY);
@@ -200,7 +200,7 @@ public class DataInitTool {
 
         sbu.append("帐户信息--帐号->" + uu.getAccountName());
         sbu.append("--可使用金额->->"+uu.getUseMoney());
-        sbu.append("--帐户总金额->" + uu.getTotalMoney());
+//        sbu.append("--帐户总金额->" + uu.getTotalMoney());
 
         logger.info(sbu.toString());
         //获取对应的持仓

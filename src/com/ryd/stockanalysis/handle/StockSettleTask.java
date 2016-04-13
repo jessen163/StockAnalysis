@@ -9,6 +9,7 @@ import com.ryd.stockanalysis.service.StDateScheduleServiceI;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import com.ryd.stockanalysis.service.impl.StDateScheduleServiceImpl;
 import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
+import com.ryd.stockanalysis.util.DateUtils;
 import org.apache.log4j.Logger;
 
 import java.util.TimerTask;
@@ -56,9 +57,7 @@ public class StockSettleTask extends TimerTask {
             }
 
             //数据监测
-            DataInitTool.dataCheck("settle结算后");
-
-            logger.info("股票分析---------------结束---------------------");
+            DataInitTool.dataCheck("settle结算完", DateUtils.formatLongToStr(System.currentTimeMillis(),DateUtils.TIME_FORMAT));
         }
     }
 }

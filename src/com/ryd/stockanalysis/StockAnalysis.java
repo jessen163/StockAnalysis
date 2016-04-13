@@ -32,7 +32,7 @@ public class StockAnalysis {
 
 
     public static void main(String[] args) throws Exception {
-        logger.info("股票分析---------------开始--------------------");
+
         StockAnalysisServiceI serviceI = new StockAnalysisServiceImpl();
         // 创建一个可重用固定线程数的线程池
         ExecutorService pool = Executors.newFixedThreadPool(50);
@@ -52,7 +52,7 @@ public class StockAnalysis {
         boolean rs = DataInitTool.createBaseData();
 
         //数据监测
-        DataInitTool.dataCheck("open开盘前");
+        DataInitTool.dataCheck("初始", DateUtils.formatLongToStr(System.currentTimeMillis(),DateUtils.TIME_FORMAT));
         //初始数据
         for (String key : DataConstant.stAccounts.keySet()) {
             StAccount uu = DataConstant.stAccounts.get(key);

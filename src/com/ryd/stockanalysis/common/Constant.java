@@ -57,7 +57,7 @@ public class Constant {
     public static String STOCK_OPEN_TIME = "9:30:00";
 
     //收盘时间
-    public static String STOCK_CLOSE_TIME = "15:00:00";
+    public static String STOCK_CLOSE_TIME = "14:16:00";
 
     //休盘时间开始，结束
     public static String STOCK_REST_TIME_START = "11:30:00";
@@ -65,6 +65,6 @@ public class Constant {
 
 
     //结算时间
-    public static String STOCK_SETTLE_TIME = "15:10:00";
+    public static String STOCK_SETTLE_TIME = "14:16:00";
 
 }
