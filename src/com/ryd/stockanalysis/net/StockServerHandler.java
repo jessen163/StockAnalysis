@@ -166,7 +166,8 @@ public class StockServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         // Close the connection when an exception is raised.
-        cause.printStackTrace();
+//        cause.printStackTrace();
+        logger.info("客户端断开链接-----------------------------------");
         ctx.close();
     }
 }
