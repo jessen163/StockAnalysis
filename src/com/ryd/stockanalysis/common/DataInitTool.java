@@ -48,7 +48,7 @@ public class DataInitTool {
 
         logger.info(disinfo+"--时间--"+date+"--所有资产总可用金额->"+totalUseMoney);
 
-        if("settle结算后".equals(disinfo)){
+        if("settle结算完".equals(disinfo)){
             logger.info(disinfo+"--交易费用总金额->"+DataConstant.STOCK_TRADE_AGENT_MONEY);
         }
 

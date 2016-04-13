@@ -45,6 +45,13 @@ public interface StockAnalysisServiceI {
     public boolean cancelStQuote(StQuote stQuote);
 
     /**
+     * 删除股票队列和我的报价列表中的报价
+     * @param stQuote
+     * @return
+     */
+    public boolean removeStQuote(StQuote stQuote);
+
+    /**
      * 模拟报价
      * @param stAccountList
      * @param stStock

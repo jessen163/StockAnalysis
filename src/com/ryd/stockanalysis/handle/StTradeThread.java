@@ -34,7 +34,7 @@ public class StTradeThread implements Runnable {
 
 	@Override
 	public void run(){
-		logger.info("股票交易引擎---------------开始--------------------");
+//		logger.info("股票交易引擎---------------开始--------------------");
 		while (true) {
 			//判断时间是否允许交易
 			int tstatus = scheduleServiceI.dateAndTimeJudge();
@@ -53,7 +53,7 @@ public class StTradeThread implements Runnable {
 					if ((end-start)/1000%60==0) {
 						stockAnalysisServiceI.quotePriceBySimulation();
 					}
-					logger.info("股票交易中-----------------------------------");
+//					logger.info("股票交易中-----------------------------------");
 					StTradeQueue stTradeQueueMap = DataConstant.stTradeQueueMap.get(s);
 					if (stTradeQueueMap.buyList.isEmpty() || stTradeQueueMap.sellList.isEmpty()) continue;
 //							logger.info("stTradeQueueMap: 股票ID"+s+"-------------------其他信息："+stTradeQueueMap);
