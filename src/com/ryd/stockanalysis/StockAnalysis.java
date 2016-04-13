@@ -69,10 +69,16 @@ public class StockAnalysis {
             Timer timer = new Timer();
             StockSettleTask settleTask = new StockSettleTask(serviceI);
 
-            Date date = DateUtils.getSetHourTime(Constant.STOCK_SETTLE_TIME);
+            Date settledate = DateUtils.getSetHourTime(Constant.STOCK_SETTLE_TIME);
+            Date closedate = DateUtils.getSetHourTime(Constant.STOCK_CLOSE_TIME);
 
             //每天的date时刻执行task, 仅执行一次
-            timer.schedule(settleTask, date);
+            if( settledate.getTime() < closedate.getTime() ){
+                timer.schedule(settleTask, closedate);
+            }else{
+                timer.schedule(settleTask, settledate);
+            }
+
 
         }
     }
