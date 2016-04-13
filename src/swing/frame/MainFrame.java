@@ -1,5 +1,6 @@
 package swing.frame;
 
+import com.ryd.stockanalysis.protocol.NettyMessage;
 import javafx.stage.Screen;
 import swing.ClientConstants;
 
@@ -7,6 +8,7 @@ import com.ryd.stockanalysis.bean.*;
 import swing.common.ListToArray;
 import swing.listener.QuoteListListener;
 import swing.listener.StockSearchListener;
+import swing.service.impl.MessageServiceImpl;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -186,6 +188,18 @@ public class MainFrame extends JFrame {
 		 QuoteListListener quoteListListener = new QuoteListListener();
 		 quoteListButton.addActionListener(quoteListListener);
 
+		 JButton refreshButton = new JButton("刷新");
+		 refreshButton.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				 dispose();
+				 NettyMessage msg = new NettyMessage();
+				 msg.setMsgObj(ClientConstants.stAccount);
+				 msg.setMsgType(ClientConstants.CLIENT_LOGIN);
+
+				 MessageServiceImpl.sendMessage(msg);
+			 }
+		 });
+
 		 JButton closeButton = new JButton("退出");
 		 closeButton.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
@@ -204,6 +218,8 @@ public class MainFrame extends JFrame {
 		 buttonPanel.add(quoteListButton);
 	      
 		 buttonPanel.add(Box.createHorizontalGlue ());
+
+		 buttonPanel.add(refreshButton);
 
 		 buttonPanel.add(closeButton);
 
