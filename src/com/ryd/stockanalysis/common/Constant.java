@@ -40,6 +40,10 @@ public class Constant {
     public static Integer STQUOTE_TRADE_TIMECOMPARE_2 = 2;
     public static Integer STQUOTE_TRADE_TIMECOMPARE_3 = 3;
 
+    //1.节假日 2.特殊工作日
+    public static Integer DATE_SCHEDULE_FESTIVALDAY = 1;
+    public static Integer DATE_SCHEDULE_SEPCIAL_WORKDAY = 2;
+
     //佣金比例
     public static double STOCK_COMMINSSION_MONEY_PERCENT = 0.0003;
 
@@ -50,17 +54,17 @@ public class Constant {
     public static double STOCK_UP_AND_DOWN_PERCENT = 0.1;
 
     //开盘时间
-    public static String STOCK_OPEN_TIME = "9:30";
+    public static String STOCK_OPEN_TIME = "9:30:00";
 
     //收盘时间
-    public static String STOCK_CLOSE_TIME = "20:00";
+    public static String STOCK_CLOSE_TIME = "15:00:00";
 
     //休盘时间开始，结束
-    public static String STOCK_REST_TIME_START = "12:30";
-    public static String STOCK_REST_TIME_END = "13:00";
+    public static String STOCK_REST_TIME_START = "11:30:00";
+    public static String STOCK_REST_TIME_END = "13:00:00";
 
 
     //结算时间
-    public static String STOCK_SETTLE_TIME = "10:28:00";
+    public static String STOCK_SETTLE_TIME = "15:10:00";
 
 }

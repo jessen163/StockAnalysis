@@ -5,6 +5,7 @@ import com.ryd.stockanalysis.util.ConcurrentSortedLinkedList;
 import com.ryd.stockanalysis.util.SortedLinkedList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +49,9 @@ public class DataConstant {
     public static ConcurrentMap<String,Map> allQuoteTable = new ConcurrentHashMap<String,Map>();
     //交易记录列表
     public static List<StTradeRecord> recordList = new ArrayList<StTradeRecord>();
+
+    //日期列表
+    public static Map<String,List<DateSchedule>> dateScheduleMap = new HashMap<String,List<DateSchedule>>();
 
     //交易费用
     public static Double STOCK_TRADE_AGENT_MONEY = 0d;

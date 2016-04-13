@@ -7,7 +7,6 @@ import com.ryd.stockanalysis.common.Constant;
 import com.ryd.stockanalysis.common.DataConstant;
 import com.ryd.stockanalysis.service.*;
 import com.ryd.stockanalysis.util.ArithUtil;
-import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -29,11 +28,14 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
 
     private StockGetInfoFromApiI stockGetInfoFromApiI;
 
+    private StDateScheduleServiceI scheduleServiceI;
+
     public StockAnalysisServiceImpl() {
         stAccountServiceI = new StAccountServiceImpl();
         stPositionServiceI = new StPositionServiceImpl();
         stTradeRecordServiceI = new StTradeRecordServiceImpl();
         stockGetInfoFromApiI = new StockGetInfoFromApiImpl();
+        scheduleServiceI = new StDateScheduleServiceImpl();
     }
 
 
@@ -41,8 +43,8 @@ public class StockAnalysisServiceImpl implements StockAnalysisServiceI {
     public synchronized boolean quotePrice(StQuote stQuote) {
         boolean rs = false;
         //判断时间是否允许报价
-        if(FestivalDateUtil.getInstance().dateJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_1 ||
-                FestivalDateUtil.getInstance().dateJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_2) {
+        if(scheduleServiceI.dateAndTimeJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_1 ||
+                scheduleServiceI.dateAndTimeJudge() == Constant.STQUOTE_TRADE_TIMECOMPARE_2) {
 
             //报价对应股票
             StStock stStock = DataConstant.stockTable.get(stQuote.getStockId());

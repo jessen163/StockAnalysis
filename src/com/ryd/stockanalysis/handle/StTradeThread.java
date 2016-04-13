@@ -6,13 +6,10 @@ import com.ryd.stockanalysis.common.DataInitTool;
 import com.ryd.stockanalysis.service.*;
 import com.ryd.stockanalysis.service.impl.*;
 import com.ryd.stockanalysis.util.ArithUtil;
-import com.ryd.stockanalysis.util.FestivalDateUtil;
 import org.apache.log4j.Logger;
 
 import com.ryd.stockanalysis.common.Constant;
 
-import java.math.BigDecimal;
-import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -28,13 +25,11 @@ public class StTradeThread implements Runnable {
 	private static Logger logger = Logger.getLogger(StTradeThread.class);
 
 	private StockAnalysisServiceI stockAnalysisServiceI;
+	private StDateScheduleServiceI scheduleServiceI;
 
 	public StTradeThread() {
-//		stAccountServiceI = new StAccountServiceImpl();
-//		stPositionServiceI = new StPositionServiceImpl();
-//		stTradeRecordServiceI = new StTradeRecordServiceImpl();
 		stockAnalysisServiceI = new StockAnalysisServiceImpl();
-//		stockGetInfoFromApiI = new StockGetInfoFromApiImpl();
+		scheduleServiceI = new StDateScheduleServiceImpl();
 	}
 
 	@Override
@@ -42,7 +37,7 @@ public class StTradeThread implements Runnable {
 		logger.info("股票交易引擎---------------开始--------------------");
 		while (true) {
 			//判断时间是否允许交易
-			int tstatus = FestivalDateUtil.getInstance().dateJudge();
+			int tstatus = scheduleServiceI.dateAndTimeJudge();
 			if(tstatus != Constant.STQUOTE_TRADE_TIMECOMPARE_1){
 				try {
 					TimeUnit.MINUTES.sleep(1);

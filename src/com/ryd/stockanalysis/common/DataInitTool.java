@@ -4,8 +4,7 @@ import com.ryd.stockanalysis.bean.*;
 import com.ryd.stockanalysis.handle.StockTradeThread;
 import com.ryd.stockanalysis.service.StockAnalysisServiceI;
 import com.ryd.stockanalysis.service.impl.StockAnalysisServiceImpl;
-import com.ryd.stockanalysis.util.ArithUtil;
-import com.ryd.stockanalysis.util.FestivalDateUtil;
+import com.ryd.stockanalysis.util.DateUtils;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -80,7 +79,8 @@ public class DataInitTool {
      * 帐户 E 持有 中国平安 100000
      */
     public static boolean createBaseData() {
-
+        //初始化时间
+        dateScheduleInit();
         //中国平安-股票
         StStock stStock = new StStock("601318","中国平安","601318","sh");
         stStock.setBfclosePrice(31);
@@ -220,120 +220,136 @@ public class DataInitTool {
 
     //初始化报价信息
     public static void initQuotePriceMap(ExecutorService pool,StockAnalysisServiceI serviceI){
-        //判断时间是否允许报价
-        int tstatus = FestivalDateUtil.getInstance().dateJudge();
-        if(tstatus == Constant.STQUOTE_TRADE_TIMECOMPARE_1 || tstatus == Constant.STQUOTE_TRADE_TIMECOMPARE_2) {
-            //交易股票
-            StStock st = DataConstant.stockTable.get(DataConstant.TRADEING_STOCK_ID);
-            try {
-                //买家A
-                StAccount aSt = DataConstant.stAccounts.get("A");
-                ConcurrentMap<String, Map> aQuoteTable = new ConcurrentHashMap<String, Map>();
-                for (int i = 1; i <= DataConstant.STQUOTE_A_NUM; i++) {
-                    Map<String, Object> rtn = new HashMap<String, Object>();
-                    rtn.put("accountId", aSt.getAccountId());
-                    rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
-                    rtn.put("quotePrice", DataConstant.STQUOTE_A_QUOTEPRICE);
-                    rtn.put("amount", DataConstant.STQUOTE_A_AMOUNT);
-                    rtn.put("type", Constant.STOCK_STQUOTE_TYPE_BUY);
 
-                    rtn.put("info", "当前报价----报价状态->买入---买方->" + aSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_A_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_A_AMOUNT + "--报价次数第-->" + i + "次");
+        //交易股票
+        StStock st = DataConstant.stockTable.get(DataConstant.TRADEING_STOCK_ID);
+        try {
+            //买家A
+            StAccount aSt = DataConstant.stAccounts.get("A");
+            ConcurrentMap<String, Map> aQuoteTable = new ConcurrentHashMap<String, Map>();
+            for (int i = 1; i <= DataConstant.STQUOTE_A_NUM; i++) {
+                Map<String, Object> rtn = new HashMap<String, Object>();
+                rtn.put("accountId", aSt.getAccountId());
+                rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
+                rtn.put("quotePrice", DataConstant.STQUOTE_A_QUOTEPRICE);
+                rtn.put("amount", DataConstant.STQUOTE_A_AMOUNT);
+                rtn.put("type", Constant.STOCK_STQUOTE_TYPE_BUY);
 
-                    aQuoteTable.put("A" + i, rtn);
-                    //买卖家报
-                }
-                pool.execute(new StockTradeThread(serviceI, aQuoteTable));
+                rtn.put("info", "当前报价----报价状态->买入---买方->" + aSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_A_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_A_AMOUNT + "--报价次数第-->" + i + "次");
 
-
-                //卖家C
-                StAccount cSt = DataConstant.stAccounts.get("C");
-                ConcurrentMap<String, Map> cQuoteTable = new ConcurrentHashMap<String, Map>();
-                for (int ci = 1; ci <= DataConstant.STQUOTE_C_NUM; ci++) {
-                    Map<String, Object> rtn = new HashMap<String, Object>();
-                    rtn.put("accountId", cSt.getAccountId());
-                    //卖两支股票，奇数卖广发银行，偶数卖中国平安
-                    //            if(ci%2==0) {
-                    rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
-                    //            }else{
-                    //                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
-                    //            }
-                    rtn.put("quotePrice", DataConstant.STQUOTE_C_QUOTEPRICE);
-                    rtn.put("amount", DataConstant.STQUOTE_C_AMOUNT);
-                    rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
-
-                    rtn.put("info", "当前报价----报价状态->卖出---卖方->" + cSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_C_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_C_AMOUNT + "--报价次数第-->" + ci + "次");
-
-                    cQuoteTable.put("C" + ci, rtn);
-
-                }
-                Thread.sleep(100);
-                pool.execute(new StockTradeThread(serviceI, cQuoteTable));
-
-                //卖家D
-                StAccount dSt = DataConstant.stAccounts.get("D");
-                ConcurrentMap<String, Map> dQuoteTable = new ConcurrentHashMap<String, Map>();
-                for (int di = 1; di <= DataConstant.STQUOTE_D_NUM; di++) {
-                    Map<String, Object> rtn = new HashMap<String, Object>();
-                    rtn.put("accountId", dSt.getAccountId());
-                    rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
-                    rtn.put("quotePrice", DataConstant.STQUOTE_D_QUOTEPRICE);
-                    rtn.put("amount", DataConstant.STQUOTE_D_AMOUNT);
-                    rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
-
-                    rtn.put("info", "当前报价----报价状态->卖出---卖方->" + dSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_D_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_D_AMOUNT + "--报价次数第-->" + di + "次");
-
-                    dQuoteTable.put("D" + di, rtn);
-
-                }
-                Thread.sleep(100);
-                pool.execute(new StockTradeThread(serviceI, dQuoteTable));
-
-                //卖家E
-                StAccount eSt = DataConstant.stAccounts.get("E");
-                ConcurrentMap<String, Map> eQuoteTable = new ConcurrentHashMap<String, Map>();
-                for (int ei = 1; ei <= DataConstant.STQUOTE_E_NUM; ei++) {
-                    Map<String, Object> rtn = new HashMap<String, Object>();
-                    rtn.put("accountId", eSt.getAccountId());
-                    rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
-                    rtn.put("quotePrice", DataConstant.STQUOTE_E_QUOTEPRICE);
-                    rtn.put("amount", DataConstant.STQUOTE_E_AMOUNT);
-                    rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
-
-                    rtn.put("info", "当前报价----报价状态->卖出---卖方->" + eSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_E_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_E_AMOUNT + "--报价次数第-->" + ei + "次");
-
-                    eQuoteTable.put("E" + ei, rtn);
-
-                }
-                Thread.sleep(100);
-                pool.execute(new StockTradeThread(serviceI, eQuoteTable));
-
-                //买家B
-                StAccount bSt = DataConstant.stAccounts.get("B");
-                ConcurrentMap<String, Map> bQuoteTable = new ConcurrentHashMap<String, Map>();
-                for (int bi = 1; bi <= DataConstant.STQUOTE_B_NUM; bi++) {
-                    Map<String, Object> rtn = new HashMap<String, Object>();
-                    rtn.put("accountId", bSt.getAccountId());
-                    //买两支股票，奇数买广发银行，偶数买中国平安
-                    //            if(bi%2==0) {
-                    rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
-                    //            }else{
-                    //                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
-                    //            }
-                    rtn.put("quotePrice", DataConstant.STQUOTE_B_QUOTEPRICE);
-                    rtn.put("amount", DataConstant.STQUOTE_B_AMOUNT);
-                    rtn.put("type", Constant.STOCK_STQUOTE_TYPE_BUY);
-
-                    rtn.put("info", "当前报价----报价状态->买入---买方->" + bSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_B_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_B_AMOUNT + "--报价次数第-->" + bi + "次");
-
-                    bQuoteTable.put("B" + bi, rtn);
-                }
-                Thread.sleep(100);
-                pool.execute(new StockTradeThread(serviceI, bQuoteTable));
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                aQuoteTable.put("A" + i, rtn);
+                //买卖家报
             }
+            pool.execute(new StockTradeThread(serviceI, aQuoteTable));
+
+
+            //卖家C
+            StAccount cSt = DataConstant.stAccounts.get("C");
+            ConcurrentMap<String, Map> cQuoteTable = new ConcurrentHashMap<String, Map>();
+            for (int ci = 1; ci <= DataConstant.STQUOTE_C_NUM; ci++) {
+                Map<String, Object> rtn = new HashMap<String, Object>();
+                rtn.put("accountId", cSt.getAccountId());
+                //卖两支股票，奇数卖广发银行，偶数卖中国平安
+                //            if(ci%2==0) {
+                rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
+                //            }else{
+                //                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
+                //            }
+                rtn.put("quotePrice", DataConstant.STQUOTE_C_QUOTEPRICE);
+                rtn.put("amount", DataConstant.STQUOTE_C_AMOUNT);
+                rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
+
+                rtn.put("info", "当前报价----报价状态->卖出---卖方->" + cSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_C_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_C_AMOUNT + "--报价次数第-->" + ci + "次");
+
+                cQuoteTable.put("C" + ci, rtn);
+
+            }
+            Thread.sleep(100);
+            pool.execute(new StockTradeThread(serviceI, cQuoteTable));
+
+            //卖家D
+            StAccount dSt = DataConstant.stAccounts.get("D");
+            ConcurrentMap<String, Map> dQuoteTable = new ConcurrentHashMap<String, Map>();
+            for (int di = 1; di <= DataConstant.STQUOTE_D_NUM; di++) {
+                Map<String, Object> rtn = new HashMap<String, Object>();
+                rtn.put("accountId", dSt.getAccountId());
+                rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
+                rtn.put("quotePrice", DataConstant.STQUOTE_D_QUOTEPRICE);
+                rtn.put("amount", DataConstant.STQUOTE_D_AMOUNT);
+                rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
+
+                rtn.put("info", "当前报价----报价状态->卖出---卖方->" + dSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_D_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_D_AMOUNT + "--报价次数第-->" + di + "次");
+
+                dQuoteTable.put("D" + di, rtn);
+
+            }
+            Thread.sleep(100);
+            pool.execute(new StockTradeThread(serviceI, dQuoteTable));
+
+            //卖家E
+            StAccount eSt = DataConstant.stAccounts.get("E");
+            ConcurrentMap<String, Map> eQuoteTable = new ConcurrentHashMap<String, Map>();
+            for (int ei = 1; ei <= DataConstant.STQUOTE_E_NUM; ei++) {
+                Map<String, Object> rtn = new HashMap<String, Object>();
+                rtn.put("accountId", eSt.getAccountId());
+                rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
+                rtn.put("quotePrice", DataConstant.STQUOTE_E_QUOTEPRICE);
+                rtn.put("amount", DataConstant.STQUOTE_E_AMOUNT);
+                rtn.put("type", Constant.STOCK_STQUOTE_TYPE_SELL);
+
+                rtn.put("info", "当前报价----报价状态->卖出---卖方->" + eSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_E_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_E_AMOUNT + "--报价次数第-->" + ei + "次");
+
+                eQuoteTable.put("E" + ei, rtn);
+
+            }
+            Thread.sleep(100);
+            pool.execute(new StockTradeThread(serviceI, eQuoteTable));
+
+            //买家B
+            StAccount bSt = DataConstant.stAccounts.get("B");
+            ConcurrentMap<String, Map> bQuoteTable = new ConcurrentHashMap<String, Map>();
+            for (int bi = 1; bi <= DataConstant.STQUOTE_B_NUM; bi++) {
+                Map<String, Object> rtn = new HashMap<String, Object>();
+                rtn.put("accountId", bSt.getAccountId());
+                //买两支股票，奇数买广发银行，偶数买中国平安
+                //            if(bi%2==0) {
+                rtn.put("stockId", DataConstant.TRADEING_STOCK_ID);
+                //            }else{
+                //                rtn.put("stockId", Constant.TRADEING_STOCK_ID2);
+                //            }
+                rtn.put("quotePrice", DataConstant.STQUOTE_B_QUOTEPRICE);
+                rtn.put("amount", DataConstant.STQUOTE_B_AMOUNT);
+                rtn.put("type", Constant.STOCK_STQUOTE_TYPE_BUY);
+
+                rtn.put("info", "当前报价----报价状态->买入---买方->" + bSt.getAccountName() + "--股票名称->" + st.getStockName() + "--股票编码->" + st.getStockCode() + "--委托价格->" + DataConstant.STQUOTE_B_QUOTEPRICE + "--委托数量->" + DataConstant.STQUOTE_B_AMOUNT + "--报价次数第-->" + bi + "次");
+
+                bQuoteTable.put("B" + bi, rtn);
+            }
+            Thread.sleep(100);
+            pool.execute(new StockTradeThread(serviceI, bQuoteTable));
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 日期表初始化
+     */
+    public static void dateScheduleInit(){
+
+        List<DateSchedule> festivalDay = new ArrayList<DateSchedule>();
+        List<DateSchedule> sepcialWorkDay = new ArrayList<DateSchedule>();
+
+        DateSchedule labourDay = new DateSchedule();
+        labourDay.setId(UUID.randomUUID().toString());
+        labourDay.setDate(DateUtils.formatStrToDate("2016-05-02", DateUtils.DATE_FORMAT));
+        labourDay.setType(Constant.DATE_SCHEDULE_FESTIVALDAY);
+        festivalDay.add(labourDay);
+
+        DataConstant.dateScheduleMap.put("festivalDay", festivalDay);
+        DataConstant.dateScheduleMap.put("sepcialWorkDay",sepcialWorkDay);
     }
 
 
@@ -373,4 +389,5 @@ public class DataInitTool {
             }
             logger.info("-----------------------------"+info+" end------------------------------------");
     }
+
 }
