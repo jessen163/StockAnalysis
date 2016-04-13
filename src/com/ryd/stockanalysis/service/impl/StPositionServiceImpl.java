@@ -79,4 +79,9 @@ public class StPositionServiceImpl implements StPositionServiceI {
         }
     }
 
+    @Override
+    public void calculateAvgPrice(String accountId, String stockId) {
+
+    }
+
 }

@@ -18,4 +18,11 @@ public interface StPositionServiceI {
      */
     public boolean operateStPosition(String accountId, String stockId, int amount,int type);
 
+
+    /**
+     * 计算持仓平均成本
+     * @param accountId
+     * @param stockId
+     */
+    public void calculateAvgPrice(String accountId, String stockId);
 }
